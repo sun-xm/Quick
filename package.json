@@ -11,7 +11,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:quick.cmakeConsole"
+		"onCommand:quick.cmakeConsole",
+		"onCommand:quick.cmakeQtWidgets"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -19,6 +20,10 @@
 			{
 				"command": "quick.cmakeConsole",
 				"title": "Quick: Start cmake console project"
+			},
+			{
+				"command": "quick.cmakeQtWidgets",
+				"title": "Quick: Start cmake Qt widgets project"
 			}
 		]
 	},
