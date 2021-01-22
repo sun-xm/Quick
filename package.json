@@ -13,7 +13,8 @@
 	"activationEvents": [
 		"onCommand:quick.cmakeConsole",
 		"onCommand:quick.cmakeQtWidgets",
-		"onCommand:quick.cmakeViewWindow"
+		"onCommand:quick.cmakeViewWindow",
+		"onCommand:quick.cmakeViewDialog"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -24,11 +25,15 @@
 			},
 			{
 				"command": "quick.cmakeQtWidgets",
-				"title": "Quick: Start cmake Qt widgets project"
+				"title": "Quick: Start cmake Qt Widgets project"
 			},
 			{
 				"command": "quick.cmakeViewWindow",
-				"title": "Quick: Start cmake View window project"
+				"title": "Quick: Start cmake Win32 View window project"
+			},
+			{
+				"command": "quick.cmakeViewDialog",
+				"title": "Quick: Start cmake Win32 View dialog project"
 			}
 		]
 	},
@@ -38,7 +43,8 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"package": "vsce package"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.52.0",

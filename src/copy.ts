@@ -13,7 +13,7 @@ export async function copy(src: string, dst: string, overwrite?: boolean | undef
     return fs.copy(Uri.file(src), Uri.file(dst), { overwrite: overwrite ? true : false });
 }
 
-export async function copyReplace(src: string, dst: string, replace: [string, string][], overwrite?: boolean | undefined) {
+export async function copyReplace(src: string, dst: string, replace: [RegExp, string][], overwrite?: boolean | undefined) {
     if (undefined == overwrite || !overwrite) {
         try {
             await fs.stat(Uri.file(dst));
