@@ -58,13 +58,15 @@ export async function cmakeViewWindow(context: vscode.ExtensionContext) {
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
 
         let res = context.extensionUri.path + '/res/cmake/view';
+        await copy(`${res}/View`, `${ws}/View`);
 
-        await copyReplace(`${res}/CMakeLists.txt.win`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
+        res = res + '/Window';
+
+        await copyReplace(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
-        await copy(`${res}/View`, `${ws}/View`);
-        await copy(`${res}/Application.h.win`, `${ws}/Application.h`);
-        await copy(`${res}/Application.cpp.win`, `${ws}/Application.cpp`);
+        await copy(`${res}/Application.h`, `${ws}/Application.h`);
+        await copy(`${res}/Application.cpp`, `${ws}/Application.cpp`);
 
         vscode.window.showInformationMessage(`CMake View window project "${nm}" created`);
     }
@@ -82,16 +84,18 @@ export async function cmakeViewDialog(context: vscode.ExtensionContext) {
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
 
         let res = context.extensionUri.path + '/res/cmake/view';
+        await copy(`${res}/View`, `${ws}/View`);
 
-        await copyReplace(`${res}/CMakeLists.txt.dlg`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
+        res = res + '/Dialog'
+
+        await copyReplace(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
-        await copyReplace(`${res}/resource.h.dlg`, `${ws}/resource.h`, [[/__name__/g, nm]]);
+        await copyReplace(`${res}/resource.h`, `${ws}/resource.h`, [[/__name__/g, nm]]);
 
-        await copy(`${res}/View`, `${ws}/View`);
-        await copy(`${res}/Application.h.dlg`,   `${ws}/Application.h`);
-        await copy(`${res}/Application.cpp.dlg`, `${ws}/Application.cpp`);
-        await copy(`${res}/Application.rc.dlg`,  `${ws}/${nm}.rc`);
+        await copy(`${res}/Application.h`,   `${ws}/Application.h`);
+        await copy(`${res}/Application.cpp`, `${ws}/Application.cpp`);
+        await copy(`${res}/Application.rc`,  `${ws}/${nm}.rc`);
 
         vscode.window.showInformationMessage(`CMake View dialog project "${nm}" created`);
     }
