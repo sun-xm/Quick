@@ -1,9 +1,12 @@
 import { TextDecoder, TextEncoder } from 'util';
 import * as vscode from 'vscode';
-import { copy, copyReplace } from './copy'
+import { isEmpty, copy, copyReplace } from './copy'
 
 export async function cmakeConsole(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && undefined != vscode.workspace.workspaceFolders) {
+    if (undefined != vscode.workspace.name && 
+        undefined != vscode.workspace.workspaceFolders &&
+        await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
+
         let nm = vscode.workspace.name;
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
 
@@ -17,12 +20,15 @@ export async function cmakeConsole(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`CMake console project "${nm}" created`);
     }
     else {
-        vscode.window.showErrorMessage('Workspace folder is undefined')
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty')
     }
 }
 
 export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && undefined != vscode.workspace.workspaceFolders) {
+    if (undefined != vscode.workspace.name && 
+        undefined != vscode.workspace.workspaceFolders &&
+        await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
+
         let nm = vscode.workspace.name;
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
 
@@ -44,7 +50,10 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
 }
 
 export async function cmakeViewWindow(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && undefined != vscode.workspace.workspaceFolders) {
+    if (undefined != vscode.workspace.name && 
+        undefined != vscode.workspace.workspaceFolders &&
+        await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
+
         let nm = vscode.workspace.name;
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
 
