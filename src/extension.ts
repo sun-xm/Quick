@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { cmakeConsole, cmakeQtWidgets, cmakeViewWindow, cmakeViewDialog } from './cmake'
+import { cmakeConsole, cmakeQtWidgets, cmakeW32View } from './cmake'
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
@@ -10,12 +10,8 @@ export function activate(context: vscode.ExtensionContext) {
 		cmakeQtWidgets(context);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeViewWindow', ()=>{
-		cmakeViewWindow(context);
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeViewDialog', ()=>{
-		cmakeViewDialog(context);
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeW32View', ()=>{
+		cmakeW32View(context);
 	}));
 }
 

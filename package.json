@@ -13,8 +13,7 @@
 	"activationEvents": [
 		"onCommand:quick.cmakeConsole",
 		"onCommand:quick.cmakeQtWidgets",
-		"onCommand:quick.cmakeViewWindow",
-		"onCommand:quick.cmakeViewDialog"
+		"onCommand:quick.cmakeW32View"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -28,12 +27,8 @@
 				"title": "Quick: Start cmake Qt Widgets project"
 			},
 			{
-				"command": "quick.cmakeViewWindow",
-				"title": "Quick: Start cmake Win32 View window project"
-			},
-			{
-				"command": "quick.cmakeViewDialog",
-				"title": "Quick: Start cmake Win32 View dialog project"
+				"command": "quick.cmakeW32View",
+				"title": "Quick: Start cmake Win32 View project"
 			}
 		]
 	},

@@ -49,7 +49,7 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
     }
 }
 
-export async function cmakeViewWindow(context: vscode.ExtensionContext) {
+export async function cmakeW32View(context: vscode.ExtensionContext) {
     if (undefined != vscode.workspace.name && 
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
@@ -59,8 +59,27 @@ export async function cmakeViewWindow(context: vscode.ExtensionContext) {
 
         let res = context.extensionUri.path + '/res/cmake/view';
         await copy(`${res}/View`, `${ws}/View`);
+        
+        let type = await vscode.window.showQuickPick(['Window', 'Dialog']);
+        if (undefined == type) {
+            return;
+        }
 
-        res = res + '/Window';
+        switch (type) {
+            case 'Window': {
+                res += '/Window';
+                break;
+            }
+            
+            case 'Dialog': {
+                res += '/Dialog';
+                await copyReplace(`${res}/resource.h`, `${ws}/resource.h`, [[/__name__/g, nm]]);
+                await copy(`${res}/Application.rc`,  `${ws}/${nm}.rc`);
+                break;
+            }
+
+            default: break;
+        }
 
         await copyReplace(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
@@ -68,36 +87,7 @@ export async function cmakeViewWindow(context: vscode.ExtensionContext) {
         await copy(`${res}/Application.h`, `${ws}/Application.h`);
         await copy(`${res}/Application.cpp`, `${ws}/Application.cpp`);
 
-        vscode.window.showInformationMessage(`CMake View window project "${nm}" created`);
-    }
-    else {
-        vscode.window.showErrorMessage('Workspace folder is undefined')
-    }
-}
-
-export async function cmakeViewDialog(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && 
-        undefined != vscode.workspace.workspaceFolders &&
-        await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
-
-        let nm = vscode.workspace.name;
-        let ws = vscode.workspace.workspaceFolders[0].uri.path;
-
-        let res = context.extensionUri.path + '/res/cmake/view';
-        await copy(`${res}/View`, `${ws}/View`);
-
-        res = res + '/Dialog'
-
-        await copyReplace(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
-        vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
-
-        await copyReplace(`${res}/resource.h`, `${ws}/resource.h`, [[/__name__/g, nm]]);
-
-        await copy(`${res}/Application.h`,   `${ws}/Application.h`);
-        await copy(`${res}/Application.cpp`, `${ws}/Application.cpp`);
-        await copy(`${res}/Application.rc`,  `${ws}/${nm}.rc`);
-
-        vscode.window.showInformationMessage(`CMake View dialog project "${nm}" created`);
+        vscode.window.showInformationMessage(`CMake Win32 View ${type.toLowerCase()} project "${nm}" created`);
     }
     else {
         vscode.window.showErrorMessage('Workspace folder is undefined')
