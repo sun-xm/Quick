@@ -6,8 +6,8 @@ let fs  = workspace.fs;
 let dec = new TextDecoder();
 let enc = new TextEncoder();
 
-export async function copyDirect(src: string, dst: string, overwrite?: boolean | undefined) {
-    return fs.copy(Uri.file(src), Uri.file(dst), { overwrite: overwrite ? true : false });
+export async function copyDirect(src: string, dst: string, overwrite?: boolean) {
+    return fs.copy(Uri.file(src), Uri.file(dst), { overwrite: overwrite ?? false });
 }
 
 export async function copyText(src: string, dst: string, replace?: [RegExp, string][], overwrite?: boolean) {
@@ -24,7 +24,7 @@ export async function copyText(src: string, dst: string, replace?: [RegExp, stri
         txt = txt.replace(/\r\n/g, '\n');
     }
 
-    if (undefined != replace) {
+    if (null != replace) {
         replace.forEach((r)=>{
             txt = txt.replace(r[0], r[1]);
         });
