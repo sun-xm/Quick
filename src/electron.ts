@@ -15,13 +15,13 @@ export async function electronApp(context: vscode.ExtensionContext) {
 
         let res = context.extensionUri.path + '/res/electron';
 
-        await copyText(`${res}/.gitignore`, `${ws}/.gitignore`);
-        await copyText(`${res}/package.json`, `${ws}/package.json`, [[/__name__/g, nm]]);
-        await copyText(`${res}/package-lock.json`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
-        await copyText(`${res}/tsconfig.json`, `${ws}/tsconfig.json`);
+        await copyText(`${res}/_gitignore`, `${ws}/.gitignore`);
+        await copyText(`${res}/package.json_`, `${ws}/package.json`, [[/__name__/g, nm]]);
+        await copyText(`${res}/package-lock.json_`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
+        await copyText(`${res}/tsconfig.json_`, `${ws}/tsconfig.json`);
 
         await createFolder(`${ws}/.vscode`);
-        await copyText(`${res}/.vscode/launch.json`, `${ws}/.vscode/launch.json`);
+        await copyText(`${res}/.vscode/launch.json_`, `${ws}/.vscode/launch.json`);
 
         await createFolder(`${ws}/css`);
         await copyText(`${res}/css/about.css`, `${ws}/css/about.css`);
