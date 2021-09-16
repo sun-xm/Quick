@@ -32,3 +32,7 @@ export async function copyText(src: string, dst: string, replace?: [RegExp, stri
 
     return fs.writeFile(Uri.file(dst), enc.encode(txt));
 }
+
+export async function createFolder(path: string) {
+    return fs.createDirectory(Uri.file(path));
+}

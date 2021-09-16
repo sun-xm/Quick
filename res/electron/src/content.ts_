@@ -1,0 +1,9 @@
+import { Module } from './module'
+
+export abstract class Content extends Module {
+    abstract load(src: string): void;
+}
+
+export function px(n: number) {
+    return `${n}px`;
+}

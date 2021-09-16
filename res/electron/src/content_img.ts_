@@ -1,0 +1,44 @@
+import { Content, px } from './content'
+
+export class ContentImg extends Content {
+    constructor(elem: Element) {
+        super(elem);
+    }
+
+    load(src: string) {
+        this.element.addEventListener('unload', ()=>{
+            window.removeEventListener('resize', this.onsize);
+        });
+        window.addEventListener('resize', this.onsize.bind(this));
+    
+        let img = this.element.querySelector('img');
+        if (img) {
+            img.addEventListener('load', ()=>this.onsize());
+            img.src = src;
+        }
+    }
+
+    onsize() {
+        let img = this.element.querySelector('img');
+        if (img) {
+            if (img.naturalWidth > this.element.clientWidth) {
+                img.style.width  = px(this.element.clientWidth);
+                img.style.height = px(this.element.clientWidth * img.naturalHeight / img.naturalWidth);
+            }
+            else {
+                img.style.width  = px(img.naturalWidth);
+                img.style.height = px(img.naturalHeight);
+            }
+    
+            let r = img.getBoundingClientRect();
+            if (r.height > this.element.clientHeight) {
+                img.style.height = px(this.element.clientHeight);
+                img.style.width  = px(this.element.clientHeight * r.width / r.height);
+            }
+        }
+    }
+}
+
+export function module(elem: Element) {
+    return new ContentImg(elem);
+}

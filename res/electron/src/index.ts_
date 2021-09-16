@@ -1,0 +1,90 @@
+import { remote } from 'electron';
+import { Module } from './module';
+import { Content } from './content'
+import { IndexTitle } from './index_title'
+
+let title: IndexTitle | undefined;
+
+function showStatus(text: string) {
+    let s = document.getElementById('status');
+    if (s) {
+        s.innerText = text;
+    }
+}
+
+async function onCmdOpen() {
+    showStatus('');
+
+    let filters = [{ name: 'Image', extensions: ['jpg', 'png']},
+                   { name: 'MP4',   extensions: ['mp4']}];
+
+    let res = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), { filters: filters });
+    if (res.canceled) {
+        showStatus('canceled');
+        return;
+    }
+
+    let content = document.getElementById('content');
+    if (content) {
+        let path = res.filePaths[0];
+        let idx = path.lastIndexOf('.');
+
+        if (idx >= 0) {
+            let rep: string | undefined;
+
+            switch (path.substr(idx + 1).toLowerCase()) {
+                case 'jpg':
+                case 'png': {
+                    rep = 'html/content_img.html';
+                    break;
+                }
+
+                case 'mp4': {
+                    rep = 'html/content_mp4.html';
+                    break;
+                }
+
+                default: break;
+            }
+
+            if (rep) {
+                let m = await Module.create<Content>({ path: rep });
+                if (m) {
+                    content.replaceWith(m.element);
+                    m.load(res.filePaths[0]);
+                    m.element.addEventListener('contextmenu', (e)=>title?.color?.show((<MouseEvent>e).x, (<MouseEvent>e).y, <HTMLElement>m!.element));
+                }
+            }
+        }
+    }
+}
+
+function onCmdExit() {
+    remote.getCurrentWindow().close(); 
+}
+
+function onCmdAbout() {
+    let win = new remote.BrowserWindow({ width: 400, height: 300, frame: false, parent: remote.getCurrentWindow(), show: false, modal: true, resizable: false, minimizable: false, webPreferences: { nodeIntegration: true, enableRemoteModule: true }});
+    win.once('ready-to-show', ()=>win.show());
+    win.setMenu(null);
+    win.loadFile('html/about.html');
+}
+
+window.addEventListener('load', async ()=>{
+    title = await Module.load<IndexTitle>(document.getElementById('title')!);
+    await title?.onload();
+
+    title?.file?.onCommand('open', onCmdOpen);
+    title?.file?.onCommand('exit', onCmdExit);
+    title?.help?.onCommand('about', onCmdAbout);
+
+    title?.color?.onCommand('red',   (i)=>showStatus('Red is selected'));
+    title?.color?.onCommand('blue',  (i)=>showStatus('Blue is selected'));
+    title?.color?.onCommand('green', (i)=>showStatus('Green is selected'));
+
+    title?.option?.onCommand('opt1', (i)=>showStatus('Option1 is ' + (i.isChecked() ? 'checked' : 'unchecked')));
+    title?.option?.onCommand('opt2', (i)=>showStatus('Option2 is ' + (i.isChecked() ? 'checked' : 'unchecked')));
+
+    let content = document.getElementById('content');
+    content?.addEventListener('contextmenu', (e)=>title?.color?.show((<MouseEvent>e).x, (<MouseEvent>e).y, content!));
+});

@@ -1,0 +1,10 @@
+import { remote } from 'electron'
+import * as Dynamic from './dynamic'
+
+window.addEventListener('load', async ()=>{
+    await Dynamic.process(document.body);
+
+    document.getElementById('close')?.addEventListener('click', ()=>{
+        remote.getCurrentWindow().close();
+    });
+});

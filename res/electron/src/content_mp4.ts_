@@ -1,0 +1,30 @@
+import { Content, px } from './content'
+
+export class ContentMp4 extends Content {
+    constructor(elem: Element) {
+        super(elem);
+    }
+
+    load(src: string) {
+        this.element.addEventListener('unload', ()=>window.removeEventListener('resize', this.onsize));
+        window.addEventListener('resize', this.onsize.bind(this));
+    
+        let source = this.element.querySelector('source');
+        if (source) {
+            this.onsize();
+            source.src = src;
+        }
+    }
+
+    onsize() {
+        let video = this.element.querySelector('video');
+        if (video) {
+            video.style.maxWidth  = px(this.element.clientWidth);
+            video.style.maxHeight = px(this.element.clientHeight);
+        }
+    }
+}
+
+export function module(elem: Element) {
+    return new ContentMp4(elem);
+}

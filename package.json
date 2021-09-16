@@ -13,7 +13,8 @@
 	"activationEvents": [
 		"onCommand:quick.cmakeConsole",
 		"onCommand:quick.cmakeQtWidgets",
-		"onCommand:quick.cmakeW32View"
+		"onCommand:quick.cmakeW32View",
+		"onCommand:quick.electronApp"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -29,6 +30,10 @@
 			{
 				"command": "quick.cmakeW32View",
 				"title": "Quick: Start cmake Win32 View project"
+			},
+			{
+				"command": "quick.electronApp",
+				"title": "Quick: Start Electron project"
 			}
 		]
 	},
