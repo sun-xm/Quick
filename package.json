@@ -14,26 +14,31 @@
 		"onCommand:quick.cmakeConsole",
 		"onCommand:quick.cmakeQtWidgets",
 		"onCommand:quick.cmakeW32View",
-		"onCommand:quick.electronApp"
+		"onCommand:quick.electronApp",
+		"onCommand:quick.electronMod"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "quick.cmakeConsole",
-				"title": "Quick: Start cmake console project"
+				"title": "Quick: Start cmake console application"
 			},
 			{
 				"command": "quick.cmakeQtWidgets",
-				"title": "Quick: Start cmake Qt Widgets project"
+				"title": "Quick: Start cmake Qt Widgets application"
 			},
 			{
 				"command": "quick.cmakeW32View",
-				"title": "Quick: Start cmake Win32 View project"
+				"title": "Quick: Start cmake Win32 View application"
 			},
 			{
 				"command": "quick.electronApp",
-				"title": "Quick: Start Electron project"
+				"title": "Quick: Start Electron application"
+			},
+			{
+				"command": "quick.electronMod",
+				"title": "Quick: Add Electron module"
 			}
 		]
 	},

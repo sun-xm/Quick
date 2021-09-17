@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { cmakeConsole, cmakeQtWidgets, cmakeW32View } from './cmake';
-import { electronApp } from './electron';
+import { electronApp, electronMod } from './electron';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
@@ -17,6 +17,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.electronApp', ()=>{
 		electronApp(context);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.electronMod', ()=>{
+		electronMod(context);
 	}));
 }
 

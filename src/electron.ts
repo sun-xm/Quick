@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { copyDirect, copyText, createFolder } from './copy'
+import { copyText, createFolder } from './copy'
 
 async function isEmpty(folder: vscode.Uri) {
     return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;
@@ -64,9 +64,34 @@ export async function electronApp(context: vscode.ExtensionContext) {
         await copyText(`${res}/src/menu.ts_`,           `${ws}/src/menu.ts`);
         await copyText(`${res}/src/module.ts_`,         `${ws}/src/module.ts`);
 
-        vscode.window.showInformationMessage(`Electron project "${nm}" created. Run npm install to start`);
+        vscode.window.showInformationMessage(`Electron project "${nm}" created. Run "npm install" to start`);
     }
     else {
-        vscode.window.showErrorMessage('Workspace folder is undefined or not empty')
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
+    }
+}
+
+export async function electronMod(context: vscode.ExtensionContext) {
+    if (undefined != vscode.workspace.name && 
+        undefined != vscode.workspace.workspaceFolders) {
+
+        let name = await vscode.window.showInputBox({ prompt: 'Input module class name' });
+        if (undefined != name) {
+            let dest = await vscode.window.showInputBox({ prompt: 'Input source file folder', value: 'src' });
+
+            if (undefined != dest) {
+                let nm = vscode.workspace.name;
+                let ws = vscode.workspace.workspaceFolders[0].uri.path;
+                let res = context.extensionUri.path + '/res/electron';
+                let file = name.toLowerCase() + '.ts';
+
+                await copyText(`${res}/src/new_module.ts_`, `${ws}/${dest}/${file}`, [[/__module__/g, name]]);
+                vscode.window.showTextDocument(vscode.Uri.file(`${ws}/${dest}/${file}`), { preview: false });
+                vscode.window.showInformationMessage(`Electron module "${name}" added`);
+            }
+        }
+    }
+    else {
+        vscode.window.showErrorMessage('Workspace folder is undefined');
     }
 }

@@ -23,7 +23,7 @@ export async function cmakeConsole(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`CMake console project "${nm}" created`);
     }
     else {
-        vscode.window.showErrorMessage('Workspace folder is undefined or not empty')
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
     }
 }
 
@@ -48,7 +48,7 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`CMake Qt Widgets project "${nm}" created`);
     }
     else {
-        vscode.window.showErrorMessage('Workspace folder is undefined')
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
     }
 }
 
@@ -93,6 +93,6 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`CMake Win32 View ${type.toLowerCase()} project "${nm}" created`);
     }
     else {
-        vscode.window.showErrorMessage('Workspace folder is undefined')
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
     }
 }
