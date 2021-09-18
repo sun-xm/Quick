@@ -3,10 +3,10 @@ import { Module } from './module'
 import * as Menu from './menu';
 
 export function module(elem: Element) {
-    return new IndexTitle(elem);
+    return new Title(elem);
 }
 
-export class IndexTitle extends Module {
+export class Title extends Module {
     constructor(elem: Element) {
         super(elem);
     }

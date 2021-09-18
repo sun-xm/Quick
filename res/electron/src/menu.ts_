@@ -173,6 +173,7 @@ abstract class Menu {
         } else {
             if (null != this.subm) {
                 this.subm.hideMenu();
+                this.subm = null;
             }
 
             this.cont.style.display = 'none';
@@ -311,6 +312,10 @@ abstract class Menu {
             this.subm.hideMenu();
             this.subm = null;
         }
+
+        let en = item?.isEnabled();
+        let su = item?.submenu;
+        let ts = this.subm;
 
         if (item?.isEnabled() && null != item.submenu && null == this.subm) {
             item.submenu.sour = <HTMLElement>e.target;

@@ -4,17 +4,18 @@
     <head>
         <meta charset="UTF-8" />
         <base href="../" />
-        <link href="css/index.css" rel="stylesheet" type="text/css" />
-        <link href="css/title.css" rel="stylesheet" type="text/css" />
-        <link href="css/menu.css"  rel="stylesheet" type="text/css" />
+        <link href="css/index.css"  rel="stylesheet" type="text/css" />
+        <link href="css/title.css"  rel="stylesheet" type="text/css" />
+        <link href="css/menu.css"   rel="stylesheet" type="text/css" />
+        <link href="css/status.css" rel="stylesheet" type="text/css" />
         <script>require('../out/index.js')</script>
     </head>
 
-    <body>
-        <div id="title" include="html/index_title.html" module="./index_title">
+    <body class="flex-vertical">
+        <div id="title" include="html/title.html" module="./title">
         </div>
 
-        <div id="content">
+        <div id="content" class="flex-space" module="./content">
         </div>
 
         <div id="status"></div>
