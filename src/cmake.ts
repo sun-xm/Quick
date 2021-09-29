@@ -10,9 +10,12 @@ export async function cmakeConsole(context: vscode.ExtensionContext) {
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
-        let nm = vscode.workspace.name;
-        let ws = vscode.workspace.workspaceFolders[0].uri.path;
+        let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
+        if (undefined == nm || 0 == nm.length) {
+            return;
+        }
 
+        let ws = vscode.workspace.workspaceFolders[0].uri.path;
         let res = context.extensionUri.path + '/res/cmake/console';
         
         await copyText(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
@@ -32,9 +35,12 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
-        let nm = vscode.workspace.name;
-        let ws = vscode.workspace.workspaceFolders[0].uri.path;
+        let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
+        if (undefined == nm || 0 == nm.length) {
+            return;
+        }
 
+        let ws = vscode.workspace.workspaceFolders[0].uri.path;
         let res = context.extensionUri.path + '/res/cmake/qtWidgets';
 
         await copyText(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
@@ -57,7 +63,11 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
-        let nm = vscode.workspace.name;
+        let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
+        if (undefined == nm || 0 == nm.length) {
+            return;
+        }
+
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
         let res = context.extensionUri.path + '/res/cmake/view';
         let type = await vscode.window.showQuickPick(['Window', 'Dialog']);
