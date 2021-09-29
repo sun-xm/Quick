@@ -10,9 +10,12 @@ export async function electronApp(context: vscode.ExtensionContext) {
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
-        let nm = vscode.workspace.name;
-        let ws = vscode.workspace.workspaceFolders[0].uri.path;
+        let nm = (await vscode.window.showInputBox({ prompt: 'Input application name', value: vscode.workspace.name }))?.trim();
+        if (undefined == nm || 0 == nm.length) {
+            return;
+        }
 
+        let ws = vscode.workspace.workspaceFolders[0].uri.path;
         let res = context.extensionUri.path + '/res/electron';
 
         await copyText(`${res}/_gitignore`, `${ws}/.gitignore`);
@@ -33,7 +36,7 @@ export async function electronApp(context: vscode.ExtensionContext) {
         await createFolder(`${ws}/html`);
         await copyText(`${res}/html/about.html`,        `${ws}/html/about.html`);
         await copyText(`${res}/html/index.html`,        `${ws}/html/index.html`);
-        await copyText(`${res}/html/title.html`,        `${ws}/html/title.html`);
+        await copyText(`${res}/html/title.html`,        `${ws}/html/title.html`, [[/__name__/g, nm]]);
         await copyText(`${res}/html/menu_color.html`,   `${ws}/html/menu_color.html`);
         await copyText(`${res}/html/menu_file.html`,    `${ws}/html/menu_file.html`);
         await copyText(`${res}/html/menu_help.html`,    `${ws}/html/menu_help.html`);
@@ -72,18 +75,18 @@ export async function electronMod(context: vscode.ExtensionContext) {
     if (undefined != vscode.workspace.name && 
         undefined != vscode.workspace.workspaceFolders) {
 
-        let name = await vscode.window.showInputBox({ prompt: 'Input module class name' });
-        if (undefined != name) {
-            let dest = await vscode.window.showInputBox({ prompt: 'Input source file folder', value: 'src' });
+        let name = (await vscode.window.showInputBox({ prompt: 'Input module class name' }))?.trim();
+        if (undefined != name && name.length > 0) {
+            let dest = (await vscode.window.showInputBox({ prompt: 'Input source file folder', value: 'src' }))?.trim();
 
             if (undefined != dest) {
-                let nm = vscode.workspace.name;
                 let ws = vscode.workspace.workspaceFolders[0].uri.path;
                 let res = context.extensionUri.path + '/res/electron';
                 let file = name.toLowerCase() + '.ts';
+                let path = `${ws}/` + (dest.length > 0 ? `${dest}/${file}` : `${file}`);
 
-                await copyText(`${res}/src/new_module.ts_`, `${ws}/${dest}/${file}`, [[/__module__/g, name]]);
-                vscode.window.showTextDocument(vscode.Uri.file(`${ws}/${dest}/${file}`), { preview: false });
+                await copyText(`${res}/src/new_module.ts_`, path, [[/__module__/g, name]]);
+                vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false });
                 vscode.window.showInformationMessage(`Electron module "${name}" added`);
             }
         }
