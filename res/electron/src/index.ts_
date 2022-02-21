@@ -5,7 +5,7 @@ import { Content } from './content'
 import { Status } from './status';
 
 function onCmdExit() {
-    remote.getCurrentWindow().close(); 
+    remote.getCurrentWindow().close();
 }
 
 function onCmdAbout() {

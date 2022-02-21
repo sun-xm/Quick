@@ -181,6 +181,19 @@ bool D2DRenderer::Translate(float translateX, float translateY)
     return true;
 }
 
+bool D2DRenderer::Transform(const D2D1::Matrix3x2F& transform)
+{
+    if (!this->itf)
+    {
+        return false;
+    }
+
+    this->transform = transform * this->transform;
+    this->itf->SetTransform(this->transform);
+
+    return true;
+}
+
 bool D2DRenderer::Identity()
 {
     if (!this->itf)
@@ -525,7 +538,7 @@ bool D2DBitmap::Pixels(const uint32_t* pixels, bool premultiply)
                 auto g = (bgra[1] * a) >> 8 << 8;
                 auto r = (bgra[2] * a) >> 8 << 16;
 
-                pix[i] = bgra[3] | b | g | r;
+                pix[i] = bgra[3] << 24 | b | g | r;
             }
             else
             {

@@ -6,7 +6,7 @@ async function isEmpty(folder: vscode.Uri) {
 }
 
 export async function electronApp(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && 
+    if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
@@ -32,7 +32,7 @@ export async function electronApp(context: vscode.ExtensionContext) {
         await copyText(`${res}/css/menu.css`,   `${ws}/css/menu.css`);
         await copyText(`${res}/css/title.css`,  `${ws}/css/title.css`);
         await copyText(`${res}/css/status.css`, `${ws}/css/status.css`);
-        
+
         await createFolder(`${ws}/html`);
         await copyText(`${res}/html/about.html`,        `${ws}/html/about.html`);
         await copyText(`${res}/html/index.html`,        `${ws}/html/index.html`);
@@ -72,7 +72,7 @@ export async function electronApp(context: vscode.ExtensionContext) {
 }
 
 export async function electronMod(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && 
+    if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders) {
 
         let name = (await vscode.window.showInputBox({ prompt: 'Input module class name' }))?.trim();

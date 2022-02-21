@@ -1,3 +1,7 @@
+#pragma once
+
+#ifndef ONCLEANUP
+
 #include <functional>
 #include <vector>
 
@@ -43,6 +47,8 @@ private:
 #define ONCLEANUP(X, F) _cleanup _cleanup_##X(F)
 #define ADDCLEANUP(X, F) _cleanup_##X.add(F)
 #define RESETCLEANUP(X, F) _cleanup_##X.reset(F)
+
+#endif
 
 // Usage:
 //   when 'a' is out of code scope, clean up lambda function will be called to delete 'a'

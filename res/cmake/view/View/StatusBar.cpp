@@ -28,7 +28,7 @@ bool StatusBar::Create(View* parent)
     this->owner  = parent;
     this->parent = parent;
 
-    this->hwnd = CreateWindowExW(0, STATUSCLASSNAMEW, nullptr, this->style, 0, 0, 0, 0, parent->Handle(), (HMENU)this->id, this->instance, nullptr);
+    this->hwnd = CreateWindowExW(0, STATUSCLASSNAMEW, nullptr, this->style, 0, 0, 0, 0, parent->Handle(), (HMENU)(UINT_PTR)this->id, this->instance, nullptr);
     if (this->hwnd)
     {
         SetWindowLongPtrW(this->hwnd, GWLP_USERDATA, (LONG_PTR)this);

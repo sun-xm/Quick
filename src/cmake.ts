@@ -6,7 +6,7 @@ async function isEmpty(folder: vscode.Uri) {
 }
 
 export async function cmakeConsole(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && 
+    if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
@@ -17,7 +17,7 @@ export async function cmakeConsole(context: vscode.ExtensionContext) {
 
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
         let res = context.extensionUri.path + '/res/cmake/console';
-        
+
         await copyText(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
@@ -31,7 +31,7 @@ export async function cmakeConsole(context: vscode.ExtensionContext) {
 }
 
 export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && 
+    if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
@@ -59,7 +59,7 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
 }
 
 export async function cmakeW32View(context: vscode.ExtensionContext) {
-    if (undefined != vscode.workspace.name && 
+    if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
 
@@ -71,7 +71,7 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
         let res = context.extensionUri.path + '/res/cmake/view';
         let type = await vscode.window.showQuickPick(['Window', 'Dialog']);
-        
+
         if (undefined == type) {
             return;
         }
@@ -83,7 +83,7 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
                 res += '/Window';
                 break;
             }
-            
+
             case 'Dialog': {
                 res += '/Dialog';
                 await copyText(`${res}/resource.h`, `${ws}/resource.h`, [[/__name__/g, nm]]);

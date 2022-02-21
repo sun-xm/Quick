@@ -268,6 +268,7 @@ public:
     bool Scale(float scaleX, float scaleY, float centerX, float centerY);
     bool Rotate(float angle, float centerX = 0.f, float centerY = 0.f);
     bool Translate(float translateX, float translateY);
+    bool Transform(const D2D1::Matrix3x2F& transform);
     bool Identity();
 
     void Brush(const D2DBrush& brush);

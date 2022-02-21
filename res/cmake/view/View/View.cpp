@@ -624,7 +624,7 @@ wstring View::Caption() const
 
 bool View::Icon(UINT resourceId)
 {
-    HICON hIcon = LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCE(resourceId));
+    HICON hIcon = LoadIconW(GetModuleHandleW(NULL), MAKEINTRESOURCEW(resourceId));
     if (hIcon)
     {
         SendMessageW(this->hwnd, WM_SETICON, ICON_BIG, LPARAM(hIcon));

@@ -16,6 +16,6 @@ add_executable(${PROJECT_NAME}
                main.cpp
                mainwindow.cpp
                mainwindow.ui)
-               
+
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
