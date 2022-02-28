@@ -338,7 +338,7 @@ bool GDIRenderer::PixelsARGB(const BYTE* pixels, int width, int height, int x, i
     {
         bmp = CreateDIBitmap(this->hdc, &bmi.bmiHeader, CBM_INIT, pixels, &bmi, DIB_RGB_COLORS);
     }
-    
+
     if (!bmp)
     {
         return false;
@@ -480,7 +480,7 @@ bool GDIRenderer::Rectangle(int left, int top, int right, int bottom, BYTE opaci
     {
         return false;
     }
-    
+
     BLENDFUNCTION bf = {0};
     bf.BlendOp = AC_SRC_OVER;
     bf.AlphaFormat = 0;
@@ -566,7 +566,7 @@ bool GDIRenderer::Ellipse(int left, int top, int right, int bottom, BYTE opacity
     {
         return false;
     }
-    
+
     BLENDFUNCTION bf = {0};
     bf.BlendOp = AC_SRC_OVER;
     bf.AlphaFormat = 0;
@@ -628,7 +628,7 @@ bool GDIRenderer::Text(const wchar_t* text, int x, int y, int w, int h, UINT ali
     {
         return false;
     }
-    
+
     if (255 != opacity)
     {
         BLENDFUNCTION bf = {0};

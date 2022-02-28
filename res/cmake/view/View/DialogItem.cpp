@@ -109,7 +109,7 @@ void DialogItem::Disable() const
     EnableWindow(this->hwnd, FALSE);
 }
 
-bool DialogItem::IsEnabled() const 
+bool DialogItem::IsEnabled() const
 {
     return FALSE != IsWindowEnabled(this->hwnd);
 }

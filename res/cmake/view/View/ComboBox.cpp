@@ -15,8 +15,8 @@ ComboBox ComboBox::Create(HWND parent, UINT id, DWORD type, HINSTANCE instance)
         {
             style |= WS_OVERLAPPED;
         }
-        
-        auto hwnd = CreateWindowExW(0, WC_COMBOBOXW, nullptr, type | style, 0, 0, 0, 0, parent, (HMENU)id, instance, nullptr);
+
+        auto hwnd = CreateWindowExW(0, WC_COMBOBOXW, nullptr, type | style, 0, 0, 0, 0, parent, (HMENU)(UINT_PTR)id, instance, nullptr);
         if (hwnd)
         {
             di = DialogItem(parent, hwnd, id);

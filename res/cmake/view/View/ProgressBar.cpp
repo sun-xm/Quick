@@ -7,7 +7,7 @@ ProgressBar ProgressBar::Create(HWND parent, UINT id, HINSTANCE instance)
 
     if (parent)
     {
-        auto hWnd = CreateWindowExW(0, PROGRESS_CLASSW, nullptr, WS_CHILD, 0, 0, 0, 0, parent, (HMENU)id, instance, nullptr);
+        auto hWnd = CreateWindowExW(0, PROGRESS_CLASSW, nullptr, WS_CHILD, 0, 0, 0, 0, parent, (HMENU)(UINT_PTR)id, instance, nullptr);
         if (hWnd)
         {
             di = DialogItem(parent, hWnd, id);

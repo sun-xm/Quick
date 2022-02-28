@@ -58,7 +58,7 @@ bool Window::Create(View* parent)
         {
             this->style   = (DWORD)GetWindowLongPtrW(this->hwnd, GWL_STYLE);
             this->styleEx = (DWORD)GetWindowLongPtrW(this->hwnd, GWL_EXSTYLE);
-            
+
             if (!this->OnCreated())
             {
                 this->Destroy();
