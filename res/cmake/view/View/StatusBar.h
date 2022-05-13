@@ -15,7 +15,7 @@ public:
 
     bool Create(View* parent) override;
     bool Create(View* parent, bool sizeGrip);
-    void AutoResize();
+    void Adjust();
 
     bool SetParts(UINT parts, int* rightEdgePositions) const;
     UINT GetParts() const;

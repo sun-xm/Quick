@@ -1,4 +1,5 @@
 #include "View.h"
+#include <tuple>
 #include <vector>
 
 using namespace std;
@@ -239,6 +240,14 @@ LRESULT View::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
+}
+
+void View::Close()
+{
+    if (this->hwnd)
+    {
+        this->Send(WM_CLOSE);
+    }
 }
 
 void View::Destroy()
@@ -673,6 +682,19 @@ void View::RemoveCommand(UINT command)
     }
 }
 
+void View::SendToChildren(UINT msg, WPARAM wParam, LPARAM lParam) const
+{
+    auto params = make_tuple(msg, wParam, lParam);
+
+    EnumChildWindows(this->Handle(), [](HWND hWnd, LPARAM params)
+    {
+        auto p = (tuple<UINT, WPARAM, LPARAM>*)params;
+        SendMessageW(hWnd, get<0>(*p), get<1>(*p), get<2>(*p));
+        return TRUE;
+
+    }, (LPARAM)&params);
+}
+
 bool View::OnSetCursor()
 {
     if (this->cursor)
@@ -721,6 +743,7 @@ void View::OnPaint()
 
 void View::OnClose()
 {
+    this->SendToChildren(WM_CLOSE);
     this->Destroy();
 }
 

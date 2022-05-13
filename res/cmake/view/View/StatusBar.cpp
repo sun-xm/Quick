@@ -62,7 +62,7 @@ bool StatusBar::Create(View* parent, bool sizeGrip)
     return this->Create(parent);
 }
 
-void StatusBar::AutoResize()
+void StatusBar::Adjust()
 {
     SendMessageW(this->hwnd, WM_SIZE, 0, 0);
 }
@@ -153,6 +153,6 @@ bool StatusBar::OnCreated()
         return false;
     }
 
-    this->AutoResize();
+    this->Adjust();
     return true;
 }

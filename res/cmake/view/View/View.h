@@ -13,8 +13,8 @@ public:
 
 public:
     virtual bool Create(View* parent) = 0;
-
-    void Destroy();
+    virtual void Close();
+    virtual void Destroy();
 
     DWORD Style() const;
     DWORD StyleEx() const;
@@ -87,6 +87,8 @@ public:
     void RemoveMessage(UINT message);
     void RegisterCommand(UINT command, const std::function<void()>& handler);
     void RemoveCommand(UINT command);
+
+    void SendToChildren(UINT msg, WPARAM wParam = 0, LPARAM lParam = 0) const;
 
 protected:
     virtual bool OnSetCursor();
