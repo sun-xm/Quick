@@ -64,7 +64,7 @@ export async function electronApp(context: vscode.ExtensionContext) {
         await copyText(`${res}/src/module.ts_`,     `${ws}/src/module.ts`);
         await copyText(`${res}/src/dynamic.ts_`,    `${ws}/src/dynamic.ts`);
 
-        vscode.window.showInformationMessage(`Electron project "${nm}" created. Run "npm install" to start`);
+        vscode.tasks.executeTask(new vscode.Task({ type: 'shell'}, vscode.TaskScope.Workspace, 'npm install', 'npm', new vscode.ShellExecution('npm install')));
     }
     else {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
