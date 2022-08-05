@@ -58,7 +58,7 @@ export class Module {
             return undefined;
         }
 
-        elem.dispatchEvent(new Event('module_unload'));
+        elem.dispatchEvent(new Event('moduleunload'));
 
         if (html.html) {
             elem.innerHTML = html.html;
