@@ -15,7 +15,8 @@
 		"onCommand:quick.cmakeQtWidgets",
 		"onCommand:quick.cmakeW32View",
 		"onCommand:quick.electronApp",
-		"onCommand:quick.electronMod"
+		"onCommand:quick.electronMod",
+		"onCommand:quick.openUiFile"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -39,8 +40,21 @@
 			{
 				"command": "quick.electronMod",
 				"title": "Quick: Add Electron module"
+			},
+			{
+				"command": "quick.openUiFile",
+				"title": "Open UI file in Qt Designer"
 			}
-		]
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "quick.openUiFile",
+					"group": "1_modification",
+					"when": "resourceExtname == .ui"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
