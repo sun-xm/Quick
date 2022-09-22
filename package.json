@@ -43,7 +43,7 @@
 			},
 			{
 				"command": "quick.openUiFile",
-				"title": "Open UI file in Qt Designer"
+				"title": "Open in Qt Designer"
 			}
 		],
 		"menus": {
