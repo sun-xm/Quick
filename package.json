@@ -47,10 +47,17 @@
 			}
 		],
 		"menus": {
+			"editor/context": [
+				{
+					"command": "quick.openUiFile",
+					"group": "navigation",
+					"when": "resourceExtname == .ui"
+				}
+			],
 			"explorer/context": [
 				{
 					"command": "quick.openUiFile",
-					"group": "1_modification",
+					"group": "navigation",
 					"when": "resourceExtname == .ui"
 				}
 			]
