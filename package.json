@@ -46,6 +46,16 @@
 				"title": "Open in Qt Designer"
 			}
 		],
+		"configuration": {
+			"title": "Quick",
+			"properties": {
+				"quick.designerPath": {
+					"type": "string",
+					"default": "designer",
+					"description": "Path to Qt Designer program"
+				}
+			}
+		},
 		"menus": {
 			"editor/context": [
 				{
