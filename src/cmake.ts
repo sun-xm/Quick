@@ -106,3 +106,34 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
     }
 }
+
+export async function cmakeWpf(context: vscode.ExtensionContext) {
+    if (undefined != vscode.workspace.name &&
+        undefined != vscode.workspace.workspaceFolders &&
+        await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
+
+        let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
+        if (undefined == nm || 0 == nm.length) {
+            return;
+        }
+
+        let ws = vscode.workspace.workspaceFolders[0].uri.path;
+        let res = context.extensionUri.path + '/res/cmake/wpf';
+
+        await copyDirect(`${res}/Properties`, `${ws}/Properties`)
+        await copyText(`${res}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
+        vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
+
+        await copyText(`${res}/App.config`,  `${ws}/App.config`);
+        await copyText(`${res}/App.xaml`,    `${ws}/App.xaml`);
+        await copyText(`${res}/App.xaml.cs`, `${ws}/App.xaml.cs`);
+
+        await copyText(`${res}/MainWindow.xaml`,    `${ws}/MainWindow.xaml`);
+        await copyText(`${res}/MainWindow.xaml.cs`, `${ws}/MainWindow.xaml.cs`);
+
+        vscode.window.showInformationMessage(`CMake C# WPF project "${nm}" created`);
+    }
+    else {
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
+    }
+}

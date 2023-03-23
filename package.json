@@ -14,6 +14,7 @@
 		"onCommand:quick.cmakeConsole",
 		"onCommand:quick.cmakeQtWidgets",
 		"onCommand:quick.cmakeW32View",
+		"onCommand:quick.cmakeWpf",
 		"onCommand:quick.electronApp",
 		"onCommand:quick.electronMod",
 		"onCommand:quick.openUiFile"
@@ -32,6 +33,10 @@
 			{
 				"command": "quick.cmakeW32View",
 				"title": "Quick: Start cmake Win32 View application"
+			},
+			{
+				"command": "quick.cmakeWpf",
+				"title": "Quick: Start cmake C# WPF application"
 			},
 			{
 				"command": "quick.electronApp",
