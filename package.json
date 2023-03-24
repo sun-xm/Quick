@@ -10,15 +10,6 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [
-		"onCommand:quick.cmakeConsole",
-		"onCommand:quick.cmakeQtWidgets",
-		"onCommand:quick.cmakeW32View",
-		"onCommand:quick.cmakeWpf",
-		"onCommand:quick.electronApp",
-		"onCommand:quick.electronMod",
-		"onCommand:quick.openUiFile"
-	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
@@ -35,8 +26,16 @@
 				"title": "Quick: Start cmake Win32 View application"
 			},
 			{
-				"command": "quick.cmakeWpf",
+				"command": "quick.cmakeCsConsole",
+				"title": "Quick: Start cmake C# console application"
+			},
+			{
+				"command": "quick.cmakeCsWpf",
 				"title": "Quick: Start cmake C# WPF application"
+			},
+			{
+				"command": "quick.cmakeCsLib",
+				"title": "Quick: Start cmake C# library"
 			},
 			{
 				"command": "quick.electronApp",
