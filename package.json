@@ -10,6 +10,17 @@
 	"categories": [
 		"Other"
 	],
+	"activationEvents": [
+		"onCommand:quick.cmakeConsole",
+		"onCommand:quick.cmakeQtWidgets",
+		"onCommand:quick.cmakeW32View",
+		"onCommand:quick.cmakeCsConsole",
+		"onCommand:quick.cmakeCsWpf",
+		"onCommand:quick.cmakeCsLib",
+		"onCommand:quick.electronApp",
+		"onCommand:quick.electronMod",
+		"onCommand:quick.openUiFile"
+	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
