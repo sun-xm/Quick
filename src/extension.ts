@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { cmakeConsole, cmakeQtWidgets, cmakeW32View, cmakeCsConsole, cmakeCsWpf } from './cmake';
+import { cmakeConsole, cmakeQtWidgets, cmakeW32View, cmakeCsConsole, cmakeCsWpf, cmakeCsLib } from './cmake';
 import { openUiFile } from './designer'
 import { electronApp, electronMod } from './electron';
 
@@ -22,6 +22,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsWpf', ()=>{
 		cmakeCsWpf(context);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsLib', ()=>{
+		cmakeCsLib(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.electronApp', ()=>{

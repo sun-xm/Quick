@@ -113,9 +113,13 @@ export async function cmakeCsConsole(context: vscode.ExtensionContext) {
         let ws = vscode.workspace.workspaceFolders![0].uri.path;
         let rs = context.extensionUri.path + '/res/cmake/cs/console'
 
-        await copyDirect(`${rs}/Properties`, `${ws}/Properties`);
         await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
+
+        let src = ['App.config', 'Program.cs', 'Properties/AssemblyInfo.cs'];
+        src.forEach(async file => {
+            await copyText(`${rs}/${file}`, `${ws}/${file}`, [[/__name__/g, nm!]]);
+        });
 
         await copyText(`${rs}/App.config`, `${ws}/App.config`);
         await copyText(`${rs}/Program.cs`, `${ws}/Program.cs`);
@@ -137,16 +141,48 @@ export async function cmakeCsWpf(context: vscode.ExtensionContext) {
         let ws = vscode.workspace.workspaceFolders![0].uri.path;
         let rs = context.extensionUri.path + '/res/cmake/cs/wpf';
 
-        await copyDirect(`${rs}/Properties`, `${ws}/Properties`)
         await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
-        await copyText(`${rs}/App.config`,  `${ws}/App.config`);
-        await copyText(`${rs}/App.xaml`,    `${ws}/App.xaml`);
-        await copyText(`${rs}/App.xaml.cs`, `${ws}/App.xaml.cs`);
+        let src = ['App.config',
+                   'App.xaml',
+                   'App.xaml.cs',
+                   'MainWindow.xaml',
+                   'MainWindow.xaml.cs',
+                   'Properties/AssemblyInfo.cs',
+                   'Properties/Resources.Designer.cs',
+                   'Properties/Resources.resx',
+                   'Properties/Settings.Designer.cs',
+                   'Properties/Settings.settings'];
 
-        await copyText(`${rs}/MainWindow.xaml`,    `${ws}/MainWindow.xaml`);
-        await copyText(`${rs}/MainWindow.xaml.cs`, `${ws}/MainWindow.xaml.cs`);
+        src.forEach(async file => {
+            await copyText(`${rs}/${file}`, `${ws}/${file}`, [[/__name__/g, nm!]]);
+        });
+
+        vscode.window.showInformationMessage(`CMake C# WPF project "${nm}" created`);
+    }
+    else {
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
+    }
+}
+
+export async function cmakeCsLib(context: vscode.ExtensionContext) {
+    if (await isWorkspaceValid()) {
+        let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
+        if (undefined == nm || 0 == nm.length) {
+            return;
+        }
+
+        let ws = vscode.workspace.workspaceFolders![0].uri.path;
+        let rs = context.extensionUri.path + '/res/cmake/cs/lib';
+
+        await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
+        vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
+
+        let src = ['Class1.cs', 'Properties/AssemblyInfo.cs'];
+        await src.forEach(async file => {
+            await copyText(`${rs}/${file}`, `${ws}/${file}`, [[/__name__/g, nm!]]);
+        });
 
         vscode.window.showInformationMessage(`CMake C# WPF project "${nm}" created`);
     }
