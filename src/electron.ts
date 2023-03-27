@@ -16,53 +16,53 @@ export async function electronApp(context: vscode.ExtensionContext) {
         }
 
         let ws = vscode.workspace.workspaceFolders[0].uri.path;
-        let res = context.extensionUri.path + '/res/electron';
+        let rs = context.extensionUri.path + '/res/electron';
 
-        await copyText(`${res}/_gitignore`, `${ws}/.gitignore`);
-        await copyText(`${res}/package.json_`, `${ws}/package.json`, [[/__name__/g, nm]]);
-        await copyText(`${res}/package-lock.json_`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
-        await copyText(`${res}/tsconfig.json_`, `${ws}/tsconfig.json`);
+        await copyText(`${rs}/_gitignore`, `${ws}/.gitignore`);
+        await copyText(`${rs}/package.json_`, `${ws}/package.json`, [[/__name__/g, nm]]);
+        await copyText(`${rs}/package-lock.json_`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
+        await copyText(`${rs}/tsconfig.json_`, `${ws}/tsconfig.json`);
 
         await createFolder(`${ws}/.vscode`);
-        await copyText(`${res}/.vscode/launch.json_`, `${ws}/.vscode/launch.json`);
+        await copyText(`${rs}/.vscode/launch.json_`, `${ws}/.vscode/launch.json`);
 
         await createFolder(`${ws}/css`);
-        await copyText(`${res}/css/about.css`,  `${ws}/css/about.css`);
-        await copyText(`${res}/css/index.css`,  `${ws}/css/index.css`);
-        await copyText(`${res}/css/menu.css`,   `${ws}/css/menu.css`);
-        await copyText(`${res}/css/title.css`,  `${ws}/css/title.css`);
-        await copyText(`${res}/css/status.css`, `${ws}/css/status.css`);
+        await copyText(`${rs}/css/about.css`,  `${ws}/css/about.css`);
+        await copyText(`${rs}/css/index.css`,  `${ws}/css/index.css`);
+        await copyText(`${rs}/css/menu.css`,   `${ws}/css/menu.css`);
+        await copyText(`${rs}/css/title.css`,  `${ws}/css/title.css`);
+        await copyText(`${rs}/css/status.css`, `${ws}/css/status.css`);
 
         await createFolder(`${ws}/html`);
-        await copyText(`${res}/html/about.html`,        `${ws}/html/about.html`);
-        await copyText(`${res}/html/index.html`,        `${ws}/html/index.html`);
-        await copyText(`${res}/html/title.html`,        `${ws}/html/title.html`, [[/__name__/g, nm]]);
-        await copyText(`${res}/html/menu_color.html`,   `${ws}/html/menu_color.html`);
-        await copyText(`${res}/html/menu_file.html`,    `${ws}/html/menu_file.html`);
-        await copyText(`${res}/html/menu_help.html`,    `${ws}/html/menu_help.html`);
-        await copyText(`${res}/html/menu_option.html`,  `${ws}/html/menu_option.html`);
+        await copyText(`${rs}/html/about.html`,        `${ws}/html/about.html`);
+        await copyText(`${rs}/html/index.html`,        `${ws}/html/index.html`);
+        await copyText(`${rs}/html/title.html`,        `${ws}/html/title.html`, [[/__name__/g, nm]]);
+        await copyText(`${rs}/html/menu_color.html`,   `${ws}/html/menu_color.html`);
+        await copyText(`${rs}/html/menu_file.html`,    `${ws}/html/menu_file.html`);
+        await copyText(`${rs}/html/menu_help.html`,    `${ws}/html/menu_help.html`);
+        await copyText(`${rs}/html/menu_option.html`,  `${ws}/html/menu_option.html`);
 
         await createFolder(`${ws}/img`);
-        await copyText(`${res}/img/check.svg`,      `${ws}/img/check.svg`);
-        await copyText(`${res}/img/close.svg`,      `${ws}/img/close.svg`);
-        await copyText(`${res}/img/check.svg`,      `${ws}/img/check.svg`);
-        await copyText(`${res}/img/icon.svg`,       `${ws}/img/icon.svg`);
-        await copyText(`${res}/img/maximize.svg`,   `${ws}/img/maximize.svg`);
-        await copyText(`${res}/img/minimize.svg`,   `${ws}/img/minimize.svg`);
-        await copyText(`${res}/img/radio.svg`,      `${ws}/img/radio.svg`);
-        await copyText(`${res}/img/restore.svg`,    `${ws}/img/restore.svg`);
-        await copyText(`${res}/img/submenu.svg`,    `${ws}/img/submenu.svg`);
+        await copyText(`${rs}/img/check.svg`,      `${ws}/img/check.svg`);
+        await copyText(`${rs}/img/close.svg`,      `${ws}/img/close.svg`);
+        await copyText(`${rs}/img/check.svg`,      `${ws}/img/check.svg`);
+        await copyText(`${rs}/img/icon.svg`,       `${ws}/img/icon.svg`);
+        await copyText(`${rs}/img/maximize.svg`,   `${ws}/img/maximize.svg`);
+        await copyText(`${rs}/img/minimize.svg`,   `${ws}/img/minimize.svg`);
+        await copyText(`${rs}/img/radio.svg`,      `${ws}/img/radio.svg`);
+        await copyText(`${rs}/img/restore.svg`,    `${ws}/img/restore.svg`);
+        await copyText(`${rs}/img/submenu.svg`,    `${ws}/img/submenu.svg`);
 
         await createFolder(`${ws}/src`);
-        await copyText(`${res}/src/about.ts_`,      `${ws}/src/about.ts`);
-        await copyText(`${res}/src/index.ts_`,      `${ws}/src/index.ts`);
-        await copyText(`${res}/src/title.ts_`,      `${ws}/src/title.ts`);
-        await copyText(`${res}/src/content.ts_`,    `${ws}/src/content.ts`);
-        await copyText(`${res}/src/status.ts_`,     `${ws}/src/status.ts`);
-        await copyText(`${res}/src/main.ts_`,       `${ws}/src/main.ts`);
-        await copyText(`${res}/src/menu.ts_`,       `${ws}/src/menu.ts`);
-        await copyText(`${res}/src/module.ts_`,     `${ws}/src/module.ts`);
-        await copyText(`${res}/src/dynamic.ts_`,    `${ws}/src/dynamic.ts`);
+        await copyText(`${rs}/src/about.ts_`,      `${ws}/src/about.ts`);
+        await copyText(`${rs}/src/index.ts_`,      `${ws}/src/index.ts`);
+        await copyText(`${rs}/src/title.ts_`,      `${ws}/src/title.ts`);
+        await copyText(`${rs}/src/content.ts_`,    `${ws}/src/content.ts`);
+        await copyText(`${rs}/src/status.ts_`,     `${ws}/src/status.ts`);
+        await copyText(`${rs}/src/main.ts_`,       `${ws}/src/main.ts`);
+        await copyText(`${rs}/src/menu.ts_`,       `${ws}/src/menu.ts`);
+        await copyText(`${rs}/src/module.ts_`,     `${ws}/src/module.ts`);
+        await copyText(`${rs}/src/dynamic.ts_`,    `${ws}/src/dynamic.ts`);
 
         vscode.tasks.executeTask(new vscode.Task({ type: 'shell'}, vscode.TaskScope.Workspace, 'npm install', 'npm', new vscode.ShellExecution('npm install')));
     }

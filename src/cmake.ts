@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { copyDirect, copyText } from './copy'
+import { copyDirect, copyText, createFolder, listFiles } from './copy'
 
 async function isEmpty(folder: vscode.Uri) {
     return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;
@@ -44,10 +44,14 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
         await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
-        await copyText(`${rs}/main.cpp`,       `${ws}/main.cpp`);
-        await copyText(`${rs}/mainwindow.cpp`, `${ws}/mainwindow.cpp`);
-        await copyText(`${rs}/mainwindow.h`,   `${ws}/mainwindow.h`);
-        await copyText(`${rs}/mainwindow.ui`,  `${ws}/mainwindow.ui`);
+        let src = ['main.cpp',
+                   'mainwindow.h',
+                   'mainwindow.cpp',
+                   'mainwindow.ui'];
+
+        src.forEach(async file=>{
+            await copyText(`${rs}/${file}`, `${ws}/${file}`);
+        });
 
         vscode.window.showInformationMessage(`CMake Qt Widgets project "${nm}" created`);
     }
@@ -72,7 +76,10 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         let ws = vscode.workspace.workspaceFolders![0].uri.path;
         let rs = context.extensionUri.path + '/res/cmake/view';
 
-        await copyDirect(`${rs}/View`, `${ws}/View`);
+        let src = await listFiles(`${rs}/View`);
+        src.forEach(async file=>{
+            await copyText(`${rs}/View/${file}`, `${ws}/View/${file}`);
+        });
 
         switch (type) {
             case 'Window': {
@@ -97,6 +104,8 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         await copyText(`${rs}/Application.cpp`, `${ws}/Application.cpp`);
 
         vscode.window.showInformationMessage(`CMake Win32 View ${type.toLowerCase()} project "${nm}" created`);
+
+        let files = await listFiles(`${ws}`, /\.cpp$/);
     }
     else {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
@@ -120,9 +129,6 @@ export async function cmakeCsConsole(context: vscode.ExtensionContext) {
         src.forEach(async file => {
             await copyText(`${rs}/${file}`, `${ws}/${file}`, [[/__name__/g, nm!]]);
         });
-
-        await copyText(`${rs}/App.config`, `${ws}/App.config`);
-        await copyText(`${rs}/Program.cs`, `${ws}/Program.cs`);
 
         vscode.window.showInformationMessage(`CMake C# console project "${nm}" created`);
 

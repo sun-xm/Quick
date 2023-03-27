@@ -36,3 +36,24 @@ export async function copyText(src: string, dst: string, replace?: [RegExp, stri
 export async function createFolder(path: string) {
     return fs.createDirectory(Uri.file(path));
 }
+
+export async function listFiles(folder: string, match?: RegExp) {
+    let entities = await fs.readDirectory(Uri.file(folder));
+
+    let files: string[] = [];
+    entities.forEach(e=>{
+        if (1 != e[1]) {
+            return;
+        }
+
+        if (null != match) {
+            if (!match.test(e[0])) {
+                return;
+            }
+        }
+
+        files.push(e[0]);
+    });
+
+    return files;
+}
