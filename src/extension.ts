@@ -39,6 +39,32 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>{
 		openUiFile(uri);
 	}));
+
+	// auto hide panel
+	vscode.window.onDidChangeTextEditorSelection(selection=>{
+		if (vscode.workspace.getConfiguration('quick').get<boolean>('autoHide')) {
+			return;
+		}
+
+		if (vscode.TextEditorSelectionChangeKind.Mouse != selection.kind) {
+			return;
+		}
+
+		if (1 != selection.selections.length) {
+			return;
+		}
+
+		if (!selection.selections[0].isEmpty) {
+			return;
+		}
+
+		let name = vscode.window.activeTextEditor?.document.fileName;
+		if (!name?.includes('.') && !name?.includes('\\') && !name?.includes('/')) {
+			return;
+		}
+
+		vscode.commands.executeCommand('workbench.action.closePanel');
+	});
 }
 
 export function deactivate() {}
