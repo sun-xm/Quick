@@ -74,21 +74,25 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         }
 
         let ws = vscode.workspace.workspaceFolders![0].uri.path;
-        let rs = context.extensionUri.path + '/res/cmake/view';
+        let rs = context.extensionUri.path + '/res/cmake/win32';
 
-        let src = await listFiles(`${rs}/View`);
+        let src = await listFiles(`${rs}/W32`);
         src.forEach(async file=>{
-            await copyText(`${rs}/View/${file}`, `${ws}/View/${file}`);
+            await copyText(`${rs}/W32/${file}`, `${ws}/W32/${file}`);
         });
 
         switch (type) {
             case 'Window': {
                 rs += '/Window';
+                await copyText(`${rs}/AppWindow.h`, `${ws}/AppWindow.h`);
+                await copyText(`${rs}/AppWindow.cpp`, `${ws}/AppWindow.cpp`, [[/__name__/g, nm]]);
                 break;
             }
 
             case 'Dialog': {
                 rs += '/Dialog';
+                await copyText(`${rs}/AppDialog.h`, `${ws}/AppDialog.h`);
+                await copyText(`${rs}/AppDialog.cpp`, `${ws}/AppDialog.cpp`, [[/__name__/g, nm]]);
                 await copyText(`${rs}/resource.h`, `${ws}/resource.h`, [[/__name__/g, nm]]);
                 await copyDirect(`${rs}/Application.rc`,  `${ws}/${nm}.rc`);
                 break;
@@ -100,10 +104,9 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
         await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
-        await copyText(`${rs}/Application.h`, `${ws}/Application.h`);
-        await copyText(`${rs}/Application.cpp`, `${ws}/Application.cpp`);
+        await copyText(`${rs}/main.cpp`, `${ws}/main.cpp`)
 
-        vscode.window.showInformationMessage(`CMake Win32 View ${type.toLowerCase()} project "${nm}" created`);
+        vscode.window.showInformationMessage(`CMake Win32 ${type.toLowerCase()} project "${nm}" created`);
 
         let files = await listFiles(`${ws}`, /\.cpp$/);
     }
