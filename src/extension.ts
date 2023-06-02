@@ -63,6 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
+		if (name.startsWith('extension-output-ms-vscode.')) {
+			return;
+		}
+
 		vscode.commands.executeCommand('workbench.action.closePanel');
 	});
 }
