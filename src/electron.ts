@@ -5,7 +5,7 @@ async function isEmpty(folder: vscode.Uri) {
     return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;
 }
 
-export async function electronApp(context: vscode.ExtensionContext) {
+export async function app(context: vscode.ExtensionContext) {
     if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders &&
         await isEmpty(vscode.workspace.workspaceFolders[0].uri)) {
@@ -71,7 +71,7 @@ export async function electronApp(context: vscode.ExtensionContext) {
     }
 }
 
-export async function electronMod(context: vscode.ExtensionContext) {
+export async function mod(context: vscode.ExtensionContext) {
     if (undefined != vscode.workspace.name &&
         undefined != vscode.workspace.workspaceFolders) {
 

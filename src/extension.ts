@@ -1,43 +1,48 @@
 import * as vscode from 'vscode';
-import { cmakeConsole, cmakeQtWidgets, cmakeW32View, cmakeCsConsole, cmakeCsWpf, cmakeCsLib } from './cmake';
-import { openUiFile } from './designer'
-import { electronApp, electronMod } from './electron';
+import * as cmake from './cmake';
+import * as designer from './designer'
+import * as electron from './electron';
+import * as submodule from './submodule';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
-		cmakeConsole(context);
+		cmake.console(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeQtWidgets', ()=>{
-		cmakeQtWidgets(context);
+		cmake.qtWidgets(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeW32View', ()=>{
-		cmakeW32View(context);
+		cmake.w32View(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsConsole', ()=>{
-		cmakeCsConsole(context);
+		cmake.csConsole(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsWpf', ()=>{
-		cmakeCsWpf(context);
+		cmake.csWpf(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsLib', ()=>{
-		cmakeCsLib(context);
+		cmake.csLib(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.electronApp', ()=>{
-		electronApp(context);
+		electron.app(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.electronMod', ()=>{
-		electronMod(context);
+		electron.mod(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>{
-		openUiFile(uri);
+		designer.openUiFile(uri);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.test', (uri: vscode.Uri)=>{
+		submodule.remove(uri);
 	}));
 
 	// auto hide panel
@@ -69,6 +74,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.executeCommand('workbench.action.closePanel');
 	});
+
+	submodule.list();
 }
 
 export function deactivate() {}

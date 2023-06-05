@@ -9,7 +9,7 @@ async function isWorkspaceValid() {
     return undefined != vscode.workspace.name && undefined != vscode.workspace.workspaceFolders && await isEmpty(vscode.workspace.workspaceFolders[0].uri);
 }
 
-export async function cmakeConsole(context: vscode.ExtensionContext) {
+export async function console(context: vscode.ExtensionContext) {
     if (await isWorkspaceValid()) {
         let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
         if (undefined == nm || 0 == nm.length) {
@@ -31,7 +31,7 @@ export async function cmakeConsole(context: vscode.ExtensionContext) {
     }
 }
 
-export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
+export async function qtWidgets(context: vscode.ExtensionContext) {
     if (await isWorkspaceValid()) {
         let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
         if (undefined == nm || 0 == nm.length) {
@@ -60,7 +60,7 @@ export async function cmakeQtWidgets(context: vscode.ExtensionContext) {
     }
 }
 
-export async function cmakeW32View(context: vscode.ExtensionContext) {
+export async function w32View(context: vscode.ExtensionContext) {
     if (await isWorkspaceValid()) {
 
         let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
@@ -115,7 +115,7 @@ export async function cmakeW32View(context: vscode.ExtensionContext) {
     }
 }
 
-export async function cmakeCsConsole(context: vscode.ExtensionContext) {
+export async function csConsole(context: vscode.ExtensionContext) {
     if (await isWorkspaceValid()) {
         let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
         if (undefined == nm || 0 == nm.length) {
@@ -140,7 +140,7 @@ export async function cmakeCsConsole(context: vscode.ExtensionContext) {
     }
 }
 
-export async function cmakeCsWpf(context: vscode.ExtensionContext) {
+export async function csWpf(context: vscode.ExtensionContext) {
     if (await isWorkspaceValid()) {
         let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
         if (undefined == nm || 0 == nm.length) {
@@ -175,7 +175,7 @@ export async function cmakeCsWpf(context: vscode.ExtensionContext) {
     }
 }
 
-export async function cmakeCsLib(context: vscode.ExtensionContext) {
+export async function csLib(context: vscode.ExtensionContext) {
     if (await isWorkspaceValid()) {
         let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
         if (undefined == nm || 0 == nm.length) {

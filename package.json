@@ -51,6 +51,10 @@
 			{
 				"command": "quick.openUiFile",
 				"title": "Open in Qt Designer"
+			},
+			{
+				"command": "quick.removeSubmodule",
+				"title": "Remove Git Submodule"
 			}
 		],
 		"configuration": {
@@ -80,6 +84,11 @@
 					"command": "quick.openUiFile",
 					"group": "navigation",
 					"when": "resourceExtname == .ui"
+				},
+				{
+					"command": "quick.removeSubmodule",
+					"group": "submodule",
+					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
 				}
 			]
 		}
