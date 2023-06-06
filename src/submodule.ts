@@ -59,7 +59,7 @@ export async function update(uri: vscode.Uri) {
     }
 
     let ws = vscode.workspace.workspaceFolders[0].uri;
-    if (!uri.path.startsWith(ws.path)) {
+    if (uri.path != vscode.Uri.joinPath(ws, '.gitmodules').path) {
         vscode.window.showErrorMessage('.gitmodules is not in default workspace');
         return;
     }
