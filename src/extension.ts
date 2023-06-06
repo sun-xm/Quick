@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
 		designer.openUiFile(uri);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.test', (uri: vscode.Uri)=>{
+	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>{
 		submodule.remove(uri);
 	}));
 
@@ -75,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('workbench.action.closePanel');
 	});
 
-	submodule.list();
+	submodule.setContext();
 }
 
 export function deactivate() {}
