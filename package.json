@@ -57,6 +57,10 @@
 				"title": "Update Git Submodules"
 			},
 			{
+				"command": "quick.addSubmodule",
+				"title": "Add Git Submodule"
+			},
+			{
 				"command": "quick.removeSubmodule",
 				"title": "Remove Git Submodule"
 			}
@@ -72,6 +76,11 @@
 					"type": "boolean",
 					"description": "Disable vscode panel auto hide",
 					"default": false
+				},
+				"quick.defaultGitService": {
+					"type": "string",
+					"description": "Default git service",
+					"default": "https://github.com/"
 				}
 			}
 		},
@@ -88,6 +97,11 @@
 					"command": "quick.openUiFile",
 					"group": "navigation",
 					"when": "resourceExtname == .ui"
+				},
+				{
+					"command": "quick.addSubmodule",
+					"group": "submodule",
+					"when": "resourceFilename == '.gitmodules'"
 				},
 				{
 					"command": "quick.updateSubmodules",

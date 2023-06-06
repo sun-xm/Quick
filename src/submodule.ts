@@ -2,6 +2,7 @@ import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import { Uri } from 'vscode';
+import { output } from './extension'
 
 const fs = vscode.workspace.fs;
 const dec = new TextDecoder();
@@ -12,6 +13,38 @@ export async function setContext() {
     }
 
     vscode.commands.executeCommand('setContext', 'quick.submodules', await list(vscode.workspace.workspaceFolders[0].uri, vscode.Uri.file('.gitmodules')));
+}
+
+export async function add() {
+    if (!vscode.workspace.workspaceFolders || 0 == vscode.workspace.workspaceFolders.length) {
+        vscode.window.showErrorMessage('Invalid workspace');
+        return;
+    }
+
+    let reposit = (await vscode.window.showInputBox({ prompt: 'Input repository link', value: vscode.workspace.getConfiguration('quick').get<string>('defaultGitService') }))?.trim();
+    if (!reposit || 0 == reposit.length) {
+        return;
+    }
+
+    let name = reposit.substring(reposit.lastIndexOf('/') + 1);
+    name = name.substring(0, name.lastIndexOf('.git'));
+
+    let path = (await vscode.window.showInputBox({ prompt: 'Input the path module will be placed', value: 'Submodules/' + name }))?.trim();
+    if (!path || 0 == path.length) {
+        return;
+    }
+
+    vscode.window.showInformationMessage('Adding submodule ' + path);
+
+    cp.exec('git submodule add ' + reposit + ' ' + path, { cwd: vscode.workspace.workspaceFolders[0].uri.fsPath }, (error, stdout, stderr)=>{
+        if (error && 0 != error.code) {
+            vscode.window.showErrorMessage('Failed to add submodule');
+            output(stderr);
+            return;
+        }
+
+        vscode.window.showInformationMessage('Submodule ' + path + ' has been added');
+    });
 }
 
 export async function update(uri: vscode.Uri) {
@@ -44,7 +77,8 @@ export async function update(uri: vscode.Uri) {
         await exec('git submodule update --init ' + module, { cwd: ws.fsPath }, (error, stdout, stderr)=>{
             if (error && 0 != error.code) {
                 success = false;
-                vscode.window.showErrorMessage('Failed to update submodule ' + module + ':\n' + stderr);
+                vscode.window.showErrorMessage('Failed to update submodule ' + module);
+                output(stderr);
             }
         });
     }));
@@ -74,18 +108,24 @@ export async function remove(uri: vscode.Uri) {
     }
     vscode.window.showInformationMessage('Removing submodule ' + relative);
 
-    cp.exec('git rm ' + uri.fsPath, { cwd: ws.fsPath }, async(error, stdout, stderr)=>{
+    cp.exec('git rm -f ' + uri.fsPath, { cwd: ws.fsPath }, async(error, stdout, stderr)=>{
         if (error && 0 != error.code) {
-            vscode.window.showErrorMessage(stderr);
+            vscode.window.showErrorMessage('Failed to remove submodule');
+            output(stderr);
             return;
         }
 
         let trace = vscode.Uri.file(ws.fsPath + '/.git/modules/' + relative);
-        await fs.delete(trace, { recursive: true });
+        try {
+            await fs.delete(trace, { recursive: true });
+        } catch (e) {
+            output('' + e);
+        }
 
         cp.exec('git config --local --remove-section submodule.' + relative, {cwd: ws.fsPath}, (error, stdout, stderr)=>{
             if (error && 0 != error.code) {
-                vscode.window.showErrorMessage(stderr);
+                vscode.window.showErrorMessage('Failed to delete config section');
+                output(stderr);
                 return;
             }
 

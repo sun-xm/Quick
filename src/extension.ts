@@ -5,6 +5,17 @@ import * as electron from './electron';
 import * as submodule from './submodule';
 
 export function activate(context: vscode.ExtensionContext) {
+	outchan = vscode.window.createOutputChannel('quick');
+
+	if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, '.gitmodules').fsPath);
+		watcher.onDidChange(()=>submodule.setContext());
+		watcher.onDidCreate(()=>submodule.setContext());
+		watcher.onDidDelete(()=>submodule.setContext());
+	}
+
+	submodule.setContext();
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
 		cmake.console(context);
 	}));
@@ -39,6 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>{
 		designer.openUiFile(uri);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>{
+		submodule.add();
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodules', (uri: vscode.Uri)=>{
@@ -78,21 +93,24 @@ export function activate(context: vscode.ExtensionContext) {
 
 		vscode.commands.executeCommand('workbench.action.closePanel');
 	});
-
-	if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, '.gitmodules').fsPath);
-		watcher.onDidChange(()=>submodule.setContext());
-		watcher.onDidCreate(()=>submodule.setContext());
-		watcher.onDidDelete(()=>submodule.setContext());
-	}
-
-	submodule.setContext();
 }
 
 export function deactivate() {
 	if (watcher) {
 		watcher.dispose();
 	}
+
+	if (outchan) {
+		outchan.dispose();
+	}
+}
+
+export function output(info: string) {
+	if (outchan) {
+		outchan.append(info);
+		outchan.show();
+	}
 }
 
 let watcher: vscode.FileSystemWatcher;
+let outchan: vscode.OutputChannel;
