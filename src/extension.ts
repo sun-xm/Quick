@@ -79,7 +79,20 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('workbench.action.closePanel');
 	});
 
+	if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, '.gitmodules').fsPath);
+		watcher.onDidChange(()=>submodule.setContext());
+		watcher.onDidCreate(()=>submodule.setContext());
+		watcher.onDidDelete(()=>submodule.setContext());
+	}
+
 	submodule.setContext();
 }
 
-export function deactivate() {}
+export function deactivate() {
+	if (watcher) {
+		watcher.dispose();
+	}
+}
+
+let watcher: vscode.FileSystemWatcher;
