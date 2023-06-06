@@ -41,6 +41,10 @@ export function activate(context: vscode.ExtensionContext) {
 		designer.openUiFile(uri);
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodules', (uri: vscode.Uri)=>{
+		submodule.update(uri);
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>{
 		submodule.remove(uri);
 	}));

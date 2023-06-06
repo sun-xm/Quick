@@ -53,6 +53,10 @@
 				"title": "Open in Qt Designer"
 			},
 			{
+				"command": "quick.updateSubmodules",
+				"title": "Update Git Submodules"
+			},
+			{
 				"command": "quick.removeSubmodule",
 				"title": "Remove Git Submodule"
 			}
@@ -84,6 +88,11 @@
 					"command": "quick.openUiFile",
 					"group": "navigation",
 					"when": "resourceExtname == .ui"
+				},
+				{
+					"command": "quick.updateSubmodules",
+					"group": "submodule",
+					"when": "resourceFilename == '.gitmodules'"
 				},
 				{
 					"command": "quick.removeSubmodule",
