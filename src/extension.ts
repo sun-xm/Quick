@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import * as clean from './clean'
 import * as cmake from './cmake';
 import * as designer from './designer'
 import * as electron from './electron';
+import * as housekeep from './housekeep';
 import * as submodule from './submodule';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -97,6 +97,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
+	await housekeep.cleanup();
+
 	if (watcher) {
 		watcher.dispose();
 	}
@@ -104,8 +106,6 @@ export async function deactivate() {
 	if (outchan) {
 		outchan.dispose();
 	}
-
-	await clean.cleanup();
 }
 
 export function output(info: string) {
