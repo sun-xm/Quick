@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as clean from './clean'
 import * as cmake from './cmake';
 import * as designer from './designer'
 import * as electron from './electron';
@@ -95,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 }
 
-export function deactivate() {
+export async function deactivate() {
 	if (watcher) {
 		watcher.dispose();
 	}
@@ -103,6 +104,8 @@ export function deactivate() {
 	if (outchan) {
 		outchan.dispose();
 	}
+
+	await clean.cleanup();
 }
 
 export function output(info: string) {
