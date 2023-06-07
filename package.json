@@ -101,12 +101,12 @@
 				{
 					"command": "quick.addSubmodule",
 					"group": "submodule",
-					"when": "resourceFilename == '.gitmodules'"
+					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
 				},
 				{
 					"command": "quick.updateSubmodules",
 					"group": "submodule",
-					"when": "resourceFilename == '.gitmodules'"
+					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
 				},
 				{
 					"command": "quick.removeSubmodule",

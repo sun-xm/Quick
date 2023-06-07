@@ -1,18 +1,19 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
-import { Uri } from 'vscode';
-import { output } from './extension'
+import * as ws from './workspace';
+import { output } from './extension';
 
 const fs = vscode.workspace.fs;
 const dec = new TextDecoder();
 
 export async function setContext() {
-    if (!vscode.workspace.workspaceFolders || 0 == vscode.workspace.workspaceFolders.length) {
+    if (!ws.first()) {
         return;
     }
 
-    vscode.commands.executeCommand('setContext', 'quick.submodules', await list(vscode.workspace.workspaceFolders[0].uri, vscode.Uri.file('.gitmodules')));
+    vscode.commands.executeCommand('setContext', 'quick.gitmodules', [vscode.Uri.joinPath(ws.first()!.uri, '.gitmodules').fsPath]);
+    vscode.commands.executeCommand('setContext', 'quick.submodules', await list(ws.first()!.uri, vscode.Uri.file('.gitmodules')));
 }
 
 export async function add() {
@@ -53,18 +54,17 @@ export async function update(uri: vscode.Uri) {
         return;
     }
 
-    if (!vscode.workspace.workspaceFolders || 0 == vscode.workspace.workspaceFolders.length) {
+    if (!ws.first()) {
         vscode.window.showErrorMessage('.gitmodules is not in default workspace');
         return;
     }
 
-    let ws = vscode.workspace.workspaceFolders[0].uri;
-    if (uri.path != vscode.Uri.joinPath(ws, '.gitmodules').path) {
+    if (uri.path != vscode.Uri.joinPath(ws.first()!.uri, '.gitmodules').path) {
         vscode.window.showErrorMessage('.gitmodules is not in default workspace');
         return;
     }
 
-    let modules = await list(ws, vscode.Uri.file('.gitmodules'));
+    let modules = await list(ws.first()!.uri, vscode.Uri.file('.gitmodules'));
     if (0 == modules.length) {
         vscode.window.showInformationMessage('No submodule found in .gitmodules');
         return;
@@ -74,7 +74,7 @@ export async function update(uri: vscode.Uri) {
 
     let success = true;
     await Promise.all(modules.map(async(module)=>{
-        await exec('git submodule update --init ' + module, { cwd: ws.fsPath }, (error, stdout, stderr)=>{
+        await exec('git submodule update --init ' + module, { cwd: ws.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error && 0 != error.code) {
                 success = false;
                 vscode.window.showErrorMessage('Failed to update submodule ' + module);
@@ -89,40 +89,35 @@ export async function update(uri: vscode.Uri) {
 }
 
 export async function remove(uri: vscode.Uri) {
-    if (!vscode.workspace.workspaceFolders) {
+    if (!ws.first()) {
+        return
+    }
+
+    if (!uri.path.startsWith(ws.first()!.uri.path)) {
         return;
     }
 
-    let ws = vscode.workspace.workspaceFolders[0].uri;
-    if (!ws) {
-        return;
-    }
-
-    if (!uri.path.startsWith(ws.path)) {
-        return;
-    }
-
-    let relative = uri.path.substring(ws.path.length);
+    let relative = uri.path.substring(ws.first()!.uri.path.length);
     if ('/' == relative[0]) {
         relative = relative.substring(1);
     }
     vscode.window.showInformationMessage('Removing submodule ' + relative);
 
-    cp.exec('git rm -f ' + uri.fsPath, { cwd: ws.fsPath }, async(error, stdout, stderr)=>{
+    cp.exec('git rm -f ' + uri.fsPath, { cwd: ws.first()!.uri.fsPath }, async(error, stdout, stderr)=>{
         if (error && 0 != error.code) {
             vscode.window.showErrorMessage('Failed to remove submodule');
             output(stderr);
             return;
         }
 
-        let trace = vscode.Uri.file(ws.fsPath + '/.git/modules/' + relative);
+        let trace = vscode.Uri.file(ws.first()!.uri.fsPath + '/.git/modules/' + relative);
         try {
             await fs.delete(trace, { recursive: true });
         } catch (e) {
             output('' + e);
         }
 
-        cp.exec('git config --local --remove-section submodule.' + relative, {cwd: ws.fsPath}, (error, stdout, stderr)=>{
+        cp.exec('git config --local --remove-section submodule.' + relative, {cwd: ws.first()!.uri.fsPath}, (error, stdout, stderr)=>{
             if (error && 0 != error.code) {
                 vscode.window.showErrorMessage('Failed to delete config section');
                 output(stderr);
@@ -137,7 +132,7 @@ export async function remove(uri: vscode.Uri) {
 async function list(folder: vscode.Uri, file: vscode.Uri) {
     let modules : string[] = [];
 
-    let path = Uri.joinPath(folder, file.path);
+    let path = vscode.Uri.joinPath(folder, file.path);
     try {
         await fs.stat(path);
     } catch {
