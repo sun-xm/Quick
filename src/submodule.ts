@@ -48,6 +48,25 @@ export async function add() {
     });
 }
 
+export async function pull(uri: vscode.Uri) {
+    let relative = ws.relative(uri);
+    if (!relative) {
+        return;
+    }
+
+    vscode.window.showInformationMessage('Pulling submudule ' + relative);
+
+    cp.exec('git pull -r', { cwd: uri.fsPath }, (error, stdout, stderr)=>{
+        if (error && 0 != error.code) {
+            vscode.window.showErrorMessage('Failed to pull submodule');
+            output(stderr);
+            return;
+        }
+
+        vscode.window.showInformationMessage('Submodule ' + relative + ' has been pulled');
+    });
+}
+
 export async function update(uri: vscode.Uri) {
     if (!uri.path.endsWith('/.gitmodules')) {
         vscode.window.showErrorMessage('Invalid git module filename');
@@ -89,18 +108,11 @@ export async function update(uri: vscode.Uri) {
 }
 
 export async function remove(uri: vscode.Uri) {
-    if (!ws.first()) {
-        return
-    }
-
-    if (!uri.path.startsWith(ws.first()!.uri.path)) {
+    let relative = ws.relative(uri);
+    if (!relative) {
         return;
     }
 
-    let relative = uri.path.substring(ws.first()!.uri.path.length);
-    if ('/' == relative[0]) {
-        relative = relative.substring(1);
-    }
     vscode.window.showInformationMessage('Removing submodule ' + relative);
 
     cp.exec('git rm -f ' + uri.fsPath, { cwd: ws.first()!.uri.fsPath }, async(error, stdout, stderr)=>{

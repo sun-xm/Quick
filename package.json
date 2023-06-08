@@ -61,6 +61,10 @@
 				"title": "Add Git Submodule"
 			},
 			{
+				"command": "quick.pullSubmodule",
+				"title": "Pull Git Submodule"
+			},
+			{
 				"command": "quick.removeSubmodule",
 				"title": "Remove Git Submodule"
 			}
@@ -107,6 +111,11 @@
 					"command": "quick.updateSubmodules",
 					"group": "submodule",
 					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
+				},
+				{
+					"command": "quick.pullSubmodule",
+					"group": "submodule",
+					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
 				},
 				{
 					"command": "quick.removeSubmodule",
