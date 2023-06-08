@@ -1,6 +1,8 @@
 import * as cp from 'child_process';
 import * as os from 'os';
 import * as ws from './workspace';
+import * as vscode from 'vscode';
+import { output } from './extension';
 
 export async function cleanup() {
     if (!ws.first()) {
@@ -37,3 +39,32 @@ export async function cleanup() {
 
     return Promise.all(promises);
 }
+
+export function setStorage(uri: vscode.Uri | undefined) {
+    if (uri) {
+        storage = uri;
+    }
+}
+
+export async function cleanStorage() {
+    let s = storage.fsPath + '\\..\\..\\*';
+    switch (os.platform()) {
+        case 'win32': {
+            return new Promise<void>((resolve)=>{
+                cp.exec('for /d %G in (\"' + storage.fsPath + '\\..\\..\\*\") do rd /s /q \"%~G\"', ()=>resolve());
+            });
+        }
+
+        case 'linux': {
+            return new Promise<void>((resolve)=>{
+                cp.exec('rm -rf ' + storage.fsPath + '/../../*', ()=>resolve());
+            });
+        }
+
+        default: {
+            return undefined;
+        }
+    }
+}
+
+export let storage: vscode.Uri;

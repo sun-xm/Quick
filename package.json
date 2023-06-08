@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -67,6 +67,10 @@
 			{
 				"command": "quick.removeSubmodule",
 				"title": "Remove Git Submodule"
+			},
+			{
+				"command": "quick.cleanStorage",
+				"title": "Quick: Clean storage"
 			}
 		],
 		"configuration": {

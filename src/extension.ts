@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	submodule.setContext();
+	housekeep.setStorage(context.storageUri);
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
 		cmake.console(context);
@@ -51,6 +52,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>{
 		designer.openUiFile(uri);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cleanStorage', ()=>{
+		housekeep.cleanStorage();
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>{
