@@ -7,6 +7,8 @@ import * as submodule from './submodule';
 import * as workspace from './workspace';
 
 export function activate(context: vscode.ExtensionContext) {
+	setStorage(context.storageUri);
+
 	if (workspace.first()) {
 		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(workspace.first()!.uri, '.gitmodules').fsPath);
 		watcher.onDidChange(()=>submodule.setContext());
@@ -15,7 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	submodule.setContext();
-	housekeep.setStorage(context.storageUri);
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
 		cmake.console(context);
@@ -122,6 +123,21 @@ export function output(info: string) {
 	}
 	outchan.append(info);
 	outchan.show();
+}
+
+export let extStorage: vscode.Uri;
+export let wspStorage: vscode.Uri;
+
+function setStorage(uri: vscode.Uri | undefined) {
+    if (uri) {
+        extStorage = uri;
+
+		let idx = uri.path.lastIndexOf('/');
+		if (idx > 0) {
+			idx = uri.path.lastIndexOf('/', idx - 1);
+		}
+		wspStorage = vscode.Uri.file(uri.path.substring(0, idx));
+    }
 }
 
 let watcher: vscode.FileSystemWatcher;
