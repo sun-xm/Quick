@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"

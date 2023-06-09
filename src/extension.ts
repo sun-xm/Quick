@@ -4,12 +4,11 @@ import * as designer from './designer'
 import * as electron from './electron';
 import * as housekeep from './housekeep';
 import * as submodule from './submodule';
+import * as workspace from './workspace';
 
 export function activate(context: vscode.ExtensionContext) {
-	outchan = vscode.window.createOutputChannel('quick');
-
-	if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, '.gitmodules').fsPath);
+	if (workspace.first()) {
+		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(workspace.first()!.uri, '.gitmodules').fsPath);
 		watcher.onDidChange(()=>submodule.setContext());
 		watcher.onDidCreate(()=>submodule.setContext());
 		watcher.onDidDelete(()=>submodule.setContext());
@@ -118,10 +117,11 @@ export async function deactivate() {
 }
 
 export function output(info: string) {
-	if (outchan) {
-		outchan.append(info);
-		outchan.show();
+	if (!outchan) {
+		outchan = vscode.window.createOutputChannel('quick');
 	}
+	outchan.append(info);
+	outchan.show();
 }
 
 let watcher: vscode.FileSystemWatcher;
