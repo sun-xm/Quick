@@ -2,7 +2,6 @@ import * as cp from 'child_process';
 import * as os from 'os';
 import * as ws from './workspace';
 import * as vscode from 'vscode';
-import { output } from './extension';
 
 export async function cleanup() {
     if (!ws.first()) {
@@ -42,22 +41,28 @@ export async function cleanup() {
 
 export function setStorage(uri: vscode.Uri | undefined) {
     if (uri) {
-        storage = uri;
+        extStorage = uri;
+
+        let wsp = extStorage.path.substring(0, extStorage.path.lastIndexOf('/'));
+        wspStorage = vscode.Uri.file(wsp.substring(0, wsp.lastIndexOf('/')));
     }
 }
 
 export async function cleanStorage() {
-    let s = storage.fsPath + '\\..\\..\\*';
     switch (os.platform()) {
         case 'win32': {
             return new Promise<void>((resolve)=>{
-                cp.exec('for /d %G in (\"' + storage.fsPath + '\\..\\..\\*\") do rd /s /q \"%~G\"', ()=>resolve());
+                cp.exec('for /d %G in (\"' + wspStorage.fsPath + '\\*\") do rd /s /q \"%~G\"', ()=>resolve());
             });
         }
 
         case 'linux': {
             return new Promise<void>((resolve)=>{
-                cp.exec('rm -rf ' + storage.fsPath + '/../../*', ()=>resolve());
+                cp.exec('rm -rf ' + wspStorage.fsPath + '/*', (error, stdout, stderr)=>{
+                    resolve();
+                    console.log(stdout);
+                    console.log(stderr);
+                });
             });
         }
 
@@ -67,4 +72,5 @@ export async function cleanStorage() {
     }
 }
 
-export let storage: vscode.Uri;
+export let extStorage: vscode.Uri;
+export let wspStorage: vscode.Uri;
