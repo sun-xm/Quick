@@ -49,11 +49,7 @@ export async function cleanStorage() {
 
         case 'linux': {
             return new Promise<void>((resolve)=>{
-                cp.exec('rm -rf ' + ext.wspStorage.fsPath + '/*', (error, stdout, stderr)=>{
-                    resolve();
-                    console.log(stdout);
-                    console.log(stderr);
-                });
+                cp.exec('rm -rf ' + ext.wspStorage.fsPath + '/*', ()=>resolve());
             });
         }
 
