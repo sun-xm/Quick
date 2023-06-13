@@ -53,16 +53,20 @@
 				"title": "Open in Qt Designer"
 			},
 			{
-				"command": "quick.updateSubmodules",
-				"title": "Update Git Submodules"
-			},
-			{
 				"command": "quick.addSubmodule",
 				"title": "Add Git Submodule"
 			},
 			{
-				"command": "quick.pullSubmodule",
-				"title": "Pull Git Submodule"
+				"command": "quick.initSubmodules",
+				"title": "Init Git Submodules"
+			},
+			{
+				"command": "quick.updateSubmodules",
+				"title": "Update Git Submodules"
+			},
+			{
+				"command": "quick.updateSubmodule",
+				"title": "Update Git Submodule"
 			},
 			{
 				"command": "quick.removeSubmodule",
@@ -112,12 +116,17 @@
 					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
 				},
 				{
+					"command": "quick.initSubmodules",
+					"group": "submodule",
+					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
+				},
+				{
 					"command": "quick.updateSubmodules",
 					"group": "submodule",
 					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
 				},
 				{
-					"command": "quick.pullSubmodule",
+					"command": "quick.updateSubmodule",
 					"group": "submodule",
 					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
 				},

@@ -62,11 +62,15 @@ export function activate(context: vscode.ExtensionContext) {
 		submodule.add();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.pullSubmodule', (uri: vscode.Uri)=>{
-		submodule.pull(uri);
+	context.subscriptions.push(vscode.commands.registerCommand('quick.initSubmodules', (uri: vscode.Uri)=>{
+		submodule.initAll();
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodules', (uri: vscode.Uri)=>{
+		submodule.updateAll();
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodule', (uri: vscode.Uri)=>{
 		submodule.update(uri);
 	}));
 

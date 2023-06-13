@@ -12,8 +12,13 @@ export async function setContext() {
         return;
     }
 
-    vscode.commands.executeCommand('setContext', 'quick.gitmodules', [vscode.Uri.joinPath(wsp.first()!.uri, '.gitmodules').fsPath]);
-    vscode.commands.executeCommand('setContext', 'quick.submodules', await list(wsp.first()!.uri, vscode.Uri.file('.gitmodules')));
+    let gitmodules = vscode.Uri.joinPath(wsp.first()!.uri, '.gitmodules');
+    let modules = (await list(gitmodules)).map(module=>{
+        return vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath;
+    });
+
+    vscode.commands.executeCommand('setContext', 'quick.gitmodules', [gitmodules.fsPath]);
+    vscode.commands.executeCommand('setContext', 'quick.submodules', modules);
 }
 
 export async function add() {
@@ -23,7 +28,12 @@ export async function add() {
     }
 
     let reposit = (await vscode.window.showInputBox({ prompt: 'Input repository link', value: vscode.workspace.getConfiguration('quick').get<string>('defaultGitService') }))?.trim();
-    if (!reposit || 0 == reposit.length) {
+    if (!reposit?.length) {
+        return;
+    }
+
+    let branch = (await vscode.window.showInputBox({ prompt: 'Input remote branch'}));
+    if (!branch?.length) {
         return;
     }
 
@@ -38,7 +48,7 @@ export async function add() {
     vscode.window.showInformationMessage('Adding submodule ' + path);
 
     return new Promise<void>((resolve, reject)=>{
-        chp.exec('git submodule add ' + reposit + ' ' + path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+        chp.exec('git submodule add -b ' + branch + ' ' + reposit + ' ' + path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to add submodule');
                 ext.output(stderr);
@@ -52,69 +62,97 @@ export async function add() {
     });
 }
 
-export async function pull(uri: vscode.Uri) {
-    let relative = wsp.relative(uri);
-    if (!relative) {
+export async function initAll() {
+    if (!wsp.first()) {
+        vscode.window.showErrorMessage('.gitmodules is not in default workspace');
         return;
     }
 
-    vscode.window.showInformationMessage('Pulling submudule ' + relative);
+    let gitmodules = vscode.Uri.joinPath(wsp.first()!.uri, '.gitmodules');
 
-    return new Promise<void>((resolve, reject)=>{
-        chp.exec('git pull -r', { cwd: uri.fsPath }, (error, stdout, stderr)=>{
+    let modules = await list(gitmodules);
+    if (!modules?.length) {
+        vscode.window.showInformationMessage('No submodule found in .gitmodules');
+        return;
+    }
+
+    vscode.window.showInformationMessage('Initializing submodules');
+
+    let success = true;
+    await Promise.all(modules.map(module=>new Promise<void>((resolve, rejuect)=>{
+        chp.exec('git submodule update --init ' + module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
-                vscode.window.showErrorMessage('Failed to pull submodule');
+                success = false;
+                vscode.window.showErrorMessage('Failed to initialize submodule ' + module.name);
                 ext.output(stderr);
                 resolve();
                 return;
             }
 
-            vscode.window.showInformationMessage('Submodule ' + relative + ' has been pulled');
+            if (!module.branch) {
+                resolve();
+                return;
+            }
+
+            chp.exec('git checkout ' + module.branch, { cwd: vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath }, (error, stdout, stderr)=>{
+                if (error?.code) {
+                    vscode.window.showWarningMessage('Failed to checkout branch ' + module.branch + ' for submodule ' + module.name);
+                    ext.output(stderr);
+                }
+
+                resolve();
+            });
+        });
+    })));
+
+    if (success) {
+        vscode.window.showInformationMessage('Submodules have been initialized');
+    }
+}
+
+export async function updateAll() {
+    if (!wsp.first()) {
+        return;
+    }
+
+    vscode.window.showInformationMessage('Updating submodules');
+
+    return new Promise<void>((resolve, reject)=>{
+        chp.exec('git submodule update --remote --rebase', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+            if (error?.code) {
+                vscode.window.showErrorMessage('Failed to update submodules');
+                ext.output(stderr);
+
+            } else {
+                vscode.window.showInformationMessage('Submodules have been updated');
+            }
+
             resolve();
         });
     });
 }
 
 export async function update(uri: vscode.Uri) {
-    if (!uri.path.endsWith('/.gitmodules')) {
-        vscode.window.showErrorMessage('Invalid git module filename');
+    let relative = wsp.relative(uri);
+    if (!relative) {
         return;
     }
 
-    if (!wsp.first()) {
-        vscode.window.showErrorMessage('.gitmodules is not in default workspace');
-        return;
-    }
+    vscode.window.showInformationMessage('Updating submudule ' + relative);
 
-    if (uri.path != vscode.Uri.joinPath(wsp.first()!.uri, '.gitmodules').path) {
-        vscode.window.showErrorMessage('.gitmodules is not in default workspace');
-        return;
-    }
-
-    let modules = await list(wsp.first()!.uri, vscode.Uri.file('.gitmodules'));
-    if (0 == modules.length) {
-        vscode.window.showInformationMessage('No submodule found in .gitmodules');
-        return;
-    }
-
-    vscode.window.showInformationMessage('Updating submodules');
-
-    let success = true;
-    await Promise.all(modules.map(module=>new Promise<void>((resolve, rejuect)=>{
-        chp.exec('git submodule update --init ' + module, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+    return new Promise<void>((resolve, reject)=>{
+        chp.exec('git submodule update --remote --rebase ' + relative, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
-                success = false;
-                vscode.window.showErrorMessage('Failed to update submodule ' + module);
+                vscode.window.showErrorMessage('Failed to update submodule');
                 ext.output(stderr);
+                resolve();
+                return;
             }
 
+            vscode.window.showInformationMessage('Submodule ' + relative + ' has been updated');
             resolve();
         });
-    })));
-
-    if (success) {
-        vscode.window.showInformationMessage('Submodules have been updated');
-    }
+    });
 }
 
 export async function remove(uri: vscode.Uri) {
@@ -155,24 +193,52 @@ export async function remove(uri: vscode.Uri) {
     });
 }
 
-async function list(folder: vscode.Uri, file: vscode.Uri) {
-    let modules : string[] = [];
+class Module {
+    name:   string | undefined;
+    path:   string | undefined;
+    url:    string | undefined;
+    branch: string | undefined;
+}
 
-    let path = vscode.Uri.joinPath(folder, file.path);
+export async function list(file: vscode.Uri) {
+    let modules: Module[] = [];
+
     try {
-        await fs.stat(path);
+        await fs.stat(file);
     } catch {
         return modules;
     }
 
-    let lines = dec.decode(await fs.readFile(path)).split('\n');
+    const name = /\[submodule \"(.+)\"\]\s*/;
+    const path = /\s*path\s*=\s*(.+)\s*/;
+    const url  = /\s*url\s*=\s*(.+)\s*/;
+    const branch = /\s*branch\s*=\s*(.+)\s*/;
 
-    const regex = /\s*path\s*=\s*(\S+)\s*/;
-    lines.forEach((line: string)=>{
-        let result = regex.exec(line);
-        if (result) {
-            let uri = vscode.Uri.joinPath(folder, result[1]);
-            modules.push(uri.fsPath);
+    let lines = dec.decode(await fs.readFile(file)).split('\n');
+    lines.forEach(line=>{
+        let match = name.exec(line);
+        if (match) {
+            let m = new Module();
+            m.name = match[1];
+            modules.push(m);
+            return;
+        }
+
+        match = path.exec(line);
+        if (match) {
+            modules[modules.length - 1].path = match[1];
+            return;
+        }
+
+        match = url.exec(line);
+        if (match) {
+            modules[modules.length - 1].url = match[1];
+            return;
+        }
+
+        match = branch.exec(line);
+        if (match) {
+            modules[modules.length - 1].branch = match[1];
         }
     });
 
