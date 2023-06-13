@@ -1,6 +1,6 @@
-import { Uri, workspace } from 'vscode'
+import { Uri, workspace } from 'vscode';
 import { TextDecoder, TextEncoder } from 'util';
-import * as os from 'os'
+import * as os from 'os';
 
 let fs  = workspace.fs;
 let dec = new TextDecoder();

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { copyText, createFolder } from './copy'
+import { copyText, createFolder } from './copy';
 
 async function isEmpty(folder: vscode.Uri) {
     return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;

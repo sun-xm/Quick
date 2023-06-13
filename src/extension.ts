@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as cmake from './cmake';
-import * as designer from './designer'
+import * as designer from './designer';
 import * as electron from './electron';
 import * as housekeep from './housekeep';
 import * as submodule from './submodule';

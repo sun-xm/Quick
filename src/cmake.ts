@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { copyDirect, copyText, createFolder, listFiles } from './copy'
+import { copyDirect, copyText, createFolder, listFiles } from './copy';
 
 async function isEmpty(folder: vscode.Uri) {
     return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;
@@ -104,7 +104,7 @@ export async function w32View(context: vscode.ExtensionContext) {
         await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
 
-        await copyText(`${rs}/main.cpp`, `${ws}/main.cpp`)
+        await copyText(`${rs}/main.cpp`, `${ws}/main.cpp`);
 
         vscode.window.showInformationMessage(`CMake Win32 ${type.toLowerCase()} project "${nm}" created`);
 
@@ -123,7 +123,7 @@ export async function csConsole(context: vscode.ExtensionContext) {
         }
 
         let ws = vscode.workspace.workspaceFolders![0].uri.path;
-        let rs = context.extensionUri.path + '/res/cmake/cs/console'
+        let rs = context.extensionUri.path + '/res/cmake/cs/console';
 
         await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
         vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
