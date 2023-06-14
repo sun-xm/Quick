@@ -47,7 +47,7 @@ export async function add() {
 
     vscode.window.showInformationMessage('Adding submodule ' + path);
 
-    return new Promise<void>((resolve, reject)=>{
+    return new Promise<void>((resolve)=>{
         chp.exec('git submodule add -b ' + branch + ' ' + reposit + ' ' + path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to add submodule');
@@ -77,6 +77,10 @@ export async function initAll() {
     }
 
     vscode.window.showInformationMessage('Initializing submodules');
+
+    let status = vscode.window.createStatusBarItem();
+    status.text = "$(sync~spin) Initializing";
+    status.show();
 
     let success = true;
     await Promise.all(modules.map(module=>new Promise<void>((resolve, rejuect)=>{
@@ -108,6 +112,8 @@ export async function initAll() {
     if (success) {
         vscode.window.showInformationMessage('Submodules have been initialized');
     }
+
+    status.hide();
 }
 
 export async function updateAll() {
@@ -117,7 +123,11 @@ export async function updateAll() {
 
     vscode.window.showInformationMessage('Updating submodules');
 
-    return new Promise<void>((resolve, reject)=>{
+    let status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Updating';
+    status.show();
+
+    return new Promise<void>((resolve)=>{
         chp.exec('git submodule update --remote --rebase', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to update submodules');
@@ -127,6 +137,7 @@ export async function updateAll() {
                 vscode.window.showInformationMessage('Submodules have been updated');
             }
 
+            status.hide();
             resolve();
         });
     });
@@ -140,16 +151,20 @@ export async function update(uri: vscode.Uri) {
 
     vscode.window.showInformationMessage('Updating submudule ' + relative);
 
-    return new Promise<void>((resolve, reject)=>{
+    let status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Updating';
+    status.show();
+
+    return new Promise<void>((resolve)=>{
         chp.exec('git submodule update --remote --rebase ' + relative, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to update submodule');
                 ext.output(stderr);
-                resolve();
-                return;
+            } else {
+                vscode.window.showInformationMessage('Submodule ' + relative + ' has been updated');
             }
 
-            vscode.window.showInformationMessage('Submodule ' + relative + ' has been updated');
+            status.hide();
             resolve();
         });
     });
@@ -163,11 +178,16 @@ export async function remove(uri: vscode.Uri) {
 
     vscode.window.showInformationMessage('Removing submodule ' + relative);
 
-    return new Promise<void>((resolve, reject)=>{
+    let status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Removing';
+    status.show();
+
+    return new Promise<void>((resolve)=>{
         chp.exec('git rm -f ' + uri.fsPath, { cwd: wsp.first()!.uri.fsPath }, async(error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to remove submodule');
                 ext.output(stderr);
+                status.hide();
                 resolve();
                 return;
             }
@@ -183,24 +203,18 @@ export async function remove(uri: vscode.Uri) {
                 if (error?.code) {
                     vscode.window.showErrorMessage('Failed to delete config section');
                     ext.output(stderr);
-                    return;
+                } else {
+                    vscode.window.showInformationMessage('Submodule ' + relative + ' has been removed');
                 }
 
-                vscode.window.showInformationMessage('Submodule ' + relative + ' has been removed');
+                status.hide();
                 resolve();
             });
         });
     });
 }
 
-class Module {
-    name:   string | undefined;
-    path:   string | undefined;
-    url:    string | undefined;
-    branch: string | undefined;
-}
-
-export async function list(file: vscode.Uri) {
+async function list(file: vscode.Uri) {
     let modules: Module[] = [];
 
     try {
@@ -243,4 +257,11 @@ export async function list(file: vscode.Uri) {
     });
 
     return modules;
+}
+
+class Module {
+    name:   string | undefined;
+    path:   string | undefined;
+    url:    string | undefined;
+    branch: string | undefined;
 }
