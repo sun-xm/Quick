@@ -28,12 +28,12 @@ export async function add() {
     }
 
     let reposit = (await vscode.window.showInputBox({ prompt: 'Input repository link', value: vscode.workspace.getConfiguration('quick').get<string>('defaultGitService') }))?.trim();
-    if (!reposit?.length) {
+    if (!reposit) {
         return;
     }
 
-    let branch = (await vscode.window.showInputBox({ prompt: 'Input remote branch'}));
-    if (!branch?.length) {
+    let branch = (await vscode.window.showInputBox({ prompt: 'Input remote branch'}))?.trim();
+    if (!branch) {
         return;
     }
 
@@ -45,18 +45,22 @@ export async function add() {
         return;
     }
 
-    vscode.window.showInformationMessage('Adding submodule ' + path);
+    let status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Adding submodule ' + path;
+    status.show();
 
     return new Promise<void>((resolve)=>{
         chp.exec('git submodule add -b ' + branch + ' ' + reposit + ' ' + path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to add submodule');
                 ext.output(stderr);
+                status.hide();
                 resolve();
                 return;
             }
 
             vscode.window.showInformationMessage('Submodule ' + path + ' has been added');
+            status.hide();
             resolve();
         });
     });
@@ -76,10 +80,8 @@ export async function initAll() {
         return;
     }
 
-    vscode.window.showInformationMessage('Initializing submodules');
-
     let status = vscode.window.createStatusBarItem();
-    status.text = "$(sync~spin) Initializing";
+    status.text = "$(sync~spin) Initializing submodules";
     status.show();
 
     let success = true;
@@ -121,10 +123,8 @@ export async function updateAll() {
         return;
     }
 
-    vscode.window.showInformationMessage('Updating submodules');
-
     let status = vscode.window.createStatusBarItem();
-    status.text = '$(sync~spin) Updating';
+    status.text = '$(sync~spin) Updating submodules';
     status.show();
 
     return new Promise<void>((resolve)=>{
@@ -149,10 +149,8 @@ export async function update(uri: vscode.Uri) {
         return;
     }
 
-    vscode.window.showInformationMessage('Updating submudule ' + relative);
-
     let status = vscode.window.createStatusBarItem();
-    status.text = '$(sync~spin) Updating';
+    status.text = '$(sync~spin) Updating submodule ' + relative;
     status.show();
 
     return new Promise<void>((resolve)=>{
@@ -176,10 +174,8 @@ export async function remove(uri: vscode.Uri) {
         return;
     }
 
-    vscode.window.showInformationMessage('Removing submodule ' + relative);
-
     let status = vscode.window.createStatusBarItem();
-    status.text = '$(sync~spin) Removing';
+    status.text = '$(sync~spin) Removing submodule ' + relative;
     status.show();
 
     return new Promise<void>((resolve)=>{
