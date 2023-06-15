@@ -84,10 +84,10 @@
 					"type": "string",
 					"description": "Path to Qt Designer program"
 				},
-				"quick.autoHide": {
+				"quick.panelAutoHide": {
 					"type": "boolean",
-					"description": "Disable vscode panel auto hide",
-					"default": false
+					"description": "Enable vscode panel auto hide",
+					"default": true
 				},
 				"quick.defaultGitService": {
 					"type": "string",

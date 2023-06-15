@@ -1,16 +1,20 @@
 import * as process from 'child_process';
 import * as vscode from 'vscode';
+import * as config from './config';
+import * as extension from './extension';
 
 export async function openUiFile(uri: vscode.Uri) {
-    let designer = vscode.workspace.getConfiguration('quick').get<string>('designerPath')?.trim();
+    let designer = config.designerPath();
 
-    if (null == designer || 0 == designer.length) {
-        let paths = await vscode.window.showOpenDialog({ canSelectMany: false });
-        if (null != paths && paths.length > 0) {
-            designer = paths[0].fsPath;
+    if (!designer || !await exists(designer)) {
+        let paths = await vscode.window.showOpenDialog({ canSelectMany: false, title: 'Choose Qt Designer path' });
+        if (!paths) {
+            return;
         }
 
-        if (null == designer || 0 == designer.length) {
+        designer = paths[0].fsPath;
+
+        if (!designer) {
             vscode.window.showErrorMessage('Path to Qt Designer is not defined');
             return;
         }
@@ -23,12 +27,12 @@ export async function openUiFile(uri: vscode.Uri) {
 
         switch (option?.choice) {
             case 0: {
-                vscode.workspace.getConfiguration('quick').update('designerPath', designer, vscode.ConfigurationTarget.Global);
+                config.setDesignerPath(designer, vscode.ConfigurationTarget.Global);
                 break;
             }
 
             case 1: {
-                vscode.workspace.getConfiguration('quick').update('designerPath', designer, vscode.ConfigurationTarget.Workspace);
+                config.setDesignerPath(designer, vscode.ConfigurationTarget.Workspace);
                 break;
             }
 
@@ -38,5 +42,18 @@ export async function openUiFile(uri: vscode.Uri) {
         }
     }
 
-    process.exec(designer + ' ' + uri.fsPath);
+    process.exec(designer + ' ' + uri.fsPath, (error, stdout, stderr)=>{
+        if (error?.code) {
+            extension.output(stderr);
+        }
+    });
+}
+
+async function exists(path: string) {
+    try {
+        await vscode.workspace.fs.stat(vscode.Uri.file(path));
+        return true;
+    } catch {
+        return false;
+    }
 }

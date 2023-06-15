@@ -80,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// auto hide panel
 	vscode.window.onDidChangeTextEditorSelection(selection=>{
-		if (vscode.workspace.getConfiguration('quick').get<boolean>('autoHide')) {
+		if (!vscode.workspace.getConfiguration('quick').get<boolean>('panelAutoHide')) {
 			return;
 		}
 

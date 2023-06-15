@@ -1,6 +1,7 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as chp from 'child_process';
+import * as cfg from './config';
 import * as wsp from './workspace';
 import * as ext from './extension';
 
@@ -27,7 +28,7 @@ export async function add() {
         return;
     }
 
-    let reposit = (await vscode.window.showInputBox({ prompt: 'Input repository link', value: vscode.workspace.getConfiguration('quick').get<string>('defaultGitService') }))?.trim();
+    let reposit = (await vscode.window.showInputBox({ prompt: 'Input repository link', value: cfg.defaultGitService() }))?.trim();
     if (!reposit) {
         return;
     }
