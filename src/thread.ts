@@ -1,36 +1,39 @@
-import * as wthreads from 'worker_threads';
+import * as threads from 'worker_threads';
 
-export function exec<T, P>(func: (param: P)=>T, param?: P) {
-    let promise = new Promise<T>((res, rej)=>{
-        resolve = res;
-        reject  = rej;
-    });
+export class Thread<T, P> {
+    static exec<T, P>(proc: (param: P)=>T, param?: P) {
+        let thread = new Thread({ workerData: param });
+        thread.worker.postMessage(proc.toString());
+        return thread;
+    }
 
-    let f = func.toString();
-    let p = JSON.stringify(param);
-    worker.postMessage({ f, p });
+    result: Promise<T>;
 
-    return promise;
+    private constructor(options?: threads.WorkerOptions) {
+        this.result = new Promise<T>((res, rej)=>{
+            resolve = res;
+            reject  = rej;
+        });
+        this.worker = new threads.Worker(__filename, options);
+        this.worker.on('message', (r)=>{
+            this.worker.terminate();
+            resolve(r);
+        });
+        this.worker.on('error', (e)=>{
+            this.worker.terminate();
+            reject(e);
+        });
+    }
+
+    private worker: threads.Worker;
 }
 
 let resolve: (r: any)=>void;
 let reject:  (e: any)=>void;
 
-const worker = new wthreads.Worker(__filename);
-worker.on('message', (result)=>{
-    worker.terminate();
-    resolve(result);
-});
-
-worker.on('error', (error)=>{
-    worker.terminate();
-    reject(error);
-});
-
-if (!wthreads.isMainThread) {
-    wthreads.parentPort?.on('message', (proc: { f: string, p: string })=>{
-        let f = eval(`(${proc.f})`);
-        let p = proc.p ? JSON.parse(proc.p) : undefined;
-        wthreads.parentPort?.postMessage(f(p));
+if (!threads.isMainThread) {
+    threads.parentPort?.on('message', (p)=>{
+        let proc = eval(`(${p})`);
+        threads.parentPort?.postMessage(proc(threads.workerData));
     });
 }
