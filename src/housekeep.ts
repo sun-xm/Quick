@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as os from 'os';
 import * as wsp from './workspace';
@@ -39,6 +40,22 @@ export async function cleanup() {
     return Promise.all(promises);
 }
 
+export async function cleanHistory() {
+    switch (os.platform()) {
+        case 'win32': {
+            return new Promise<void>((resolve)=>{
+                cp.exec('for /d %G in (\"' + vscode.Uri.joinPath(ext.usrStorage, 'History').fsPath + '\\*\") do rd /s /q \"%~G\"', ()=>resolve());
+            });
+        }
+
+        case 'linux': {
+            return new Promise<void>((resolve)=>{
+                cp.exec('rm -rf ' + vscode.Uri.joinPath(ext.usrStorage, 'History').fsPath + '/*', ()=>resolve());
+            });
+        }
+    }
+}
+
 export async function cleanStorage() {
     switch (os.platform()) {
         case 'win32': {
@@ -57,4 +74,8 @@ export async function cleanStorage() {
             return undefined;
         }
     }
+}
+
+export async function cleanAll() {
+    return Promise.all([cleanStorage(), cleanHistory()]);
 }

@@ -58,6 +58,14 @@ export function activate(context: vscode.ExtensionContext) {
 		housekeep.cleanStorage();
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cleanHistory', ()=>{
+		housekeep.cleanHistory();
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cleanAll', ()=>{
+		housekeep.cleanAll();
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>{
 		submodule.add();
 	}));
@@ -110,7 +118,10 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
-	await housekeep.cleanup();
+	let promises: Promise<void[] | undefined>[] = [];
+	promises.push(housekeep.cleanup());
+	promises.push(housekeep.cleanAll());
+	await Promise.all(promises);
 
 	if (watcher) {
 		watcher.dispose();
@@ -131,6 +142,7 @@ export function output(info: string) {
 
 export let extStorage: vscode.Uri;
 export let wspStorage: vscode.Uri;
+export let usrStorage: vscode.Uri;
 
 function setStorage(uri: vscode.Uri | undefined) {
     if (uri) {
@@ -141,6 +153,10 @@ function setStorage(uri: vscode.Uri | undefined) {
 			idx = uri.path.lastIndexOf('/', idx - 1);
 		}
 		wspStorage = vscode.Uri.file(uri.path.substring(0, idx));
+		usrStorage = vscode.Uri.joinPath(wspStorage, '../');
+
+		console.debug(wspStorage);
+		console.debug(usrStorage);
     }
 }
 

@@ -74,7 +74,15 @@
 			},
 			{
 				"command": "quick.cleanStorage",
-				"title": "Quick: Clean storage"
+				"title": "Quick: Clean workspace storage"
+			},
+			{
+				"command": "quick.cleanHistory",
+				"title": "Quick: Clean user history"
+			},
+			{
+				"command": "quick.cleanAll",
+				"title": "Quick: Clean all"
 			}
 		],
 		"configuration": {
