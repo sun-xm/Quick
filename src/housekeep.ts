@@ -50,7 +50,7 @@ export async function cleanHistory() {
 
         case 'linux': {
             return new Promise<void>((resolve)=>{
-                cp.exec('rm -rf ' + vscode.Uri.joinPath(ext.usrStorage, 'History').fsPath + '/*', ()=>resolve());
+                cp.exec('sleep 1s && rm -rf ' + vscode.Uri.joinPath(ext.usrStorage, 'History').fsPath + '/*', ()=>resolve());
             });
         }
     }
@@ -66,7 +66,7 @@ export async function cleanStorage() {
 
         case 'linux': {
             return new Promise<void>((resolve)=>{
-                cp.exec('rm -rf ' + ext.wspStorage.fsPath + '/*', ()=>resolve());
+                cp.exec('sleep 1s && rm -rf ' + ext.wspStorage.fsPath + '/*', ()=>resolve());
             });
         }
 

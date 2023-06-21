@@ -1,13 +1,25 @@
 import * as vscode from 'vscode';
 
 export function defaultGitService() {
-    return vscode.workspace.getConfiguration('quick').get<string>('defaultGitService')?.trim();
+    return get<string>('defaultGitService')?.trim();
 }
 
 export function designerPath() {
-    return vscode.workspace.getConfiguration('quick').get<string>('designerPath')?.trim();
+    return get<string>('designerPath')?.trim();
 }
 
 export function setDesignerPath(path: string, target: vscode.ConfigurationTarget) {
-    vscode.workspace.getConfiguration('quick').update('designerPath', path, target);
+    set('designerPath', path, target);
+}
+
+export function panelAutoHide() {
+    return get<boolean>('panelAutoHide');
+}
+
+function get<T>(name: string) {
+    return vscode.workspace.getConfiguration('quick').get<T>(name);
+}
+
+function set<T>(name: string, value: T, target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global) {
+    vscode.workspace.getConfiguration('quick').update(name, value, target);
 }

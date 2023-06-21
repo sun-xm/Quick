@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as cmake from './cmake';
+import * as config from './config';
 import * as designer from './designer';
 import * as electron from './electron';
 import * as housekeep from './housekeep';
@@ -54,18 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
 		designer.openUiFile(uri);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cleanStorage', ()=>{
-		housekeep.cleanStorage();
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cleanHistory', ()=>{
-		housekeep.cleanHistory();
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cleanAll', ()=>{
-		housekeep.cleanAll();
-	}));
-
 	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>{
 		submodule.add();
 	}));
@@ -88,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// auto hide panel
 	vscode.window.onDidChangeTextEditorSelection(selection=>{
-		if (!vscode.workspace.getConfiguration('quick').get<boolean>('panelAutoHide')) {
+		if (!config.panelAutoHide()) {
 			return;
 		}
 
@@ -118,10 +107,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
-	let promises: Promise<void[] | undefined>[] = [];
-	promises.push(housekeep.cleanup());
-	promises.push(housekeep.cleanAll());
-	await Promise.all(promises);
+	housekeep.cleanup();
+	housekeep.cleanAll();
 
 	if (watcher) {
 		watcher.dispose();
