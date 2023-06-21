@@ -1,5 +1,13 @@
 import * as vscode from 'vscode';
 
+export function cleanupOnExit() {
+    return get<boolean>('cleanupOnExit');
+}
+
+export function cleanAllOnExit() {
+    return get<boolean>('cleanAllOnExit');
+}
+
 export function defaultGitService() {
     return get<string>('defaultGitService')?.trim();
 }

@@ -106,9 +106,13 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 }
 
-export async function deactivate() {
-	housekeep.cleanup();
-	housekeep.cleanAll();
+export function deactivate() {
+	if (config.cleanupOnExit()) {
+		housekeep.cleanup();
+	}
+	if (config.cleanAllOnExit()) {
+		housekeep.cleanAll();
+	}
 
 	if (watcher) {
 		watcher.dispose();

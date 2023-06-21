@@ -89,6 +89,16 @@
 					"type": "string",
 					"description": "Default git service",
 					"default": "https://github.com/"
+				},
+				"quick.cleanupOnExit": {
+					"type": "boolean",
+					"description": "Clean .vscode folder on exit",
+					"default": true
+				},
+				"quick.cleanAllOnExit": {
+					"type": "boolean",
+					"description": "Clean user history and workspace storage folders on exit",
+					"default": true
 				}
 			}
 		},
