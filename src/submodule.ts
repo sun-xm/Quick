@@ -82,35 +82,38 @@ export async function initAll() {
     }
 
     let status = vscode.window.createStatusBarItem();
-    status.text = "$(sync~spin) Initializing submodules";
-    status.show();
-
     let success = true;
-    await Promise.all(modules.map(module=>new Promise<void>((resolve, rejuect)=>{
-        chp.exec('git submodule update --init ' + module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
-            if (error?.code) {
-                success = false;
-                vscode.window.showErrorMessage('Failed to initialize submodule ' + module.name);
-                ext.output(stderr);
-                resolve();
-                return;
-            }
 
-            if (!module.branch) {
-                resolve();
-                return;
-            }
+    for (let module of modules) {
+        await new Promise<void>((resolve, reject)=>{
+            status.text = '$(sync~spin) Initializing submodule ' + module.name;
+            status.show();
 
-            chp.exec('git checkout ' + module.branch, { cwd: vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath }, (error, stdout, stderr)=>{
+            chp.exec('git submodule update --init ' + module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
                 if (error?.code) {
-                    vscode.window.showWarningMessage('Failed to checkout branch ' + module.branch + ' for submodule ' + module.name);
+                    success = false;
+                    vscode.window.showErrorMessage('Failed to initialize submodule ' + module.name);
                     ext.output(stderr);
+                    resolve();
+                    return;
                 }
+
+                if (!module.branch) {
+                    resolve();
+                    return;
+                }
+
+                chp.exec('git checkout ' + module.branch, { cwd: vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath }, (error, stdout, stderr)=>{
+                    if (error?.code) {
+                        vscode.window.showWarningMessage('Failed to checkout branch ' + module.branch + ' for submodule' + module.name);
+                        ext.output(stderr);
+                    }
+                });
 
                 resolve();
             });
         });
-    })));
+    }
 
     if (success) {
         vscode.window.showInformationMessage('Submodules have been initialized');
