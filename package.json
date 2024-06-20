@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.12",
+	"version": "0.0.13",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -50,27 +50,27 @@
 			},
 			{
 				"command": "quick.openUiFile",
-				"title": "Open in Qt Designer"
+				"title": "Quick: Open in Qt Designer"
 			},
 			{
 				"command": "quick.addSubmodule",
-				"title": "Add Git Submodule"
+				"title": "Quick: Add Git Submodule"
 			},
 			{
 				"command": "quick.initSubmodules",
-				"title": "Init Git Submodules"
+				"title": "Quick: Init Git Submodules"
 			},
 			{
 				"command": "quick.updateSubmodules",
-				"title": "Update Git Submodules"
+				"title": "Quick: Update Git Submodules"
 			},
 			{
 				"command": "quick.updateSubmodule",
-				"title": "Update Git Submodule"
+				"title": "Quick: Update Git Submodule"
 			},
 			{
 				"command": "quick.removeSubmodule",
-				"title": "Remove Git Submodule"
+				"title": "Quick: Remove Git Submodule"
 			}
 		],
 		"configuration": {
