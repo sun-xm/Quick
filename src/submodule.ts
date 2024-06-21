@@ -33,7 +33,7 @@ export async function add() {
         return;
     }
 
-    let branch = (await vscode.window.showInputBox({ prompt: 'Input remote branch'}))?.trim();
+    let branch = (await vscode.window.showInputBox({ prompt: 'Input remote branch', value: 'master' }))?.trim();
     if (!branch) {
         return;
     }
@@ -41,7 +41,7 @@ export async function add() {
     let name = reposit.substring(reposit.lastIndexOf('/') + 1);
     name = name.substring(0, name.lastIndexOf('.git'));
 
-    let path = (await vscode.window.showInputBox({ prompt: 'Input the path where module to be placed', value: 'Submodules/' + name }))?.trim();
+    let path = (await vscode.window.showInputBox({ prompt: 'Input the path where module to be placed', value: 'Modules/' + name }))?.trim();
     if (!path || 0 == path.length) {
         return;
     }
