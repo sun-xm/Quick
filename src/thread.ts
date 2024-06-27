@@ -1,6 +1,6 @@
 import * as threads from 'worker_threads';
 
-export class Thread<T, P> {
+class Thread<T, P> {
     constructor(proc: (param?: P)=>T, options?: threads.WorkerOptions) {
         this.procedure = proc;
         this.result = new Promise<T>((resolve, reject)=>{
@@ -45,8 +45,9 @@ export class Thread<T, P> {
     private worker:  threads.Worker | undefined;
 }
 
-// Example: await exec((n: number = 100){ return n * n; });
-export async function exec<T, P>(proc: (param?: P)=>T, param?: P, options?: threads.WorkerOptions) {
+export function exec<T>(proc: ()=>T, options?: threads.WorkerOptions) : Promise<T>;
+export function exec<T, P>(proc: (param:  P)=>T, param:  P, options?: threads.WorkerOptions): Promise<T>;
+export function exec<T, P>(proc: (param?: P)=>T, param?: P, options?: threads.WorkerOptions): Promise<T> {
     return (new Thread(proc, options)).exec(param);
 }
 
