@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as wsp from './workspace';
-import { copyDirect, copyText, createFolder, listFiles } from './copy';
+import { copyDirect, copyText, listFiles } from './copy';
 
 async function isEmpty(folder: vscode.Uri) {
     return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;
