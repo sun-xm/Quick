@@ -34,15 +34,14 @@ class Thread<T, P> {
         return this.result;
     }
 
-    result: Promise<T>;
-
-    static instances = new Set();
-
     private procedure : (param?: P)=>T;
     private options: threads.WorkerOptions | undefined;
     private resolve: ((r: any)=>void) | undefined;
     private reject:  ((e: any)=>void) | undefined;
     private worker:  threads.Worker | undefined;
+    private result:  Promise<T>;
+
+    private static instances = new Set();
 }
 
 export function exec<T>(proc: ()=>T, options?: threads.WorkerOptions) : Promise<T>;
