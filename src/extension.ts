@@ -63,6 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
 		submodule.initAll();
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.initSubmodule', ()=>{
+		submodule.init();
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodules', (uri: vscode.Uri)=>{
 		submodule.updateAll();
 	}));

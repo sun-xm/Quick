@@ -84,41 +84,97 @@ export async function initAll() {
     let status = vscode.window.createStatusBarItem();
     let success = true;
 
-    for (let module of modules) {
-        await new Promise<void>((resolve, reject)=>{
-            status.text = '$(sync~spin) Initializing submodule ' + module.name;
-            status.show();
+    await new Promise<void>(resolve=>{
+        status.text = '$(sync~spin) Initializing submodules';
+        status.show();
 
-            chp.exec('git submodule update --init ' + module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
-                if (error?.code) {
-                    success = false;
-                    vscode.window.showErrorMessage('Failed to initialize submodule ' + module.name);
-                    ext.output(stderr);
-                    resolve();
-                    return;
-                }
-
-                if (!module.branch) {
-                    resolve();
-                    return;
-                }
-
-                chp.exec('git checkout ' + module.branch, { cwd: vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath }, (error, stdout, stderr)=>{
-                    if (error?.code) {
-                        vscode.window.showWarningMessage('Failed to checkout branch ' + module.branch + ' for submodule' + module.name);
-                        ext.output(stderr);
-                    }
-                });
-
+        chp.exec('git submodule update --init', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+            if (error?.code) {
+                success = false;
+                vscode.window.showErrorMessage('Failed to initialize submodules');
+                ext.output(stderr);
                 resolve();
-            });
+                return;
+            }
+
+            for (let module of modules) {
+                if (module.branch) {
+                    let path = vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath;
+                    chp.exec('git checkout ' + module.branch, { cwd: path }, (error, stdout, stderr)=>{
+                        if (error?.code) {
+                            success = false;
+                            vscode.window.showErrorMessage('Failed to checkout branch ' + module.branch + ' for submodule ' + module.name);
+                        }
+                    });
+                }
+            }
+
+            resolve(); // TODO: this could resolve prematurely as chp.exec() may not block execution.
         });
-    }
+    });
 
     if (success) {
         vscode.window.showInformationMessage('Submodules have been initialized');
     }
 
+    status.hide();
+}
+
+export async function init() {
+    if (!wsp.first()) {
+        vscode.window.showErrorMessage('.gitmodules is not in default workspace');
+        return;
+    }
+
+    let gitmodules = vscode.Uri.joinPath(wsp.first()!.uri, '.gitmodules');
+
+    let modules = await list(gitmodules);
+    if (!modules?.length) {
+        vscode.window.showInformationMessage('No submodule found in .gitmodules');
+        return;
+    }
+
+    let items = modules.map(m=>new ModuleItem(m.name!, m));
+    if (undefined == items) {
+        console.error('Failed to pick up module items');
+        return;
+    }
+
+    let item = await vscode.window.showQuickPick(items, { title: 'Pick up submodule to initialize'});
+    if (!item) {
+        return;
+    }
+
+    let status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Initializing submodule ' + item.module.name;
+    status.show();
+
+    await new Promise<void>(resolve=>{
+        chp.exec('git submodule update --init ' + item.module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+            if (error?.code) {
+                vscode.window.showErrorMessage('Failed to initialize submodule ' + item.module.name);
+                ext.output(stderr);
+                resolve();
+                return;
+            }
+
+            if (!item.module.branch) {
+                resolve();
+                return;
+            }
+
+            let path = vscode.Uri.joinPath(wsp.first()!.uri, item.module.path!).fsPath;
+            chp.exec('git checkout ' + item.module.branch, { cwd: path }, (error, stdout, stderr)=>{
+                if (error?.code) {
+                    vscode.window.showErrorMessage('Failed to checkout branch ' + item.module.branch + ' for submodule ' + item.module.name);
+                    ext.output(stderr);
+                } else {
+                    vscode.window.showInformationMessage('Submodule ' + item.module.name + ' has been initialized');
+                }
+                resolve();
+            });
+        });
+    });
     status.hide();
 }
 
@@ -264,4 +320,14 @@ class Module {
     path:   string | undefined;
     url:    string | undefined;
     branch: string | undefined;
+}
+
+class ModuleItem implements vscode.QuickPickItem {
+    constructor(label: string, module: Module) {
+        this.label  = label;
+        this.module = module;
+    }
+
+    label:  string;
+    module: Module;
 }
