@@ -50,7 +50,7 @@ export async function add() {
     status.text = '$(sync~spin) Adding submodule ' + path;
     status.show();
 
-    return new Promise<void>((resolve)=>{
+    return new Promise<void>(resolve=>{
         chp.exec('git submodule add -b ' + branch + ' ' + reposit + ' ' + path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to add submodule');
@@ -82,36 +82,42 @@ export async function initAll() {
     }
 
     let status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Initializing submodules';
+    status.show();
+
     let success = true;
 
     await new Promise<void>(resolve=>{
-        status.text = '$(sync~spin) Initializing submodules';
-        status.show();
-
         chp.exec('git submodule update --init', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
-                success = false;
                 vscode.window.showErrorMessage('Failed to initialize submodules');
                 ext.output(stderr);
-                resolve();
-                return;
+                success = false;
             }
-
-            for (let module of modules) {
-                if (module.branch) {
-                    let path = vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath;
-                    chp.exec('git checkout ' + module.branch, { cwd: path }, (error, stdout, stderr)=>{
-                        if (error?.code) {
-                            success = false;
-                            vscode.window.showErrorMessage('Failed to checkout branch ' + module.branch + ' for submodule ' + module.name);
-                        }
-                    });
-                }
-            }
-
-            resolve(); // TODO: this could resolve prematurely as chp.exec() may not block execution.
+            resolve();
         });
     });
+
+    if (success) {
+        for (let module of modules) {
+            if (module.branch) {
+                status.text = '$(sync~spin) Checking out branch ' + module.branch + ' for submodule ' + module.name;
+                status.show();
+
+                let path = vscode.Uri.joinPath(wsp.first()!.uri, module.path!).fsPath;
+                await new Promise<void>(resolve=>{
+                    chp.exec('git checkout ' + module.branch, { cwd: path }, (error, stdout, stderr)=>{
+                        if (error?.code) {
+                            vscode.window.showErrorMessage('Failed to check out branch ' + module.branch + ' for submodule ' + module.name);
+                            ext.output(stderr);
+                            success = false;
+                        }
+                        resolve();
+                    });
+                });
+            }
+        }
+    }
 
     if (success) {
         vscode.window.showInformationMessage('Submodules have been initialized');
@@ -149,32 +155,39 @@ export async function init() {
     status.text = '$(sync~spin) Initializing submodule ' + item.module.name;
     status.show();
 
+    let success = true;
     await new Promise<void>(resolve=>{
         chp.exec('git submodule update --init ' + item.module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to initialize submodule ' + item.module.name);
                 ext.output(stderr);
-                resolve();
-                return;
+                success = false;
             }
+            resolve();
+        });
+    });
 
-            if (!item.module.branch) {
-                resolve();
-                return;
-            }
+    if (success && item.module.branch) {
+        status.text = '$(sync~spin) Checking out branch ' + item.module.branch + ' for submodule ' + item.module.name;
+        status.show();
 
+        await new Promise<void>(resolve=>{
             let path = vscode.Uri.joinPath(wsp.first()!.uri, item.module.path!).fsPath;
             chp.exec('git checkout ' + item.module.branch, { cwd: path }, (error, stdout, stderr)=>{
                 if (error?.code) {
-                    vscode.window.showErrorMessage('Failed to checkout branch ' + item.module.branch + ' for submodule ' + item.module.name);
+                    vscode.window.showErrorMessage('Failed to check out branch ' + item.module.branch + ' for submodule ' + item.module.name);
                     ext.output(stderr);
-                } else {
-                    vscode.window.showInformationMessage('Submodule ' + item.module.name + ' has been initialized');
+                    success = false;
                 }
                 resolve();
             });
         });
-    });
+    }
+
+    if (success) {
+        vscode.window.showInformationMessage('Submodule ' + item.module.name + ' has been initialized');
+    }
+
     status.hide();
 }
 
@@ -187,7 +200,7 @@ export async function updateAll() {
     status.text = '$(sync~spin) Updating submodules';
     status.show();
 
-    return new Promise<void>((resolve)=>{
+    await new Promise<void>(resolve=>{
         chp.exec('git submodule update --remote --rebase', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to update submodules');
@@ -213,7 +226,7 @@ export async function update(uri: vscode.Uri) {
     status.text = '$(sync~spin) Updating submodule ' + relative;
     status.show();
 
-    return new Promise<void>((resolve)=>{
+    await new Promise<void>(resolve=>{
         chp.exec('git submodule update --remote --rebase ' + relative, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to update submodule');
@@ -238,7 +251,7 @@ export async function remove(uri: vscode.Uri) {
     status.text = '$(sync~spin) Removing submodule ' + relative;
     status.show();
 
-    return new Promise<void>((resolve)=>{
+    await new Promise<void>(resolve=>{
         chp.exec('git rm -f ' + uri.fsPath, { cwd: wsp.first()!.uri.fsPath }, async(error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to remove submodule');
