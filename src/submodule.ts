@@ -146,7 +146,7 @@ export async function init() {
         return;
     }
 
-    let item = await vscode.window.showQuickPick(items, { title: 'Pick up submodule to initialize'});
+    let item = await vscode.window.showQuickPick(items, { title: 'Pick up submodule to initialize'}) as ModuleItem;
     if (!item) {
         return;
     }
