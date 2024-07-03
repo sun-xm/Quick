@@ -9,7 +9,7 @@ export class Thread {
         if (this.worker) {
             throw new Error('Thread is already running. Use new thread object to start a new thread');
         }
-        this.worker = new threads.Worker(file, { workerData: param, stdin: true, stdout: true, stderr: false });
+        this.worker = new threads.Worker(file, { workerData: param });
         this.worker.on('error', (error)=>{
             console.error('Thread "' + (this.name ?? '<no_name>') + '" throws an error:\n' + error);
         });
@@ -19,24 +19,21 @@ export class Thread {
     }
 
     notify(data: any) {
-        this.worker?.stdin?.write(JSON.stringify(data));
+        this.worker?.postMessage(data);
     }
 
     onData(ondata: (data: any)=>void) {
-        this.worker?.stdout.on('data', (data)=>{
-            if (Buffer.isBuffer(data)) {
-                ondata(JSON.parse(data.toString()));
-            }
-        });
+        this.worker?.removeAllListeners('message');
+        this.worker?.on('message', ondata);
     }
 
     onExit(onexit: (code: number | undefined)=>void) {
-        this.worker?.on('exit', (code)=>{
-            onexit(code);
-        });
+        this.worker?.removeAllListeners('exit');
+        this.worker?.on('exit', onexit);
     }
 
     onError(onerror: (error: Error)=>void) {
+        this.worker?.removeAllListeners('error');
         this.worker?.on('error', onerror);
     }
 
@@ -56,7 +53,6 @@ export class Thread {
             reject(error);
         });
         this.worker.on('exit', (code)=>{
-            this.worker = undefined;
             Thread.instances.delete(this);
         });
 
@@ -73,11 +69,13 @@ export class Thread {
 }
 
 export class Current {
-    data(data: any) {
-        process.stdout.write(JSON.stringify(data));
+    main(proc: ()=>void) {
+        if (!this.isMain()) {
+            proc();
+        }
     }
 
-    exit(code: number) {
+    exit(code?: number) {
         process.exit(code);
     }
 
@@ -85,12 +83,17 @@ export class Current {
         return threads.workerData;
     }
 
+    isMain() {
+        return threads.isMainThread;
+    }
+
+    data(data: any) {
+        threads.parentPort?.postMessage(data);
+    }
+
     onNotify(onnotify: (data: any)=>void) {
-        process.stdin.on('data', (data)=>{
-            if (Buffer.isBuffer(data)) {
-                onnotify(JSON.parse(data.toString()));
-            }
-        });
+        threads.parentPort?.removeAllListeners('message');
+        threads.parentPort?.on('message', onnotify);
     }
 }
 

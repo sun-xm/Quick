@@ -1,18 +1,26 @@
 import * as threads from './threads';
 
 const thread = new threads.Current();
+thread.main(()=>{
+	thread.data({ data: 'This is some data' });
+	thread.data({ error: 'This is an error' });
 
-thread.onNotify((notify)=>{
-	if (notify.message) {
-		console.log(notify.message);
-	}
-	else if (notify.exit) {
-		thread.exit(0);
-	}
+	wait(5000);
+	thread.onNotify((notify)=>{
+		if (notify.message) {
+			console.log(notify.message);
+		}
+		else if (notify.exit) {
+			thread.exit(0);
+		}
+	});
 });
 
-thread.data({ data: 'This is some data' });
-thread.data({ error: 'This is an error' });
+function wait(timeout: number) {
+	const sab = new SharedArrayBuffer(16);
+	const int32 = new Int32Array(sab);
+	Atomics.wait(int32, 0, 0, timeout);
+}
 
 export function test() {
 	let thread = new threads.Thread('TEST');
