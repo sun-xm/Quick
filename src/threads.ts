@@ -77,6 +77,10 @@ export class Current {
         process.stdout.write(JSON.stringify(data));
     }
 
+    exit(code: number) {
+        process.exit(code);
+    }
+
     param() {
         return threads.workerData;
     }
