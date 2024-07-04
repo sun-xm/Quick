@@ -1,20 +1,13 @@
 import * as threads from 'worker_threads';
 
 export class Thread {
-    constructor(name?: string) {
-        this.name = name;
-    }
-
-    exec<P>(file: string, param?: P) {
-        if (this.worker) {
-            throw new Error('Thread is already running. Use new thread object to start a new thread');
-        }
+    constructor(file: string, param?: any) {
         this.worker = new threads.Worker(file, { workerData: param });
         this.worker.on('error', (error)=>{
-            console.error('Thread "' + (this.name ?? '<no_name>') + '" throws an error:\n' + error);
+            console.error('Thread id=<' + (this.worker!.threadId) + '> throws an error:\n' + error);
         });
         this.worker.on('exit', (code)=>{
-            console.debug('Thread "' + (this.name ?? '<no_name>') + '" exited with code ' + code);
+            console.debug('Thread id=<' + (this.worker!.threadId) + '> exited with code ' + code);
         });
     }
 
@@ -37,38 +30,14 @@ export class Thread {
         this.worker?.on('error', onerror);
     }
 
-    oneOff<T, P>(proc: (param?: P)=>T, param?: P): Promise<T> {
-        let resolve: (value: any)=>void;
-        let reject:  (error: any)=>void;
-        let result = new Promise<T>((rsv, rej)=>{
-            resolve = rsv;
-            reject  = rej;
-        });
-
-        this.worker = new threads.Worker(__filename, { workerData: param });
-        this.worker.on('message', (result)=>{
-            resolve(result);
-        });
-        this.worker.on('error', (error)=>{
-            reject(error);
-        });
-        this.worker.on('exit', (code)=>{
-            Thread.instances.delete(this);
-        });
-
-        Thread.instances.add(this);
-        this.worker.postMessage(proc.toString());
-
-        return result;
-    }
-
-    private name:   string | undefined;
-    private worker: threads.Worker | undefined;
-
-    private static instances = new Set();
+    private worker: threads.Worker;
 }
 
-export class Current {
+class Current {
+    id() {
+        return threads.threadId;
+    }
+
     main(proc: ()=>void) {
         if (!this.isMain()) {
             proc();
@@ -95,12 +64,40 @@ export class Current {
         threads.parentPort?.removeAllListeners('message');
         threads.parentPort?.on('message', onnotify);
     }
+
+    static current: Current | undefined;
+}
+
+export function current() {
+    if (!Current.current) {
+        Current.current = new Current;
+    }
+    return Current.current;
+}
+
+class Holdup {
+    static instances = new Set();
 }
 
 export function exec<T>(proc: ()=>T) : Promise<T>;
 export function exec<T, P>(proc: (param:  P)=>T, param:  P): Promise<T>;
 export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
-    return (new Thread).oneOff(proc, param);
+    let resolve: (value: any)=>void;
+    let reject:  (error: any)=>void;
+    let result = new Promise<T>((rsv, rej)=>{
+        resolve = rsv;
+        reject  = rej;
+    });
+
+    let worker = new threads.Worker(__filename, { workerData: param });
+    worker.on('message', result=>resolve(result));
+    worker.on('error', error=>reject(error));
+    worker.on('exit', code=>Holdup.instances.delete(worker));
+
+    Holdup.instances.add(worker);
+    worker.postMessage(proc.toString());
+
+    return result;
 }
 
 // One-off procedure

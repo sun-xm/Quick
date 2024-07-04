@@ -1,6 +1,6 @@
 import * as threads from './threads';
 
-const thread = new threads.Current();
+const thread = threads.current();
 thread.main(()=>{
 	thread.data({ data: 'This is some data' });
 	thread.data({ error: 'This is an error' });
@@ -23,9 +23,7 @@ function wait(timeout: number) {
 }
 
 export function test() {
-	let thread = new threads.Thread('TEST');
-	thread.exec(__filename);
-
+	let thread = new threads.Thread(__filename);
 	thread.onData((data)=>{
 		if (data.data) {
 			console.log(data.data);
@@ -41,5 +39,5 @@ export function test() {
 
 export async function exec() {
 	console.log(await threads.exec(()=>{ return 'Hello'; }));
-	console.log(await threads.exec((n: number)=>{ return n * n; }, 3));
+	console.log(await threads.exec((n)=>{ return n * n; }, 3));
 }
