@@ -4,8 +4,8 @@ import * as config from './config';
 import * as designer from './designer';
 import * as electron from './electron';
 import * as housekeep from './housekeep';
-import * as submodule from './submodule';
 import * as workspace from './workspace';
+import * as submodule from './submodule';
 
 export function activate(context: vscode.ExtensionContext) {
 	setStorage(context.storageUri);

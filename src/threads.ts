@@ -3,12 +3,21 @@ import * as threads from 'worker_threads';
 export class Thread {
     constructor(file: string, param?: any) {
         this.worker = new threads.Worker(file, { workerData: param });
+        this.thread = this.worker.threadId;
         this.worker.on('error', (error)=>{
-            console.error('Thread id=<' + (this.worker!.threadId) + '> throws an error:\n' + error);
+            console.error('Thread <id=' + this.id() + '> throws an error:\n' + error.stack);
         });
         this.worker.on('exit', (code)=>{
-            console.debug('Thread id=<' + (this.worker!.threadId) + '> exited with code ' + code);
+            console.debug('Thread <id=' + this.id() + '> exited with code ' + code);
         });
+    }
+
+    id() {
+        return this.thread;
+    }
+
+    isAlive() {
+        return -1 != this.worker.threadId;
     }
 
     notify(data: any) {
@@ -31,6 +40,7 @@ export class Thread {
     }
 
     private worker: threads.Worker;
+    private thread: number;
 }
 
 class Current {
@@ -75,10 +85,8 @@ export function current() {
     return Current.current;
 }
 
-class Holdup {
-    static instances = new Set();
-}
 
+const KEEP_ALIVE = new Set<threads.Worker>();
 export function exec<T>(proc: ()=>T) : Promise<T>;
 export function exec<T, P>(proc: (param:  P)=>T, param:  P): Promise<T>;
 export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
@@ -92,9 +100,9 @@ export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
     let worker = new threads.Worker(__filename, { workerData: param });
     worker.on('message', result=>resolve(result));
     worker.on('error', error=>reject(error));
-    worker.on('exit', code=>Holdup.instances.delete(worker));
+    worker.on('exit', code=>KEEP_ALIVE.delete(worker));
 
-    Holdup.instances.add(worker);
+    KEEP_ALIVE.add(worker);
     worker.postMessage(proc.toString());
 
     return result;

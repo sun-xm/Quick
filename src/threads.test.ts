@@ -2,13 +2,15 @@ import * as threads from './threads';
 
 const thread = threads.current();
 thread.main(()=>{
-	thread.data({ data: 'This is some data' });
-	thread.data({ error: 'This is an error' });
+	thread.data({ message: 'Thread is up' });
 
 	wait(5000);
 	thread.onNotify((notify)=>{
 		if (notify.message) {
-			console.log(notify.message);
+			thread.data({ message: 'Message received: ' +  notify.message});
+		}
+		else if (notify.data && 'array' === notify.data.type) {
+			thread.data({ message: 'Data received: ' + notify.data.payload[0]});
 		}
 		else if (notify.exit) {
 			thread.exit(0);
@@ -25,15 +27,14 @@ function wait(timeout: number) {
 export function test() {
 	let thread = new threads.Thread(__filename);
 	thread.onData((data)=>{
-		if (data.data) {
-			console.log(data.data);
-		}
-		else if (data.error) {
-			console.error(data.error);
-		}
+		console.log(data.message);
 	});
 
+	let arr = new Int32Array(new SharedArrayBuffer(4));
+	arr[0] = 12345;
+
 	thread.notify({ message: 'Hello' });
+	thread.notify({ data: { type: 'array', payload: arr } });
 	thread.notify({ exit: true });
 }
 
