@@ -109,10 +109,10 @@ export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
 }
 
 // One-off procedure
-if (!threads.isMainThread) {
+current().main(()=>{
     threads.parentPort?.on('message', (p)=>{
         let proc = eval(`(${p})`);
         threads.parentPort?.postMessage(proc(threads.workerData));
         process.exit(0);
     });
-}
+});
