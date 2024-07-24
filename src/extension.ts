@@ -9,6 +9,7 @@ import * as submodule from './submodule';
 
 export function activate(context: vscode.ExtensionContext) {
 	setStorage(context.storageUri);
+	setAutoHide();
 
 	if (workspace.first()) {
 		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(workspace.first()!.uri, '.gitmodules').fsPath);
@@ -78,36 +79,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>{
 		submodule.remove(uri);
 	}));
-
-	// auto hide panel
-	vscode.window.onDidChangeTextEditorSelection(selection=>{
-		if (!config.panelAutoHide()) {
-			return;
-		}
-
-		if (vscode.TextEditorSelectionChangeKind.Mouse != selection.kind) {
-			return;
-		}
-
-		if (1 != selection.selections.length) {
-			return;
-		}
-
-		if (!selection.selections[0].isEmpty) {
-			return;
-		}
-
-		let name = vscode.window.activeTextEditor?.document.fileName;
-		if (!name?.includes('.') && !name?.includes('\\') && !name?.includes('/')) {
-			return;
-		}
-
-		if (name.startsWith('extension-output-ms-vscode.')) {
-			return;
-		}
-
-		vscode.commands.executeCommand('workbench.action.closePanel');
-	});
 }
 
 export async function deactivate() {
@@ -153,6 +124,41 @@ function setStorage(uri: vscode.Uri | undefined) {
 		console.debug(wspStorage);
 		console.debug(usrStorage);
     }
+}
+
+function setAutoHide() {
+	vscode.window.onDidChangeTextEditorSelection(selection=>{
+		if (!config.panelAutoHide()) {
+			return;
+		}
+
+		if (vscode.debug.activeDebugSession) {
+			return;
+		}
+
+		if (vscode.TextEditorSelectionChangeKind.Mouse != selection.kind) {
+			return;
+		}
+
+		if (1 != selection.selections.length) {
+			return;
+		}
+
+		if (!selection.selections[0].isEmpty) {
+			return;
+		}
+
+		let name = vscode.window.activeTextEditor?.document.fileName;
+		if (!name?.includes('.') && !name?.includes('\\') && !name?.includes('/')) {
+			return;
+		}
+
+		if (name.startsWith('extension-output-ms-vscode.')) {
+			return;
+		}
+
+		vscode.commands.executeCommand('workbench.action.closePanel');
+	});
 }
 
 let watcher: vscode.FileSystemWatcher;
