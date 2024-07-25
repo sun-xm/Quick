@@ -4,8 +4,9 @@ import * as config from './config';
 import * as designer from './designer';
 import * as electron from './electron';
 import * as housekeep from './housekeep';
-import * as workspace from './workspace';
+import * as mywebview from './mywebview';
 import * as submodule from './submodule';
+import * as workspace from './workspace';
 
 export function activate(context: vscode.ExtensionContext) {
 	setStorage(context.storageUri);
@@ -78,6 +79,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>{
 		submodule.remove(uri);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', async()=>{
+		mywebview.start();
 	}));
 }
 

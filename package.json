@@ -75,6 +75,10 @@
 			{
 				"command": "quick.removeSubmodule",
 				"title": "Quick: Remove Git Submodule"
+			},
+			{
+				"command": "quick.webview",
+				"title": "Quick: Test webview"
 			}
 		],
 		"configuration": {
