@@ -45,6 +45,11 @@ export function activate(context: vscode.ExtensionContext) {
 		cmake.csLib(context);
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeTargets', async()=>{
+		await vscode.commands.executeCommand('cmake.setDefaultTarget');
+		vscode.commands.executeCommand('cmake.selectLaunchTarget');
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.electronApp', ()=>{
 		electron.app(context);
 	}));
