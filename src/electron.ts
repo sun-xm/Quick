@@ -2,10 +2,6 @@ import * as vscode from 'vscode';
 import * as wsp from './workspace';
 import { copyText, createFolder } from './copy';
 
-async function isEmpty(folder: vscode.Uri) {
-    return 0 == (await vscode.workspace.fs.readDirectory(folder)).length;
-}
-
 export async function app(context: vscode.ExtensionContext) {
     if (!wsp.first()) {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
@@ -21,12 +17,12 @@ export async function app(context: vscode.ExtensionContext) {
     let rs = context.extensionUri.path + '/res/electron';
 
     await copyText(`${rs}/_gitignore`, `${ws}/.gitignore`);
-    await copyText(`${rs}/package.json_`, `${ws}/package.json`, [[/__name__/g, nm]]);
-    await copyText(`${rs}/package-lock.json_`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
-    await copyText(`${rs}/tsconfig.json_`, `${ws}/tsconfig.json`);
+    await copyText(`${rs}/package.json`, `${ws}/package.json`, [[/__name__/g, nm]]);
+    await copyText(`${rs}/package-lock.json`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
+    await copyText(`${rs}/tsconfig.json`, `${ws}/tsconfig.json`);
 
     await createFolder(`${ws}/.vscode`);
-    await copyText(`${rs}/.vscode/launch.json_`, `${ws}/.vscode/launch.json`);
+    await copyText(`${rs}/.vscode/launch.json`, `${ws}/.vscode/launch.json`);
 
     await createFolder(`${ws}/css`);
     await copyText(`${rs}/css/about.css`,  `${ws}/css/about.css`);
@@ -56,15 +52,15 @@ export async function app(context: vscode.ExtensionContext) {
     await copyText(`${rs}/img/submenu.svg`,    `${ws}/img/submenu.svg`);
 
     await createFolder(`${ws}/src`);
-    await copyText(`${rs}/src/about.ts_`,      `${ws}/src/about.ts`);
-    await copyText(`${rs}/src/index.ts_`,      `${ws}/src/index.ts`);
-    await copyText(`${rs}/src/title.ts_`,      `${ws}/src/title.ts`);
-    await copyText(`${rs}/src/content.ts_`,    `${ws}/src/content.ts`);
-    await copyText(`${rs}/src/status.ts_`,     `${ws}/src/status.ts`);
-    await copyText(`${rs}/src/main.ts_`,       `${ws}/src/main.ts`);
-    await copyText(`${rs}/src/menu.ts_`,       `${ws}/src/menu.ts`);
-    await copyText(`${rs}/src/module.ts_`,     `${ws}/src/module.ts`);
-    await copyText(`${rs}/src/dynamic.ts_`,    `${ws}/src/dynamic.ts`);
+    await copyText(`${rs}/src/about.ts`,      `${ws}/src/about.ts`);
+    await copyText(`${rs}/src/index.ts`,      `${ws}/src/index.ts`);
+    await copyText(`${rs}/src/title.ts`,      `${ws}/src/title.ts`);
+    await copyText(`${rs}/src/content.ts`,    `${ws}/src/content.ts`);
+    await copyText(`${rs}/src/status.ts`,     `${ws}/src/status.ts`);
+    await copyText(`${rs}/src/main.ts`,       `${ws}/src/main.ts`);
+    await copyText(`${rs}/src/menu.ts`,       `${ws}/src/menu.ts`);
+    await copyText(`${rs}/src/module.ts`,     `${ws}/src/module.ts`);
+    await copyText(`${rs}/src/dynamic.ts`,    `${ws}/src/dynamic.ts`);
 
     vscode.tasks.executeTask(new vscode.Task({ type: 'shell'}, vscode.TaskScope.Workspace, 'npm install', 'npm', new vscode.ShellExecution('npm install')));
 }
@@ -89,7 +85,7 @@ export async function mod(context: vscode.ExtensionContext) {
     let file = name.toLowerCase() + '.ts';
     let path = `${ws}/` + (dest.length > 0 ? `${dest}/${file}` : `${file}`);
 
-    await copyText(`${rs}/src/new_module.ts_`, path, [[/__module__/g, name]]);
+    await copyText(`${rs}/src/new_module.ts`, path, [[/__module__/g, name]]);
     vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false });
     vscode.window.showInformationMessage(`Electron module "${name}" added`);
 }
