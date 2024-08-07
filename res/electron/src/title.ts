@@ -1,5 +1,5 @@
 import { remote } from 'electron';
-import { Module } from './module'
+import { Module } from './module';
 import * as Menu from './menu';
 
 export function module(elem: Element) {

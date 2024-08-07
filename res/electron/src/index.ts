@@ -1,7 +1,7 @@
 import { remote } from 'electron';
 import { Module } from './module';
-import { Title } from './title'
-import { Content } from './content'
+import { Title } from './title';
+import { Content } from './content';
 import { Status } from './status';
 
 function onCmdExit() {

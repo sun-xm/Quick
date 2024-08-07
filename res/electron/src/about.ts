@@ -1,4 +1,4 @@
-import { remote } from 'electron'
+import { remote } from 'electron';
 
 window.addEventListener('load', async ()=>{
     document.getElementById('close')?.addEventListener('click', ()=>{
