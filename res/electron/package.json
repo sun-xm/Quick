@@ -4,6 +4,7 @@
   "description": "",
   "main": "out/main.js",
   "scripts": {
+    "compile": "tsc -p ./",
     "start": "tsc -p ./ && electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +12,7 @@
   "author": "author",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^11.2.1"
+    "@electron/remote": "^2.1.2",
+    "electron": "^19.1.9"
   }
 }

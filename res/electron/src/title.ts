@@ -1,6 +1,6 @@
-import { remote } from 'electron';
-import { Module } from './module';
-import * as Menu from './menu';
+import * as remote from '@electron/remote';
+import * as Menu   from './menu';
+import { Module }  from './module';
 
 export function module(elem: Element) {
     return new Title(elem);

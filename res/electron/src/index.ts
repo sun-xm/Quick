@@ -1,18 +1,20 @@
-import { remote } from 'electron';
-import { Module } from './module';
-import { Title } from './title';
-import { Content } from './content';
-import { Status } from './status';
+import * as remote     from '@electron/remote';
+import { ipcRenderer } from 'electron';
+import { Module }      from './module';
+import { Title }       from './title';
+import { Content }     from './content';
+import { Status }      from './status';
 
 function onCmdExit() {
     remote.getCurrentWindow().close();
 }
 
 function onCmdAbout() {
-    let win = new remote.BrowserWindow({ width: 400, height: 300, frame: false, parent: remote.getCurrentWindow(), show: false, modal: true, resizable: false, minimizable: false, webPreferences: { nodeIntegration: true, enableRemoteModule: true }});
+    let win = new remote.BrowserWindow({ width: 400, height: 300, frame: false, parent: remote.getCurrentWindow(), show: false, modal: true, resizable: false, minimizable: false, webPreferences: { nodeIntegration: true, contextIsolation: false }});
     win.once('ready-to-show', ()=>win.show());
     win.setMenu(null);
     win.loadFile('html/about.html');
+    ipcRenderer.send('enable-remote', win.webContents.id);
 }
 
 window.addEventListener('load', async ()=>{
