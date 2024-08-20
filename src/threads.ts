@@ -48,9 +48,9 @@ class Current {
         return threads.threadId;
     }
 
-    main(proc: ()=>void) {
+    proc(procedure: ()=>void) {
         if (!this.isMain()) {
-            proc();
+            procedure();
         }
     }
 
@@ -109,7 +109,7 @@ export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
 }
 
 // One-off procedure
-current().main(()=>{
+current().proc(()=>{
     threads.parentPort?.on('message', (p)=>{
         let proc = eval(`(${p})`);
         threads.parentPort?.postMessage(proc(threads.workerData));

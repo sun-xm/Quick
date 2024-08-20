@@ -3,7 +3,7 @@ import * as threads from '../../threads';
 
 // Thread procedure
 const thread = threads.current();
-thread.main(()=>{
+thread.proc(()=>{
     thread.data({ startup: 'Thread is up' });
 
     thread.onNotify((notify)=>{
