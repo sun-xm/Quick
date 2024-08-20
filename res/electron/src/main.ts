@@ -4,7 +4,7 @@ import * as remote from '@electron/remote/main';
 remote.initialize();
 
 function createWindow() {
-    let win = new BrowserWindow({ width: 800, height: 600, frame: false, show: false, webPreferences: { nodeIntegration: true, contextIsolation: false }});
+    const win = new BrowserWindow({ width: 800, height: 600, frame: false, show: false, webPreferences: { nodeIntegration: true, contextIsolation: false }});
     win.once('ready-to-show', ()=>win.show());
     win.setMenu(null);
     win.loadFile('html/index.html');

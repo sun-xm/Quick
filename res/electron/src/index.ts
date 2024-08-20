@@ -10,7 +10,7 @@ function onCmdExit() {
 }
 
 function onCmdAbout() {
-    let win = new remote.BrowserWindow({ width: 400, height: 300, frame: false, parent: remote.getCurrentWindow(), show: false, modal: true, resizable: false, minimizable: false, webPreferences: { nodeIntegration: true, contextIsolation: false }});
+    const win = new remote.BrowserWindow({ width: 400, height: 300, frame: false, parent: remote.getCurrentWindow(), show: false, modal: true, resizable: false, minimizable: false, webPreferences: { nodeIntegration: true, contextIsolation: false }});
     win.once('ready-to-show', ()=>win.show());
     win.setMenu(null);
     win.loadFile('html/about.html');
@@ -18,15 +18,15 @@ function onCmdAbout() {
 }
 
 window.addEventListener('load', async ()=>{
-    let title = await Module.load<Title>(document.getElementById('title')!);
+    const title = await Module.load<Title>(document.getElementById('title')!);
     await title?.onload();
 
     title?.file?.onCommand('exit', onCmdExit);
     title?.help?.onCommand('about', onCmdAbout);
 
-    title?.color?.onCommand('red',   (i)=>Status.show('Red is selected'));
-    title?.color?.onCommand('blue',  (i)=>Status.show('Blue is selected'));
-    title?.color?.onCommand('green', (i)=>Status.show('Green is selected'));
+    title?.color?.onCommand('red',   ()=>Status.show('Red is selected'));
+    title?.color?.onCommand('blue',  ()=>Status.show('Blue is selected'));
+    title?.color?.onCommand('green', ()=>Status.show('Green is selected'));
 
     title?.option?.onCommand('opt1', (i)=>Status.show('Option1 is ' + (i.isChecked() ? 'checked' : 'unchecked')));
     title?.option?.onCommand('opt2', (i)=>Status.show('Option2 is ' + (i.isChecked() ? 'checked' : 'unchecked')));

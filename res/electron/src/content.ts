@@ -1,5 +1,5 @@
 import { Module } from './module';
-import { Popup } from './menu';
+import { Popup }  from './menu';
 
 export function module(elem: Element) {
     return new Content(elem);

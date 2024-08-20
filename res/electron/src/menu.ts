@@ -1,10 +1,10 @@
-const Group = 'group';
-const Check = 'check';
-const Radio = 'radio';
-const Checked = 'checked';
-const Disabled = 'disabled';
+const GROUP = 'group';
+const CHECK = 'check';
+const RADIO = 'radio';
+const CHECKED = 'checked';
+const DISABLED = 'disabled';
 
-function px(n : Number)
+function px(n : number)
 {
     return `${n}px`;
 }
@@ -26,7 +26,7 @@ abstract class Menu {
     }
 
     public onCommand(id: string, handler: (i: Item, e: Event)=>void) {
-        let item = this.items.get(id);
+        const item = this.items.get(id);
         if (!item) {
             console.debug('Menu.onCommand(): item not found');
             return;
@@ -72,7 +72,7 @@ abstract class Menu {
             this.cont.insertBefore(elem, insertBefore);
         }
 
-        let i = new Item(id, elem, this);
+        const i = new Item(id, elem, this);
         this.items.set(id, i);
     }
 
@@ -112,13 +112,13 @@ abstract class Menu {
             this.cont.insertBefore(elem, insertBefore);
         }
 
-        let i = new Item(elem.id, elem, this);
+        const i = new Item(elem.id, elem, this);
         i.submenu = menu;
         this.items.set(id, i);
     }
 
     public remove(id: string) {
-        let item = this.items.get(id);
+        const item = this.items.get(id);
         if (item) {
             item.element.remove();
             this.items.delete(id);
@@ -147,7 +147,7 @@ abstract class Menu {
 
     public removeSeparator(id: string) {
         for (let i = 0; i < this.cont.children.length; i++) {
-            let c = this.cont.children[i];
+            const c = this.cont.children[i];
             if (id === c.id) {
                 c.remove();
                 break;
@@ -208,9 +208,9 @@ abstract class Menu {
 
         this.cont.innerHTML = html;
 
-        let items = this.cont.getElementsByClassName('item');
+        const items = this.cont.getElementsByClassName('item');
         for (let i = 0; i < items.length; i++) {
-            let item = items[i];
+            const item = items[i];
 
             if (!item.id) {
                 console.debug('Menu.load(): item id is missing');
@@ -236,9 +236,9 @@ abstract class Menu {
             this.items.set(item.id, new Item(item.id, item, this));
         }
 
-        let menus = this.cont.getElementsByClassName('menu');
+        const menus = this.cont.getElementsByClassName('menu');
         for (let i = 0; i < menus.length; i++) {
-            let item = menus[i];
+            const item = menus[i];
 
             if (!item.id) {
                 console.debug('Menu.load(): item id is missing');
@@ -260,7 +260,7 @@ abstract class Menu {
                 continue;
             }
 
-            let mitem = new Item(item.id, item, this);
+            const mitem = new Item(item.id, item, this);
             mitem.submenu = await Popup.create({ element: item, attribute: 'path' });
 
             item.addEventListener('mouseenter', this.onEnterMenu.bind(this));
@@ -274,14 +274,18 @@ abstract class Menu {
             he = he.parentElement!;
         }
 
-        let item = this.items.get(he.id);
+        const item = this.items.get(he.id);
         if (item) {
             if (!item.isEnabled()) {
                 return;
             }
 
             if (item.isCheckable()) {
-                item.isChecked() ? item.uncheck() : item.check();
+                if (item.isChecked()) {
+                    item.uncheck();
+                } else {
+                    item.check();
+                }
                 item.handler?.(item, e);
 
             } else if (item.isRadio()) {
@@ -297,7 +301,7 @@ abstract class Menu {
         Menu.hide();
     }
 
-    protected onEnterItem(e: Event) {
+    protected onEnterItem() {
         if (null != this.subm) {
             this.subm.hideMenu();
             this.subm = null;
@@ -305,17 +309,13 @@ abstract class Menu {
     }
 
     protected onEnterMenu(e: Event) {
-        let id = (<HTMLElement>e.target).id;
-        let item = this.items.get(id);
+        const id = (<HTMLElement>e.target).id;
+        const item = this.items.get(id);
 
         if (this.subm != null && this.subm != item?.submenu) {
             this.subm.hideMenu();
             this.subm = null;
         }
-
-        let en = item?.isEnabled();
-        let su = item?.submenu;
-        let ts = this.subm;
 
         if (item?.isEnabled() && null != item.submenu && null == this.subm) {
             item.submenu.sour = <HTMLElement>e.target;
@@ -329,7 +329,7 @@ abstract class Menu {
     }
 
     protected static createElement(html: string) {
-        let temp = document.createElement('div');
+        const temp = document.createElement('div');
         temp.innerHTML = html;
 
         if (null == <HTMLElement>temp.firstChild) {
@@ -351,7 +351,7 @@ abstract class Menu {
 
 export class Dropdown extends Menu {
     public static async create(source: HTMLElement, content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }): Promise<Dropdown> {
-        let m = new Dropdown();
+        const m = new Dropdown();
         await m.load({ html: content.html, path: content.path, element: content.element ?? source, attribute: content.attribute });
 
         m.sour = source;
@@ -373,7 +373,7 @@ export class Dropdown extends Menu {
     protected showMenu() {
         this.sour!.classList.add('active');
 
-        let r = this.sour!.getBoundingClientRect();
+        const r = this.sour!.getBoundingClientRect();
         this.cont.style.top  = px(r.top + r.height);
         this.cont.style.left = px(r.left);
         super.showMenu();
@@ -407,7 +407,7 @@ export class Dropdown extends Menu {
 
 export class Popup extends Menu {
     public static async create(content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }) : Promise<Popup> {
-        let m = new Popup();
+        const m = new Popup();
         await m.load(content);
 
         m.cont.classList.add('popup-menu');
@@ -426,8 +426,8 @@ export class Popup extends Menu {
         Menu.curr = this;
         super.showMenu();
 
-        let r = this.cont.getBoundingClientRect();
-        let b = boundry.getBoundingClientRect();
+        const r = this.cont.getBoundingClientRect();
+        const b = boundry.getBoundingClientRect();
 
         if (x + r.width > b.x + b.width) {
             x = b.x + b.width - r.width;
@@ -445,7 +445,7 @@ export class Popup extends Menu {
         if (null == this.sour) {
             return;
         }
-        let r = this.sour.getBoundingClientRect();
+        const r = this.sour.getBoundingClientRect();
         this.cont.style.top  = px(r.top);
         this.cont.style.left = px(r.left + r.width);
         this.cont.style.zIndex = (+this.sour.style.zIndex + 1).toString();
@@ -466,23 +466,23 @@ export class Item {
     }
 
     isEnabled() {
-        return !this.element.classList.contains(Disabled);
+        return !this.element.classList.contains(DISABLED);
     }
 
     enable() {
-        this.element.classList.remove(Disabled);
+        this.element.classList.remove(DISABLED);
     }
 
     disable() {
-        this.element.classList.add(Disabled);
+        this.element.classList.add(DISABLED);
     }
 
     isCheckable() {
-        return this.element.classList.contains(Check);
+        return this.element.classList.contains(CHECK);
     }
 
     isRadio() {
-        return this.element.classList.contains(Radio);
+        return this.element.classList.contains(RADIO);
     }
 
     isChecked() {
@@ -490,30 +490,30 @@ export class Item {
             return false;
         }
 
-        return this.element.classList.contains(Checked);
+        return this.element.classList.contains(CHECKED);
     }
 
     check() {
         if (this.isCheckable()) {
             if (!this.isChecked()) {
-                this.element.classList.add(Checked);
+                this.element.classList.add(CHECKED);
             }
         } else if (this.isRadio()) {
             if (!this.isChecked()) {
                 if (this.group()) {
                     this.menu.uncheckGroup(this.group()!);
                 }
-                this.element.classList.add(Checked);
+                this.element.classList.add(CHECKED);
             }
         }
     }
 
     uncheck() {
-        this.element.classList.remove(Checked);
+        this.element.classList.remove(CHECKED);
     }
 
     group() {
-        return this.element.getAttribute(Group);
+        return this.element.getAttribute(GROUP);
     }
 
     id : string;

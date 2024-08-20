@@ -10,7 +10,7 @@ export class Dynamic {
 
         elem.innerHTML = await (await fetch(path)).text();
 
-        let all: Promise<Element>[] = [];
+        const all: Promise<Element>[] = [];
         for (let i = 0; i < elem.children.length; i++) {
             all.push(Dynamic.process(elem.children[i]));
         }
@@ -29,27 +29,27 @@ export class Dynamic {
             return Promise.reject('Dynamic.replace(): neither path is defined nor element has a valid replace attribute');
         }
 
-        let div = document.createElement('div');
+        const div = document.createElement('div');
         div.innerHTML = await (await fetch(path)).text();
 
-        let rep = await Dynamic.process(div.children[0]);
+        const rep = await Dynamic.process(div.children[0]);
         elem.replaceWith(rep);
 
         return rep;
     }
 
     static async process(elem: Element): Promise<Element> {
-        let inc = elem.getAttribute('include');
+        const inc = elem.getAttribute('include');
         if (inc) {
             return Dynamic.include(elem, inc);
         }
 
-        let rep = elem.getAttribute('replace');
+        const rep = elem.getAttribute('replace');
         if (rep) {
             return Dynamic.replace(elem, rep);
         }
 
-        let all: Promise<Element>[] = [];
+        const all: Promise<Element>[] = [];
 
         for (let i = 0; i < elem.children.length; i++) {
             all.push(Dynamic.process(elem.children[i]));

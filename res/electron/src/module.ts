@@ -14,7 +14,7 @@ export class Module {
             return undefined;
         }
 
-        let div = document.createElement('div');
+        const div = document.createElement('div');
         div.innerHTML = html.html;
 
         if (0 == div.children.length) {
@@ -28,7 +28,7 @@ export class Module {
             return undefined;
         }
 
-        return <M>(await require(module).module(div.children[0]));
+        return <M>((await import(module)).module(div.children[0]));
     }
 
     static async load<M extends Module>(elem: Element, html?: { html?: string, path?: string }, module?: string) {

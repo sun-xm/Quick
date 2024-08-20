@@ -21,8 +21,8 @@ export class Title extends Module {
         this.element.querySelector('#restore.system')?.addEventListener('click', ()=>remote.getCurrentWindow().restore());
 
         remote.getCurrentWindow().on('maximize', ()=>{
-            let r = <HTMLElement>this.element.querySelector('#restore.system');
-            let m = <HTMLElement>this.element.querySelector('#maximize.system');
+            const r = <HTMLElement>this.element.querySelector('#restore.system');
+            const m = <HTMLElement>this.element.querySelector('#maximize.system');
 
             if (r && m) {
                 r.style.display = 'block';
@@ -31,8 +31,8 @@ export class Title extends Module {
         });
 
         remote.getCurrentWindow().on('unmaximize', ()=>{
-            let r = <HTMLElement>this.element.querySelector('#restore.system');
-            let m = <HTMLElement>this.element.querySelector('#maximize.system');
+            const r = <HTMLElement>this.element.querySelector('#restore.system');
+            const m = <HTMLElement>this.element.querySelector('#maximize.system');
 
             if (r && m) {
                 r.style.display = 'none';
