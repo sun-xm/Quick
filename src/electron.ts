@@ -16,10 +16,11 @@ export async function app(context: vscode.ExtensionContext) {
     let ws = wsp.first()!.uri.path;
     let rs = context.extensionUri.path + '/res/electron';
 
-    await copyText(`${rs}/_gitignore`, `${ws}/.gitignore`);
-    await copyText(`${rs}/package.json`, `${ws}/package.json`, [[/__name__/g, nm]]);
+    await copyText(`${rs}/_gitignore`,        `${ws}/.gitignore`);
+    await copyText(`${rs}/eslint.config.mjs`, `${ws}/eslint.config.mjs`);
+    await copyText(`${rs}/_package.json`,     `${ws}/package.json`, [[/__name__/g, nm]]);
     await copyText(`${rs}/package-lock.json`, `${ws}/package-lock.json`, [[/__name__/g, nm]]);
-    await copyText(`${rs}/tsconfig.json`, `${ws}/tsconfig.json`);
+    await copyText(`${rs}/tsconfig.json`,     `${ws}/tsconfig.json`);
 
     await createFolder(`${ws}/.vscode`);
     await copyText(`${rs}/.vscode/launch.json`, `${ws}/.vscode/launch.json`);

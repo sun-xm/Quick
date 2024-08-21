@@ -162,6 +162,7 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
+		"list": "vsce ls --tree",
 		"test": "node ./out/test/runTest.js",
 		"package": "vsce package"
 	},
