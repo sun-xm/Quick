@@ -391,13 +391,14 @@ export class Dropdown extends Menu {
             this.hideMenu();
             Menu.curr = null;
         } else {
-            Menu.curr = this;
+            Menu.hide();
             this.showMenu();
+            Menu.curr = this;
         }
     }
 
     protected onEnterSource() {
-        if (null != Menu.curr) {
+        if (Menu.curr && Menu.curr instanceof Dropdown) {
             Menu.hide();
             Menu.curr = this;
             this.showMenu();
