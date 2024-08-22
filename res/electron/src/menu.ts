@@ -46,9 +46,9 @@ export abstract class Menu {
 
         let elem: HTMLElement;
 
-        if (null != item.html) {
+        if (item.html) {
             elem = Menu.createElement(item.html);
-        } else if (null != item.element) {
+        } else if (item.element) {
             elem = item.element;
         } else {
             throw Error('html and element can not be both absent');
@@ -64,10 +64,10 @@ export abstract class Menu {
         elem.addEventListener('click', this.onClickItem.bind(this));
         elem.addEventListener('mouseenter', this.onEnterItem.bind(this));
 
-        if (null == insertBefore) {
-            this.elm.appendChild(elem);
-        } else {
+        if (insertBefore) {
             this.elm.insertBefore(elem, insertBefore);
+        } else {
+            this.elm.appendChild(elem);
         }
 
         const i = new Item(id, elem, this);
@@ -87,9 +87,9 @@ export abstract class Menu {
 
         let elem: HTMLElement;
 
-        if (null != item.html) {
+        if (item.html) {
             elem = Menu.createElement(item.html);
-        } else if (null != item.element) {
+        } else if (item.element) {
             elem = item.element;
         } else {
             throw Error('html and element can not be both absent');
@@ -104,10 +104,10 @@ export abstract class Menu {
 
         elem.addEventListener('mouseenter', this.onEnterMenu.bind(this));
 
-        if (null == insertBefore) {
-            this.elm.appendChild(elem);
-        } else {
+        if (insertBefore) {
             this.elm.insertBefore(elem, insertBefore);
+        } else {
+            this.elm.appendChild(elem);
         }
 
         const i = new Item(elem.id, elem, this);
@@ -126,9 +126,9 @@ export abstract class Menu {
     addSeparator(item: { html?: string, element?: HTMLElement }, insertBefore?: Node) {
         let elem: HTMLElement;
 
-        if (null != item.html) {
+        if (item.html) {
             elem = Menu.createElement(item.html);
-        } else if (null != item.element) {
+        } else if (item.element) {
             elem = item.element;
         } else {
             throw Error('html and element can not be both absent');
@@ -136,10 +136,10 @@ export abstract class Menu {
 
         elem.classList.add('separator');
 
-        if (null == insertBefore) {
-            this.elm.appendChild(elem);
-        } else {
+        if (insertBefore) {
             this.elm.insertBefore(elem, insertBefore);
+        } else {
+            this.elm.appendChild(elem);
         }
     }
 
@@ -177,14 +177,14 @@ export abstract class Menu {
 
         this.elm.style.left = px(x);
         this.elm.style.top  = px(y);
-        this.elm.style.zIndex = (null != zIndex && undefined != zIndex) ? zIndex.toString() : '';
+        this.elm.style.zIndex = (null != zIndex) ? zIndex.toString() : '';
         this.elm.style.display = 'block';
         this.elm.classList.add('popup-menu');
         this.elm.classList.remove('dropdown-menu');
         this.src = null;
     }
 
-    isDropdown() {
+    protected isDropdown() {
         return this.elm.classList.contains('dropdown-menu');
     }
 
@@ -233,11 +233,11 @@ export abstract class Menu {
     protected async load(content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }) {
         let html: string;
 
-        if (null != content.html) {
+        if (content.html) {
             html = content.html;
-        } else if (null != content.path) {
+        } else if (content.path) {
             html = await (await fetch(content.path)).text();
-        } else if (null != content.element && null != content.attribute) {
+        } else if (content.element && content.attribute) {
             html = await (await fetch(content.element.getAttribute(content.attribute) ?? '')).text();
         }
         else {
@@ -342,7 +342,7 @@ export abstract class Menu {
     }
 
     protected onEnterItem() {
-        if (null != this.sub) {
+        if (this.sub) {
             this.sub.hideMenu();
             this.sub = null;
         }
@@ -357,7 +357,7 @@ export abstract class Menu {
             this.sub = null;
         }
 
-        if (item?.isEnabled() && null != item.submenu && null == this.sub) {
+        if (item?.isEnabled() && item.submenu && !this.sub) {
             item.submenu.src = <HTMLElement>e.target;
             this.sub = item.submenu;
             this.sub.showPopup(item.submenu.src);
@@ -372,7 +372,7 @@ export abstract class Menu {
         const temp = document.createElement('div');
         temp.innerHTML = html;
 
-        if (null == <HTMLElement>temp.firstChild) {
+        if (!<HTMLElement>temp.firstChild) {
             throw Error("Failed to create element from html: " + html);
         }
 
@@ -413,7 +413,7 @@ export class Dropdown extends Menu {
     protected onClickSource(e: Event) {
         e.stopPropagation();
 
-        if (this == Menu.root) {
+        if (this == Menu.root && this.isDropdown()) {
             Menu.root = null;
             this.hideMenu();
         } else {
@@ -424,7 +424,7 @@ export class Dropdown extends Menu {
     }
 
     protected onEnterSource() {
-        if (Menu.root && Menu.root.isDropdown()) {
+        if (Menu.root && (<Dropdown>Menu.root).isDropdown()) {
             Menu.hide();
             Menu.root = this;
             this.showDropdown(this.source);
