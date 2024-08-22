@@ -9,23 +9,21 @@ function px(n : number)
     return `${n}px`;
 }
 
-abstract class Menu {
-    public abstract destroy(): void;
-
-    public static hide() {
-        Menu.curr?.hideMenu();
-        Menu.curr = null;
+export abstract class Menu {
+    static hide() {
+        Menu.root?.hideMenu();
+        Menu.root = null;
     }
 
-    public container() {
-        return this.cont;
+    destroy() {
+        document.body.removeChild(this.elm);
     }
 
-    public item(id: string) {
+    item(id: string) {
         return this.items.get(id);
     }
 
-    public onCommand(id: string, handler: (i: Item, e: Event)=>void) {
+    onCommand(id: string, handler: (i: Item, e: Event)=>void) {
         const item = this.items.get(id);
         if (!item) {
             console.debug('Menu.onCommand(): item not found');
@@ -35,7 +33,7 @@ abstract class Menu {
         item.handler = handler;
     }
 
-    public addItem(id: string, item: { html?: string, element?: HTMLElement }, insertBefore?: Node) {
+    addItem(id: string, item: { html?: string, element?: HTMLElement }, insertBefore?: Node) {
         if (!id) {
             console.debug('Menu.addItem: invalid item id');
             return;
@@ -53,7 +51,7 @@ abstract class Menu {
         } else if (null != item.element) {
             elem = item.element;
         } else {
-            throw 'html and element can not be both absent';
+            throw Error('html and element can not be both absent');
         }
 
         elem.id = id;
@@ -67,16 +65,16 @@ abstract class Menu {
         elem.addEventListener('mouseenter', this.onEnterItem.bind(this));
 
         if (null == insertBefore) {
-            this.cont.appendChild(elem);
+            this.elm.appendChild(elem);
         } else {
-            this.cont.insertBefore(elem, insertBefore);
+            this.elm.insertBefore(elem, insertBefore);
         }
 
         const i = new Item(id, elem, this);
         this.items.set(id, i);
     }
 
-    public addSubmenu(id: string, item: { html?: string, element?: HTMLElement }, menu: Popup, insertBefore?: Node) {
+    addSubmenu(id: string, item: { html?: string, element?: HTMLElement }, menu: Popup, insertBefore?: Node) {
         if (!id) {
             console.debug('Menu.addSubmenu(): invalid menu id');
             return;
@@ -94,7 +92,7 @@ abstract class Menu {
         } else if (null != item.element) {
             elem = item.element;
         } else {
-            throw 'html and element can not be both absent';
+            throw Error('html and element can not be both absent');
         }
 
         elem.id = id;
@@ -107,9 +105,9 @@ abstract class Menu {
         elem.addEventListener('mouseenter', this.onEnterMenu.bind(this));
 
         if (null == insertBefore) {
-            this.cont.appendChild(elem);
+            this.elm.appendChild(elem);
         } else {
-            this.cont.insertBefore(elem, insertBefore);
+            this.elm.insertBefore(elem, insertBefore);
         }
 
         const i = new Item(elem.id, elem, this);
@@ -117,7 +115,7 @@ abstract class Menu {
         this.items.set(id, i);
     }
 
-    public remove(id: string) {
+    remove(id: string) {
         const item = this.items.get(id);
         if (item) {
             item.element.remove();
@@ -125,7 +123,7 @@ abstract class Menu {
         }
     }
 
-    public addSeparator(item: { html?: string, element?: HTMLElement }, insertBefore?: Node) {
+    addSeparator(item: { html?: string, element?: HTMLElement }, insertBefore?: Node) {
         let elem: HTMLElement;
 
         if (null != item.html) {
@@ -133,21 +131,21 @@ abstract class Menu {
         } else if (null != item.element) {
             elem = item.element;
         } else {
-            throw 'html and element can not be both absent';
+            throw Error('html and element can not be both absent');
         }
 
         elem.classList.add('separator');
 
         if (null == insertBefore) {
-            this.cont.appendChild(elem);
+            this.elm.appendChild(elem);
         } else {
-            this.cont.insertBefore(elem, insertBefore);
+            this.elm.insertBefore(elem, insertBefore);
         }
     }
 
-    public removeSeparator(id: string) {
-        for (let i = 0; i < this.cont.children.length; i++) {
-            const c = this.cont.children[i];
+    removeSeparator(id: string) {
+        for (let i = 0; i < this.elm.children.length; i++) {
+            const c = this.elm.children[i];
             if (id === c.id) {
                 c.remove();
                 break;
@@ -155,7 +153,7 @@ abstract class Menu {
         }
     }
 
-    public uncheckGroup(group: string) {
+    uncheckGroup(group: string) {
         this.items.forEach((item)=>{
             if (item.isRadio() && group === item.group()) {
                 item.uncheck();
@@ -163,33 +161,73 @@ abstract class Menu {
         });
     }
 
-    protected showMenu() {
-        this.cont.style.display = 'block';
+    show(x: number, y: number, boundry: HTMLElement, zIndex?: number) {
+        Menu.hide();
+        Menu.root = this;
+
+        const r = this.elm.getBoundingClientRect();
+        const b = boundry.getBoundingClientRect();
+
+        if (x + r.width > b.x + b.width) {
+            x = b.x + b.width - r.width;
+        }
+        if (y + r.height > b.y + b.height) {
+            y = b.y + b.height - r.height;
+        }
+
+        this.elm.style.left = px(x);
+        this.elm.style.top  = px(y);
+        this.elm.style.zIndex = (null != zIndex && undefined != zIndex) ? zIndex.toString() : '';
+        this.elm.style.display = 'block';
+        this.elm.classList.add('popup-menu');
+        this.elm.classList.remove('dropdown-menu');
+        this.src = null;
+    }
+
+    isDropdown() {
+        return this.elm.classList.contains('dropdown-menu');
+    }
+
+    protected showDropdown(source: HTMLElement) {
+        source.classList.add('active');
+
+        const r = source.getBoundingClientRect();
+        this.elm.style.top  = px(r.top + r.height);
+        this.elm.style.left = px(r.left);
+        this.elm.style.display = 'block';
+        this.elm.classList.add('dropdown-menu');
+        this.elm.classList.remove('popup-menu');
+        this.src = source;
+    }
+
+    protected showPopup(source: HTMLElement) {
+        const r = source.getBoundingClientRect();
+        this.elm.style.top  = px(r.top);
+        this.elm.style.left = px(r.left + r.width);
+        this.elm.style.zIndex = (source.style.zIndex + 1).toString();
+        this.elm.style.display = 'block';
+        this.elm.classList.add('popup-menu');
+        this.elm.classList.remove('dropdown-menu');
+        this.src = source;
     }
 
     protected hideMenu() {
-        if (null != this.root) {
-            this.root.hideMenu();
-        } else {
-            if (null != this.subm) {
-                this.subm.hideMenu();
-                this.subm = null;
-            }
-
-            this.cont.style.display = 'none';
-        }
+        this.src?.classList.remove('active');
+        this.src = null;
+        this.sub?.hideMenu();
+        this.sub = null;
+        this.elm.style.display = 'none';
     }
 
     protected constructor() {
-        this.root = null;
-        this.subm = null;
-        this.sour = null;
+        this.sub = null;
+        this.src = null;
         this.items = new Map<string, Item>();
 
-        this.cont = document.createElement('div');
-        this.cont.style.display  = 'none';
-        this.cont.style.position = 'absolute';
-        this.cont.addEventListener('click', Menu.onClickContainer);
+        this.elm = document.createElement('div');
+        this.elm.style.display  = 'none';
+        this.elm.style.position = 'absolute';
+        this.elm.addEventListener('click', Menu.onClickContainer);
     }
 
     protected async load(content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }) {
@@ -203,12 +241,12 @@ abstract class Menu {
             html = await (await fetch(content.element.getAttribute(content.attribute) ?? '')).text();
         }
         else {
-            throw 'Either html or path or element and attribute must be provided';
+            throw Error('Either html or path or element and attribute must be provided');
         }
 
-        this.cont.innerHTML = html;
+        this.elm.innerHTML = html;
 
-        const items = this.cont.getElementsByClassName('item');
+        const items = this.elm.getElementsByClassName('item');
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
 
@@ -236,7 +274,7 @@ abstract class Menu {
             this.items.set(item.id, new Item(item.id, item, this));
         }
 
-        const menus = this.cont.getElementsByClassName('menu');
+        const menus = this.elm.getElementsByClassName('menu');
         for (let i = 0; i < menus.length; i++) {
             const item = menus[i];
 
@@ -266,6 +304,8 @@ abstract class Menu {
             item.addEventListener('mouseenter', this.onEnterMenu.bind(this));
             this.items.set(mitem.id, mitem);
         }
+
+        document.body.appendChild(this.elm);
     }
 
     protected onClickItem(e: Event) {
@@ -302,9 +342,9 @@ abstract class Menu {
     }
 
     protected onEnterItem() {
-        if (null != this.subm) {
-            this.subm.hideMenu();
-            this.subm = null;
+        if (null != this.sub) {
+            this.sub.hideMenu();
+            this.sub = null;
         }
     }
 
@@ -312,15 +352,15 @@ abstract class Menu {
         const id = (<HTMLElement>e.target).id;
         const item = this.items.get(id);
 
-        if (this.subm != null && this.subm != item?.submenu) {
-            this.subm.hideMenu();
-            this.subm = null;
+        if (this.sub != null && this.sub != item?.submenu) {
+            this.sub.hideMenu();
+            this.sub = null;
         }
 
-        if (item?.isEnabled() && null != item.submenu && null == this.subm) {
-            item.submenu.sour = <HTMLElement>e.target;
-            this.subm = item.submenu;
-            this.subm.showMenu();
+        if (item?.isEnabled() && null != item.submenu && null == this.sub) {
+            item.submenu.src = <HTMLElement>e.target;
+            this.sub = item.submenu;
+            this.sub.showPopup(item.submenu.src);
         }
     }
 
@@ -333,30 +373,25 @@ abstract class Menu {
         temp.innerHTML = html;
 
         if (null == <HTMLElement>temp.firstChild) {
-            throw "Failed to create element from html: " + html;
+            throw Error("Failed to create element from html: " + html);
         }
 
         return <HTMLElement>temp.firstChild;
     }
 
-    protected root: Menu | null;
-    protected subm: Menu | null;
-    protected cont: HTMLElement;
-    protected sour: HTMLElement | null;
+    protected elm: HTMLElement;
+    protected src: HTMLElement | null;
+    protected sub: Menu | null;
     protected items : Map<string, Item>;
 
-    protected static curr: Menu | null = null;
+    protected static root: Menu | null = null;
     protected static init = (()=>window.addEventListener('click', ()=>Menu.hide()))();
 }
 
 export class Dropdown extends Menu {
-    public static async create(source: HTMLElement, content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }): Promise<Dropdown> {
-        const m = new Dropdown();
+    static async create(source: HTMLElement, content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }): Promise<Dropdown> {
+        const m = new Dropdown(source);
         await m.load({ html: content.html, path: content.path, element: content.element ?? source, attribute: content.attribute });
-
-        m.sour = source;
-        m.cont.classList.add('dropdown-menu');
-        document.body.appendChild(m.cont);
 
         source.addEventListener('click', m.onClickSource.bind(m));
         source.addEventListener('mouseenter', m.onEnterSource.bind(m));
@@ -364,98 +399,46 @@ export class Dropdown extends Menu {
         return m;
     }
 
-    public destroy() {
-        this.sour?.removeEventListener('click', this.onClickSource);
-        this.sour?.removeEventListener('mouseenter', this.onEnterSource);
-        document.body.removeChild(this.cont);
+    constructor(source: HTMLElement) {
+        super();
+        this.source = source;
     }
 
-    protected showMenu() {
-        this.sour!.classList.add('active');
-
-        const r = this.sour!.getBoundingClientRect();
-        this.cont.style.top  = px(r.top + r.height);
-        this.cont.style.left = px(r.left);
-        super.showMenu();
-    }
-
-    protected hideMenu() {
-        this.sour!.classList.remove('active');
-        super.hideMenu();
+    destroy() {
+        this.source.removeEventListener('click', this.onClickSource);
+        this.source.removeEventListener('mouseenter', this.onEnterSource);
+        super.destroy();
     }
 
     protected onClickSource(e: Event) {
         e.stopPropagation();
 
-        if (this == Menu.curr) {
+        if (this == Menu.root) {
+            Menu.root = null;
             this.hideMenu();
-            Menu.curr = null;
         } else {
             Menu.hide();
-            this.showMenu();
-            Menu.curr = this;
+            Menu.root = this;
+            this.showDropdown(this.source);
         }
     }
 
     protected onEnterSource() {
-        if (Menu.curr && Menu.curr instanceof Dropdown) {
+        if (Menu.root && Menu.root.isDropdown()) {
             Menu.hide();
-            Menu.curr = this;
-            this.showMenu();
+            Menu.root = this;
+            this.showDropdown(this.source);
         }
     }
+
+    protected source: HTMLElement;
 }
 
 export class Popup extends Menu {
-    public static async create(content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }) : Promise<Popup> {
+    static async create(content: { html?: string, path?: string, element?: HTMLElement, attribute?: string }) : Promise<Popup> {
         const m = new Popup();
         await m.load(content);
-
-        m.cont.classList.add('popup-menu');
-        document.body.appendChild(m.cont);
-
         return m;
-    }
-
-    public destroy() {
-        document.body.removeChild(this.cont);
-    }
-
-    public show(x: number, y: number, boundry: HTMLElement, zIndex?: number) {
-        Menu.hide();
-
-        Menu.curr = this;
-        super.showMenu();
-
-        const r = this.cont.getBoundingClientRect();
-        const b = boundry.getBoundingClientRect();
-
-        if (x + r.width > b.x + b.width) {
-            x = b.x + b.width - r.width;
-        }
-        if (y + r.height > b.y + b.height) {
-            y = b.y + b.height - r.height;
-        }
-
-        this.cont.style.left = px(x);
-        this.cont.style.top  = px(y);
-        this.cont.style.zIndex = null != zIndex ? zIndex.toString() : '';
-    }
-
-    protected showMenu() {
-        if (null == this.sour) {
-            return;
-        }
-        const r = this.sour.getBoundingClientRect();
-        this.cont.style.top  = px(r.top);
-        this.cont.style.left = px(r.left + r.width);
-        this.cont.style.zIndex = (+this.sour.style.zIndex + 1).toString();
-        super.showMenu();
-    }
-
-    protected hideMenu() {
-        this.sour?.classList.remove('active');
-        super.hideMenu();
     }
 }
 

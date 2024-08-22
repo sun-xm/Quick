@@ -31,7 +31,7 @@ window.addEventListener('load', async ()=>{
     title?.option?.onCommand('opt1', (i)=>Status.show('Option1 is ' + (i.isChecked() ? 'checked' : 'unchecked')));
     title?.option?.onCommand('opt2', (i)=>Status.show('Option2 is ' + (i.isChecked() ? 'checked' : 'unchecked')));
 
-    (await Module.load<Content>(document.getElementById('content')!))?.context(title?.color);
+    (await Module.load<Content>(document.getElementById('content')!))?.context(title?.file);
 
     Status.init(document.getElementById('status'));
 });

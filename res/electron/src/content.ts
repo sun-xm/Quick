@@ -1,5 +1,5 @@
 import { Module } from './module';
-import { Popup }  from './menu';
+import { Menu }   from './menu';
 
 export function module(elem: Element) {
     return new Content(elem);
@@ -16,9 +16,9 @@ export class Content extends Module {
         });
     }
 
-    context(menu: Popup | undefined | null) {
+    context(menu: Menu | undefined | null) {
         this.menu = menu;
     }
 
-    private menu: Popup | undefined | null;
+    private menu: Menu | undefined | null;
 }
