@@ -1,14 +1,28 @@
 export class Dynamic {
-    static async include(elem: Element, path?: string): Promise<Element> {
-        if (!path) {
-            path = elem.getAttribute('include') ?? undefined;
+    static async include(elem: Element, content?: { html?: string, path?: string }): Promise<Element> {
+        let html: string;
+
+        if (content) {
+            if (content.html) {
+                html = content.html;
+            } else if (content.path) {
+                html = await (await fetch(content.path)).text();
+            } else {
+                throw Error('Parameter html and path should not be both invalid');
+            }
+        } else {
+            const path = elem.getAttribute('include');
+            if (!path) {
+                throw Error('Property "include" path is not available on element');
+            }
+            html = await (await fetch(path)).text();
         }
 
-        if (!path) {
-            return Promise.reject('Dynamic.include(): neither path is defined nor element has a valid include attribute');
+        if (!html) {
+            throw Error('Invalid include content');
         }
 
-        elem.innerHTML = await (await fetch(path)).text();
+        elem.innerHTML = html;
 
         const all: Promise<Element>[] = [];
         for (let i = 0; i < elem.children.length; i++) {
@@ -20,17 +34,31 @@ export class Dynamic {
         return elem;
     }
 
-    static async replace(elem: Element, path?: string): Promise<Element> {
-        if (!path) {
-            path = elem.getAttribute('replace') ?? undefined;
+    static async replace(elem: Element, content?: { html?: string, path?: string }): Promise<Element> {
+        let html: string;
+
+        if (content) {
+            if (content.html) {
+                html = content.html;
+            } else if (content.path) {
+                html = await (await fetch(content.path)).text();
+            } else {
+                throw Error('Parameter html and path should not be both invalid');
+            }
+        } else {
+            const path = elem.getAttribute('replace');
+            if (!path) {
+                throw Error('Property "replace" path is not available on element');
+            }
+            html = await (await fetch(path)).text();
         }
 
-        if (!path) {
-            return Promise.reject('Dynamic.replace(): neither path is defined nor element has a valid replace attribute');
+        if (!html) {
+            throw Error('Invalid replace content');
         }
 
         const div = document.createElement('div');
-        div.innerHTML = await (await fetch(path)).text();
+        div.innerHTML = html;
 
         const rep = await Dynamic.process(div.children[0]);
         elem.replaceWith(rep);
@@ -41,12 +69,12 @@ export class Dynamic {
     static async process(elem: Element): Promise<Element> {
         const inc = elem.getAttribute('include');
         if (inc) {
-            return Dynamic.include(elem, inc);
+            return Dynamic.include(elem, { path: inc });
         }
 
         const rep = elem.getAttribute('replace');
         if (rep) {
-            return Dynamic.replace(elem, rep);
+            return Dynamic.replace(elem, { path: rep });
         }
 
         const all: Promise<Element>[] = [];
