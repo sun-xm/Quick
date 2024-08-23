@@ -40,14 +40,14 @@ export class Title extends Module {
             }
         });
 
-        this.file = await Menu.Dropdown.create(<HTMLElement>this.element.querySelector('#file.menu'), { attribute: 'path'});
-        this.help = await Menu.Dropdown.create(<HTMLElement>this.element.querySelector('#help.menu'), { attribute: 'path'});
+        this.file = await Menu.Dropdown.create({ source: <HTMLElement>this.element.querySelector('#file.menu'), attribute: 'path'});
+        this.help = await Menu.Dropdown.create({ source: <HTMLElement>this.element.querySelector('#help.menu'), attribute: 'path'});
         this.color = this.file.item('color')?.submenu;
         this.option = this.file.item('option')?.submenu;
     }
 
-    file:  Menu.Dropdown | undefined;
-    help:  Menu.Dropdown | undefined;
-    color: Menu.Popup | undefined;
-    option: Menu.Popup | undefined;
+    file?:   Menu.Dropdown;
+    help?:   Menu.Dropdown;
+    color?:  Menu.Menu;
+    option?: Menu.Menu;
 }
