@@ -1,68 +1,47 @@
+import { Dynamic } from './dynamic';
+
 export class Module {
     static async create<M extends Module>(html: { html?: string, path?: string }, module?: string) {
         if (!html.html) {
-            try {
-                html.html = html.path ? await (await fetch(html.path)).text() : undefined;
-            } catch (e) {
-                console.debug('Module.create(): failed to fetch ' + html.path + '. ' + e);
-                return undefined;
+            if (html.path) {
+                html.html = await (await fetch(html.path)).text();
+            } else {
+                throw Error('Parameter html and path should not be both invalid');
             }
         }
 
         if (!html.html) {
-            console.debug('Module.create(): undefined html content');
-            return undefined;
+            throw Error('Invalid html content');
         }
 
         const div = document.createElement('div');
         div.innerHTML = html.html;
 
         if (0 == div.children.length) {
-            console.debug('Module.create(): failed to create element. Html:\n' + html.html);
-            return undefined;
+            throw Error('No element is created from html');
         }
 
-        module = module ? module : div.children[0].getAttribute('module') ?? undefined;
-        if (!module) {
-            console.debug('Module.create(): undefined module name');
-            return undefined;
-        }
-
-        return <M>((await import(module)).module(div.children[0]));
-    }
-
-    static async load<M extends Module>(elem: Element, html?: { html?: string, path?: string }, module?: string) {
-        if (html) {
-            if (!html.html) {
-                try {
-                    html.html = html.path ? await (await fetch(html.path)).text() : undefined;
-                } catch (e) {
-                    console.debug('Module.load(): failed to fetch ' + html.path + '. ' + e);
-                    return undefined;
-                }
-            }
-        } else {
-            html = { html: undefined, path: elem.getAttribute('include') ?? undefined };
-
-            try {
-                html.html = html.path ? await (await fetch(html.path)).text() : undefined;
-            } catch (e) {
-                console.debug('Module.load(): failed to fetch include property ' + html.path + '. ' + e);
-                return undefined;
-            }
-        }
+        const elem = div.children[0];
 
         module = module ? module : elem.getAttribute('module') ?? undefined;
         if (!module) {
-            console.debug('Module.load(): undefined module name');
-            return undefined;
+            throw Error('Undefined module name');
         }
 
         elem.dispatchEvent(new Event('moduleunload'));
 
-        if (html.html) {
-            elem.innerHTML = html.html;
+        return <M>((await import(module)).module(elem));
+    }
+
+    static async load<M extends Module>(elem: Element, module?: string) {
+        elem = await Dynamic.process(elem);
+
+        module = module ? module : elem.getAttribute('module') ?? undefined;
+        if (!module) {
+            throw Error('Undefined module name');
         }
+
+        elem.dispatchEvent(new Event('moduleunload'));
 
         return <M>(await require(module).module(elem));
     }

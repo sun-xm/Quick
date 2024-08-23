@@ -34,6 +34,7 @@ export async function app(context: vscode.ExtensionContext) {
 
     await createFolder(`${ws}/html`);
     await copyText(`${rs}/html/about.html`,        `${ws}/html/about.html`);
+    await copyText(`${rs}/html/content.html`,      `${ws}/html/content.html`);
     await copyText(`${rs}/html/index.html`,        `${ws}/html/index.html`);
     await copyText(`${rs}/html/title.html`,        `${ws}/html/title.html`, [[/__name__/g, nm]]);
     await copyText(`${rs}/html/menu_color.html`,   `${ws}/html/menu_color.html`);
