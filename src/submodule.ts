@@ -88,7 +88,7 @@ export async function initAll() {
     let success = true;
 
     await new Promise<void>(resolve=>{
-        chp.exec('git submodule update --init', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+        chp.exec('git submodule update --init --no-fetch', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to initialize submodules');
                 ext.output(stderr);
@@ -157,7 +157,7 @@ export async function init() {
 
     let success = true;
     await new Promise<void>(resolve=>{
-        chp.exec('git submodule update --init ' + item.module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+        chp.exec('git submodule update --init --no-fetch ' + item.module.path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
             if (error?.code) {
                 vscode.window.showErrorMessage('Failed to initialize submodule ' + item.module.name);
                 ext.output(stderr);
