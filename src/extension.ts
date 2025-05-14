@@ -86,6 +86,14 @@ export function activate(context: vscode.ExtensionContext) {
 		submodule.remove(uri);
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.assumeUnchanged', (states: vscode.SourceControlResourceState | vscode.SourceControlResourceState[])=>{
+		submodule.assumeUnchanged(states);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.noAssumeUnchanged', (uri: vscode.Uri)=>{
+		submodule.noAssumeUnchanged(uri);
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', async()=>{
 		mywebview.start();
 	}));

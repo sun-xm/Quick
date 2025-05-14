@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.21",
+	"version": "0.0.22",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -81,6 +81,14 @@
 				"title": "Quick: Remove Git Submodule"
 			},
 			{
+				"command": "quick.assumeUnchanged",
+				"title": "Quick: Assume Unchanged"
+			},
+			{
+				"command": "quick.noAssumeUnchanged",
+				"title": "Quick: Cancel Assuming Unchanged"
+			},
+			{
 				"command": "quick.webview",
 				"title": "Quick: Test webview"
 			}
@@ -152,6 +160,18 @@
 					"command": "quick.removeSubmodule",
 					"group": "submodule",
 					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
+				},
+				{
+					"command": "quick.noAssumeUnchanged",
+					"group": "submodule",
+					"when": "!explorerResourceIsFolder"
+				}
+			],
+			"scm/resourceState/context": [
+				{
+					"command": "quick.assumeUnchanged",
+					"group": "submodule",
+					"when": "scmProvider == git && scmResourceGroup == workingTree"
 				}
 			]
 		}
