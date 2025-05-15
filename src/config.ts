@@ -24,6 +24,10 @@ export function panelAutoHide() {
     return get<boolean>('panelAutoHide');
 }
 
+export function enableUnchange() {
+    return get<boolean>('enableUnchange');
+}
+
 function get<T>(name: string) {
     return vscode.workspace.getConfiguration('quick').get<T>(name);
 }

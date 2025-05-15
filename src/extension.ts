@@ -6,6 +6,7 @@ import * as electron from './electron';
 import * as housekeep from './housekeep';
 import * as mywebview from './mywebview';
 import * as submodule from './submodule';
+import * as unchange from './unchange';
 import * as workspace from './workspace';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -20,6 +21,8 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	submodule.setContext();
+
+	unchange.monitor(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
 		cmake.console(context);
@@ -84,14 +87,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>{
 		submodule.remove(uri);
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('quick.assumeUnchanged', (states: vscode.SourceControlResourceState | vscode.SourceControlResourceState[])=>{
-		submodule.assumeUnchanged(states);
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('quick.noAssumeUnchanged', (uri: vscode.Uri)=>{
-		submodule.noAssumeUnchanged(uri);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', async()=>{

@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.22",
+	"version": "0.0.23",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -81,14 +81,6 @@
 				"title": "Quick: Remove Git Submodule"
 			},
 			{
-				"command": "quick.assumeUnchanged",
-				"title": "Quick: Assume Unchanged"
-			},
-			{
-				"command": "quick.noAssumeUnchanged",
-				"title": "Quick: Cancel Assuming Unchanged"
-			},
-			{
 				"command": "quick.webview",
 				"title": "Quick: Test webview"
 			}
@@ -102,23 +94,28 @@
 				},
 				"quick.panelAutoHide": {
 					"type": "boolean",
-					"description": "Enable vscode panel auto hide",
-					"default": true
+					"default": true,
+					"description": "Enable vscode panel auto hide"
 				},
 				"quick.defaultGitService": {
 					"type": "string",
-					"description": "Default git service",
-					"default": "https://github.com/"
+					"default": "https://github.com/",
+					"description": "Default git service"
 				},
 				"quick.cleanupOnExit": {
 					"type": "boolean",
-					"description": "Clean .vscode folder on exit",
-					"default": true
+					"default": true,
+					"description": "Clean .vscode folder on exit"
 				},
 				"quick.cleanAllOnExit": {
 					"type": "boolean",
-					"description": "Clean user history and workspace storage folders on exit",
-					"default": true
+					"default": true,
+					"description": "Clean user history and workspace storage folders on exit"
+				},
+				"quick.enableUnchange": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable .gitunchange list monitoring"
 				}
 			}
 		},
@@ -160,18 +157,6 @@
 					"command": "quick.removeSubmodule",
 					"group": "submodule",
 					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
-				},
-				{
-					"command": "quick.noAssumeUnchanged",
-					"group": "submodule",
-					"when": "!explorerResourceIsFolder"
-				}
-			],
-			"scm/resourceState/context": [
-				{
-					"command": "quick.assumeUnchanged",
-					"group": "submodule",
-					"when": "scmProvider == git && scmResourceGroup == workingTree"
 				}
 			]
 		}

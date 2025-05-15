@@ -2,8 +2,8 @@ import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as chp from 'child_process';
 import * as cfg from './config';
-import * as wsp from './workspace';
 import * as ext from './extension';
+import * as wsp from './workspace';
 
 const fs = vscode.workspace.fs;
 const dec = new TextDecoder();
@@ -279,50 +279,6 @@ export async function remove(uri: vscode.Uri) {
                 status.hide();
                 resolve();
             });
-        });
-    });
-}
-
-export async function assumeUnchanged(states: vscode.SourceControlResourceState  | vscode.SourceControlResourceState[]) {
-    let paths: string[];
-
-    if (Array.isArray(states))
-    {
-        paths = states.map(state => state.resourceUri.fsPath);
-    }
-    else
-    {
-        paths = [states.resourceUri.fsPath];
-    }
-
-    paths.forEach(async path =>{
-        await new Promise<void>(resolve=>{
-            chp.exec('git update-index --assume-unchanged ' + path, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
-                if (error?.code) {
-                    vscode.window.showErrorMessage('Failed to assume ' + path + ' unchanged');
-                    ext.output(stderr);
-                }
-                else {
-                    vscode.window.showInformationMessage('File is assumed unchanged');
-                }
-                resolve();
-            });
-        });
-    });
-}
-
-export async function noAssumeUnchanged(uri: vscode.Uri)
-{
-    await new Promise<void>(resolve=>{
-        chp.exec('git update-index --no-assume-unchanged ' + uri.fsPath, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
-            if (error?.code) {
-                vscode.window.showErrorMessage('Failed to cancel assuming ' + uri.fsPath + ' unchanged');
-                ext.output(stderr);
-            }
-            else {
-                vscode.window.showInformationMessage('File is cancelled assuming unchagned');
-            }
-            resolve();
         });
     });
 }
