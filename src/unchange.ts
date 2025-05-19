@@ -14,15 +14,9 @@ export async function monitor(context: vscode.ExtensionContext) {
     }
 
     const watcher = vscode.workspace.createFileSystemWatcher("**/.gitunchange");
-    watcher.onDidCreate(async uri=>{
-        synchronize();
-    });
-    watcher.onDidChange(async uri=>{
-        synchronize();
-    });
-    watcher.onDidDelete(async uri=>{
-        synchronize();
-    });
+    watcher.onDidCreate(()=>synchronize());
+    watcher.onDidChange(()=>synchronize());
+    watcher.onDidDelete(()=>synchronize());
     context.subscriptions.push(watcher);
 
     synchronize();

@@ -7,21 +7,12 @@ import * as housekeep from './housekeep';
 import * as mywebview from './mywebview';
 import * as submodule from './submodule';
 import * as unchange from './unchange';
-import * as workspace from './workspace';
 
 export function activate(context: vscode.ExtensionContext) {
 	setStorage(context.storageUri);
 	setAutoHide();
 
-	if (workspace.first()) {
-		watcher = vscode.workspace.createFileSystemWatcher(vscode.Uri.joinPath(workspace.first()!.uri, '.gitmodules').fsPath);
-		watcher.onDidChange(()=>submodule.setContext());
-		watcher.onDidCreate(()=>submodule.setContext());
-		watcher.onDidDelete(()=>submodule.setContext());
-	}
-
-	submodule.setContext();
-
+	submodule.monitor(context);
 	unchange.monitor(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
@@ -102,10 +93,6 @@ export async function deactivate() {
 		await housekeep.cleanAll();
 	}
 
-	if (watcher) {
-		watcher.dispose();
-	}
-
 	if (outchan) {
 		outchan.dispose();
 	}
@@ -174,5 +161,4 @@ function setAutoHide() {
 	});
 }
 
-let watcher: vscode.FileSystemWatcher;
 let outchan: vscode.OutputChannel;
