@@ -82,8 +82,9 @@ async function list() {
                 return;
             }
 
-            let uri = path.isAbsolute(line) ? vscode.Uri.file(line) : vscode.Uri.joinPath(dir, line);
-            unchg[uri.fsPath] = uri;
+            const uri = path.isAbsolute(line) ? vscode.Uri.file(line) : vscode.Uri.joinPath(dir, line);
+            const fsp = uri.fsPath.replace(/[\\/]+/g, path.sep);
+            unchg[fsp] = uri;
         });
     }));
 
