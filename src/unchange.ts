@@ -28,6 +28,9 @@ async function synchronize() {
     }
 
     unchanges = await list();
+    if (0 == Object.keys(unchanges).length) {
+        return;
+    }
 
     const assumed = new Array<string>();
     const noassum = new Array<string>();
