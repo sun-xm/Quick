@@ -3,7 +3,7 @@ import * as wsp from './workspace';
 import { copyText, createFolder } from './copy';
 
 export async function app(context: vscode.ExtensionContext) {
-    if (!wsp.first() || !wsp.isEmpty(wsp.first()!.uri)) {
+    if (!wsp.first() || !(await wsp.isEmpty(wsp.first()!.uri))) {
         vscode.window.showErrorMessage('Workspace folder is unavailable or not empty');
         return;
     }

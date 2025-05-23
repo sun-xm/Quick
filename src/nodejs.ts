@@ -3,7 +3,7 @@ import * as wsp from './workspace';
 import { copyText, createFolder } from './copy';
 
 export async function project(context: vsc.ExtensionContext) {
-    if (!wsp.first() || !wsp.isEmpty(wsp.first()!.uri)) {
+    if (!wsp.first() || !(await wsp.isEmpty(wsp.first()!.uri))) {
         vsc.window.showErrorMessage('Workspace folder is unavailable or not empty');
         return;
     }
@@ -16,7 +16,7 @@ export async function project(context: vsc.ExtensionContext) {
     const ws = wsp.first()!.uri.path;
     const rs = context.extensionUri.path + '/res/nodejs';
 
-    await copyText(`${rs}/package.json`,  `${ws}/package.json`, [[/__name__/g, nm]]);
+    await copyText(`${rs}/_package.json`, `${ws}/package.json`, [[/__name__/g, nm]]);
     await copyText(`${rs}/tsconfig.json`, `${ws}/tsconfig.json`);
 
     await createFolder(`${ws}/src`);
