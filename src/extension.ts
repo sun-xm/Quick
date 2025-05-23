@@ -1,12 +1,13 @@
-import * as vscode from 'vscode';
-import * as cmake from './cmake';
-import * as config from './config';
-import * as designer from './designer';
-import * as electron from './electron';
-import * as housekeep from './housekeep';
-import * as mywebview from './mywebview';
-import * as submodule from './submodule';
-import * as unchange from './unchange';
+import * as vscode 		from 'vscode';
+import * as cmake 		from './cmake';
+import * as config 		from './config';
+import * as designer 	from './designer';
+import * as electron 	from './electron';
+import * as housekeep 	from './housekeep';
+import * as mywebview 	from './mywebview';
+import * as nodejs 		from './nodejs';
+import * as submodule 	from './submodule';
+import * as unchange 	from './unchange';
 
 export function activate(context: vscode.ExtensionContext) {
 	setStorage(context.storageUri);
@@ -50,6 +51,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.electronMod', ()=>{
 		electron.mod(context);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.nodejsProject', ()=>{
+		nodejs.project(context);
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>{

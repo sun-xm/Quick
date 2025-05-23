@@ -21,3 +21,7 @@ export function relative(absoluteUri: vscode.Uri) {
 
     return relative;
 }
+
+export async function isEmpty(wsp: vscode.Uri) {
+    return 0 == ((await vscode.workspace.fs.readDirectory(wsp)).length);
+}
