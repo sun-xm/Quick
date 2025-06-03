@@ -49,7 +49,7 @@ class Current {
     }
 
     proc(procedure: ()=>void) {
-        if (!this.isMain()) {
+        if (!isMain()) {
             procedure();
         }
     }
@@ -60,10 +60,6 @@ class Current {
 
     param() {
         return threads.workerData;
-    }
-
-    isMain() {
-        return threads.isMainThread;
     }
 
     data(data: any) {
@@ -83,6 +79,10 @@ export function current() {
         Current.current = new Current;
     }
     return Current.current;
+}
+
+export function isMain() {
+    return threads.isMainThread;
 }
 
 

@@ -22,7 +22,7 @@ thread.proc(()=>{
 });
 
 // Register test cases
-if (thread.isMain()) {
+if (threads.isMain()) {
     suite("Threads Test Suite", ()=>{
         test('notify/data/exit', async()=>{
             let result = new Promise<boolean>((resolve, reject)=>{
