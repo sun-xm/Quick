@@ -85,8 +85,6 @@ export function isMain() {
     return threads.isMainThread;
 }
 
-
-const KEEP_ALIVE = new Set<threads.Worker>();
 export function exec<T>(proc: ()=>T) : Promise<T>;
 export function exec<T, P>(proc: (param:  P)=>T, param:  P): Promise<T>;
 export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
@@ -100,9 +98,7 @@ export function exec<T, P>(proc: (param?: P)=>T, param?: P) {
     let worker = new threads.Worker(__filename, { workerData: param });
     worker.on('message', result=>resolve(result));
     worker.on('error', error=>reject(error));
-    worker.on('exit', code=>KEEP_ALIVE.delete(worker));
 
-    KEEP_ALIVE.add(worker);
     worker.postMessage(proc.toString());
 
     return result;
