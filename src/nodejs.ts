@@ -27,5 +27,5 @@ export async function project(context: vsc.ExtensionContext) {
 
     vsc.tasks.executeTask(new vsc.Task({ type: 'shell'}, vsc.TaskScope.Workspace, 'npm install', 'npm', new vsc.ShellExecution('npm install')));
     vsc.window.showTextDocument(vsc.Uri.file(`${ws}/src/main.ts`), { preview: false });
-    vsc.window.showInformationMessage(`CMake console project "${nm}" created`);
+    vsc.window.showInformationMessage(`Node.js project "${nm}" created`);
 }
