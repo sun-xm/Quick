@@ -4,6 +4,7 @@ import * as chp from 'child_process';
 import * as cfg from './config';
 import * as ext from './extension';
 import * as wsp from './workspace';
+import { resolve } from 'dns';
 
 const fs = vscode.workspace.fs;
 const dec = new TextDecoder();
@@ -191,12 +192,62 @@ export async function init() {
     status.hide();
 }
 
+export async function syncAll() {
+    if (!wsp.first()) {
+        return;
+    }
+
+    const status = vscode.window.createStatusBarItem();
+    status.text = '$(sync~spin) Synchronizing submodules';
+    status.show();
+
+    await new Promise<void>(resolve=>{
+        chp.exec('git submodule update --init --force', { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+            if (error?.code) {
+                vscode.window.showErrorMessage('Failed to synchronize submodules');
+                ext.output(stderr);
+
+            } else {
+                vscode.window.showInformationMessage('Submodules have been synchronized');
+            }
+
+            status.hide();
+            resolve();
+        });
+    });
+}
+
+export async function sync(uri: vscode.Uri) {
+    const relative = wsp.relative(uri);
+    if (!relative) {
+        return;
+    }
+
+    const status = vscode.window.createStatusBarItem();
+    status.text = `$(sync~spin) Synchronizing submodule ${relative}`;
+    status.show();
+
+    await new Promise<void>(resolve=>{
+        chp.exec(`git submodule update --init --force ${relative}`, { cwd: wsp.first()!.uri.fsPath }, (error, stdout, stderr)=>{
+            if (error?.code) {
+                vscode.window.showErrorMessage('Failed to synchronize submodule');
+                ext.output(stderr);
+            } else {
+                vscode.window.showInformationMessage(`Submodule ${relative} has been synchronized`);
+            }
+
+            status.hide();
+            resolve();
+        });
+    });
+}
+
 export async function updateAll() {
     if (!wsp.first()) {
         return;
     }
 
-    let status = vscode.window.createStatusBarItem();
+    const status = vscode.window.createStatusBarItem();
     status.text = '$(sync~spin) Updating submodules';
     status.show();
 
@@ -217,12 +268,12 @@ export async function updateAll() {
 }
 
 export async function update(uri: vscode.Uri) {
-    let relative = wsp.relative(uri);
+    const relative = wsp.relative(uri);
     if (!relative) {
         return;
     }
 
-    let status = vscode.window.createStatusBarItem();
+    const status = vscode.window.createStatusBarItem();
     status.text = `$(sync~spin) Updating submodule ${relative}`;
     status.show();
 

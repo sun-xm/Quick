@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.25",
+	"version": "0.0.26",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -73,12 +73,20 @@
 				"title": "Quick: Init Git Submodule"
 			},
 			{
+				"command": "quick.syncSubmodules",
+				"title": "Quick: Sync Git Submodules (reset)"
+			},
+			{
+				"command": "quick.syncSubmodule",
+				"title": "Quick: Sync Git Submodule (reset)"
+			},
+			{
 				"command": "quick.updateSubmodules",
-				"title": "Quick: Update Git Submodules"
+				"title": "Quick: Update Git Submodules (pull)"
 			},
 			{
 				"command": "quick.updateSubmodule",
-				"title": "Quick: Update Git Submodule"
+				"title": "Quick: Update Git Submodule (pull)"
 			},
 			{
 				"command": "quick.removeSubmodule",
@@ -148,12 +156,22 @@
 					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
 				},
 				{
+					"command": "quick.syncSubmodules",
+					"group": "submodule",
+					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
+				},
+				{
 					"command": "quick.updateSubmodules",
 					"group": "submodule",
 					"when": "!explorerResourceIsFolder && resourcePath in quick.gitmodules"
 				},
 				{
 					"command": "quick.updateSubmodule",
+					"group": "submodule",
+					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
+				},
+				{
+					"command": "quick.syncSubmodule",
 					"group": "submodule",
 					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
 				},

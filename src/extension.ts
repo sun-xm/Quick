@@ -16,78 +16,48 @@ export function activate(context: vscode.ExtensionContext) {
 	submodule.monitor(context);
 	unchange.monitor(context);
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>{
-		cmake.console(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>cmake.console(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeQtWidgets', ()=>{
-		cmake.qtWidgets(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeQtWidgets', ()=>cmake.qtWidgets(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeW32View', ()=>{
-		cmake.w32View(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeW32View', ()=>cmake.w32View(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsConsole', ()=>{
-		cmake.csConsole(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsConsole', ()=>cmake.csConsole(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsWpf', ()=>{
-		cmake.csWpf(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsWpf', ()=>cmake.csWpf(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsLib', ()=>{
-		cmake.csLib(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsLib', ()=>cmake.csLib(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeTargets', async()=>{
 		await vscode.commands.executeCommand('cmake.setDefaultTarget');
 		vscode.commands.executeCommand('cmake.selectLaunchTarget');
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.electronApp', ()=>{
-		electron.app(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.electronApp', ()=>electron.app(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.electronMod', ()=>{
-		electron.mod(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.electronMod', ()=>electron.mod(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.nodejsProject', ()=>{
-		nodejs.project(context);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.nodejsProject', ()=>nodejs.project(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>{
-		designer.openUiFile(uri);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>designer.openUiFile(uri)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>{
-		submodule.add();
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>submodule.add()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.initSubmodules', (uri: vscode.Uri)=>{
-		submodule.initAll();
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.initSubmodules', ()=>submodule.initAll()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.initSubmodule', ()=>{
-		submodule.init();
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.initSubmodule', ()=>submodule.init()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodules', (uri: vscode.Uri)=>{
-		submodule.updateAll();
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.syncSubmodules', ()=>submodule.syncAll()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodule', (uri: vscode.Uri)=>{
-		submodule.update(uri);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.syncSubmodule', (uri: vscode.Uri)=>submodule.sync(uri)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>{
-		submodule.remove(uri);
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodules', ()=>submodule.updateAll()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', async()=>{
-		mywebview.start();
-	}));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.updateSubmodule', (uri: vscode.Uri)=>submodule.update(uri)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>submodule.remove(uri)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', async()=>mywebview.start()));
 }
 
 export async function deactivate() {
