@@ -2,10 +2,10 @@
 
 #include "Dialog.h"
 
-class AppDialog : public Dialog
+class MainDialog : public Dialog
 {
 public:
-    AppDialog();
+    MainDialog();
 
 protected:
     bool OnCreated() override;

@@ -1,6 +1,9 @@
 #include "Application.h"
 #include "Dialog.h"
 #include "Window.h"
+#include <stdexcept>
+
+using namespace std;
 
 Application* Application::instance = nullptr;
 
@@ -27,13 +30,16 @@ int Application::Run(Dialog& dialog, int nCmdShow)
         return -1;
     }
 
-    dialog.StyleEx(dialog.StyleEx() | WS_EX_DLGMODALFRAME);
     ShowWindow(dialog, nCmdShow);
-
-    return Application::MessageLoop(dialog, Application::Accel());
+    return dialog.DoModal(this->accel);
 }
 
-int Application::Run(Window& window, int nCmdShow)
+int Application::Run(Dialog&& dialog, int nCmdShow)
+{
+    return Run((Dialog&)dialog, nCmdShow);
+}
+
+int Application::Run(Window& window, int nCmdShow, bool likeDialog)
 {
     if (!window.Create(0, WS_OVERLAPPEDWINDOW, 0, this->hinst))
     {
@@ -42,7 +48,12 @@ int Application::Run(Window& window, int nCmdShow)
 
     ShowWindow(window, nCmdShow);
 
-    return MessageLoop(window, Application::Accel());
+    return MessageLoop(window, Application::Accel(), likeDialog);
+}
+
+int Application::Run(Window&& window, int nCmdShow, bool likeDialog)
+{
+    return Run(window, nCmdShow, likeDialog);
 }
 
 Application& Application::Instance()
@@ -55,7 +66,7 @@ HACCEL Application::Accel()
     return instance->accel;
 }
 
-int Application::MessageLoop(HWND hWnd, HACCEL hAcc)
+int Application::MessageLoop(HWND hWnd, HACCEL hAcc, bool likeDialog)
 {
     MSG  msg = {0};
     BOOL ret;
@@ -67,17 +78,14 @@ int Application::MessageLoop(HWND hWnd, HACCEL hAcc)
             break;
         }
 
-        if (hWnd)
+        if (TranslateAcceleratorW(hWnd, hAcc, &msg))
         {
-            if (hAcc && TranslateAcceleratorW(hWnd, hAcc, &msg))
-            {
-                continue;
-            }
+            continue;
+        }
 
-            if (IsDialogMessageW(hWnd, &msg))
-            {
-                continue;
-            }
+        if (likeDialog && IsDialogMessageW(hWnd, &msg))
+        {
+            continue;
         }
 
         TranslateMessage(&msg);
@@ -85,4 +93,42 @@ int Application::MessageLoop(HWND hWnd, HACCEL hAcc)
     }
 
     return (int)msg.wParam;
+}
+
+bool Application::LoadRCData(const wstring& name, vector<uint8_t>& data)
+{
+    return LoadRCData(instance ? instance->hinst : nullptr, name, data);
+}
+
+bool Application::LoadRCData(HMODULE module, const wstring& name, vector<uint8_t>& data)
+{
+    data.clear();
+
+    auto res = FindResourceW(module, name.c_str(), MAKEINTRESOURCEW(10));
+    if (!res)
+    {
+        return false;
+    }
+
+    auto size = SizeofResource(module, res);
+    if (!size)
+    {
+        return 0 == GetLastError();
+    }
+
+    auto gmem = LoadResource(module, res);
+    if (!gmem)
+    {
+        return false;
+    }
+
+    auto addr = LockResource(gmem);
+    if (!addr)
+    {
+        return false;
+    }
+
+    data.assign((uint8_t*)addr, (uint8_t*)addr + size);
+
+    return true;
 }

@@ -1,5 +1,7 @@
 #include "Dialog.h"
 
+#define PROP_MODAL  L"MODAL"
+
 using namespace std;
 
 Dialog::Dialog(UINT dialogId) : id(dialogId)
@@ -32,6 +34,82 @@ bool Dialog::Create(HWND parent, HINSTANCE instance)
     return !!this->hwnd;
 }
 
+int Dialog::DoModal(HACCEL accelerator)
+{
+    this->SetProp(PROP_MODAL, (HANDLE)1);
+
+    auto parent = (HWND)this->Parent();
+    if (parent)
+    {
+        EnableWindow(parent, FALSE);
+    }
+
+    MSG  msg = {0};
+    BOOL ret;
+
+    while (0 != (ret = GetMessageW(&msg, nullptr, 0, 0)))
+    {
+        if (-1 == ret)
+        {
+            break;
+        }
+
+        if (TranslateAcceleratorW(this->hwnd, accelerator, &msg))
+        {
+            continue;
+        }
+
+        if (IsDialogMessageW(this->hwnd, &msg))
+        {
+            continue;
+        }
+
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+    }
+
+    if (parent)
+    {
+        EnableWindow(parent, TRUE);
+    }
+
+    return (int)msg.wParam;
+}
+
+bool Dialog::IsModal() const
+{
+    return this->GetProp(PROP_MODAL) ? true : false;
+}
+
+void Dialog::Center(HWND hwnd)
+{
+    hwnd = hwnd ? hwnd : (HWND)this->Parent();
+    if (!hwnd || !this->hwnd || !this->Parent())
+    {
+        return;
+    }
+
+    RECT wrect, drect;
+    GetWindowRect(hwnd, &wrect);
+    GetWindowRect(this->hwnd, &drect);
+
+    auto ww = wrect.right - wrect.left;
+    auto wh = wrect.bottom - wrect.top;
+    auto dw = drect.right - drect.left;
+    auto dh = drect.bottom - drect.top;
+
+    auto x = (ww - dw) / 2 + wrect.left;
+    auto y = (wh - dh) / 2 + wrect.top;
+
+    RECT prect = {0};
+    if (!(WS_POPUP & this->Style()))
+    {
+        GetWindowRect(this->Parent(), &prect);
+    }
+
+    this->MoveTo(x - prect.left, y - prect.top);
+}
+
 Control Dialog::Item(int dlgItemId) const
 {
     return Control(GetDlgItem(this->hwnd, dlgItemId));
@@ -44,6 +122,10 @@ bool Dialog::OnCreated()
 
 void Dialog::OnDestroy()
 {
+    if (this->IsModal())
+    {
+        PostQuitMessage(0);
+    }
 }
 
 bool Dialog::OnCommand()
@@ -53,13 +135,11 @@ bool Dialog::OnCommand()
 
 void Dialog::OnClose()
 {
-    auto modal = this->StyleEx() & WS_EX_DLGMODALFRAME;
-    this->Destroy();
-
-    if (modal)
+    if (this->IsModal())
     {
-        PostQuitMessage(0);
+        SetForegroundWindow(this->Parent());
     }
+    this->Destroy();
 }
 
 void Dialog::OnSize()

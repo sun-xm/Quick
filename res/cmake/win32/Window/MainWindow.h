@@ -1,9 +1,11 @@
+#pragma once
+
 #include <Window.h>
 
-class AppWindow : public Window
+class MainWindow : public Window
 {
 public:
-    AppWindow();
+    MainWindow();
 
 protected:
     bool OnCreated() override;

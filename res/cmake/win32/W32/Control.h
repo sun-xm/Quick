@@ -6,19 +6,21 @@
 
 class Control : public Wnd
 {
+    using WNDFUNC = std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>;
+
+    struct Subdata
+    {
+        WNDFUNC subproc;
+        WNDPROC defproc;
+    };
+
 public:
     Control();
     Control(HWND);
-   ~Control();
 
     int ID() const;
 
-    bool   SetProp(const wchar_t* name, HANDLE data);
-    HANDLE GetProp(const wchar_t* name);
-    HANDLE RemoveProp(const wchar_t* name);
+    void Subclass(const WNDFUNC&);
 
-    void Subclass(const std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)>&);
-
-    static WNDPROC Subclass(Control& ctrl, WNDPROC proc);
     static LRESULT DefWndProc(HWND, UINT, WPARAM, LPARAM);
 };

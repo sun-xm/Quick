@@ -88,16 +88,20 @@ export async function w32View(context: vscode.ExtensionContext) {
     switch (type) {
         case 'Window': {
             rs += '/Window';
-            await copyText(`${rs}/AppWindow.h`, `${ws}/AppWindow.h`);
-            await copyText(`${rs}/AppWindow.cpp`, `${ws}/AppWindow.cpp`, [[/__name__/g, nm]]);
+            await copyText(`${rs}/App.h`,   `${ws}/App.h`);
+            await copyText(`${rs}/App.cpp`, `${ws}/App.cpp`, [[/__name__/g, nm]]);
+            await copyText(`${rs}/MainWindow.h`,   `${ws}/MainWindow.h`);
+            await copyText(`${rs}/MainWindow.cpp`, `${ws}/MainWindow.cpp`);
             break;
         }
 
         case 'Dialog': {
             rs += '/Dialog';
-            await copyText(`${rs}/AppDialog.h`, `${ws}/AppDialog.h`);
-            await copyText(`${rs}/AppDialog.cpp`, `${ws}/AppDialog.cpp`, [[/__name__/g, nm]]);
-            await copyText(`${rs}/resource.h`, `${ws}/resource.h`, [[/__name__/g, nm]]);
+            await copyText(`${rs}/App.h`,   `${ws}/App.h`);
+            await copyText(`${rs}/App.cpp`, `${ws}/App.cpp`, [[/__name__/g, nm]]);
+            await copyText(`${rs}/MainDialog.h`,   `${ws}/MainDialog.h`);
+            await copyText(`${rs}/MainDialog.cpp`, `${ws}/MainDialog.cpp`);
+            await copyText(`${rs}/resource.h`,     `${ws}/resource.h`, [[/__name__/g, nm]]);
             await copyDirect(`${rs}/Application.rc`,  `${ws}/${nm}.rc`);
             break;
         }

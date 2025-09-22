@@ -1,20 +1,21 @@
-#include "AppDialog.h"
+#include "MainDialog.h"
+#include "App.h"
 #include "resource.h"
 
 using namespace std;
 
-AppDialog::AppDialog() : Dialog(IDD_APP)
+MainDialog::MainDialog() : Dialog(IDD_APP)
 {
 }
 
-bool AppDialog::OnCreated()
+bool MainDialog::OnCreated()
 {
     if (!Dialog::OnCreated())
     {
         return false;
     }
 
-    this->Text(L"Test");
+    this->Text(App::Name);
 
     this->RegisterCommand(IDOK, [=]{ this->Destroy(); PostQuitMessage(IDOK); return true; });
     this->RegisterCommand(IDCANCEL, [=]{ this->Destroy(); PostQuitMessage(IDCANCEL); return true; });

@@ -15,6 +15,11 @@ public:
 
     virtual bool Create(HWND parant = 0, HINSTANCE instance = 0);
 
+    // DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_SYSMENU can be used as default style in .rc for modal dialog
+    int  DoModal(HACCEL accelerator = nullptr);
+    bool IsModal() const;
+    void Center(HWND hwnd = nullptr);
+
     Control Item(int dlgItemId) const;
 
 protected:
