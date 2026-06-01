@@ -18,6 +18,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeConsole', ()=>cmake.console(context)));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeFtxui', ()=>cmake.ftxui(context)));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeQtWidgets', ()=>cmake.qtWidgets(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeW32View', ()=>cmake.w32View(context)));

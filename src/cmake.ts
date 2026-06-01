@@ -11,7 +11,7 @@ async function isWorkspaceValid() {
 }
 
 export async function console(context: vscode.ExtensionContext) {
-    if (!await isWorkspaceValid) {
+    if (!await isWorkspaceValid()) {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
         return;
     }
@@ -32,8 +32,30 @@ export async function console(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`CMake console project "${nm}" created`);
 }
 
+export async function ftxui(context: vscode.ExtensionContext) {
+    if (!await isWorkspaceValid()) {
+        vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
+        return;
+    }
+
+    let nm = (await vscode.window.showInputBox({ prompt: 'Input project name', value: vscode.workspace.name }))?.trim();
+    if (!nm) {
+        return;
+    }
+
+    let ws = wsp.first()!.uri.path;
+    let rs = context.extensionUri.path + '/res/cmake/ftxui';
+
+    await copyText(`${rs}/CMakeLists.txt`, `${ws}/CMakeLists.txt`, [[/__name__/g, nm]]);
+    vscode.window.showTextDocument(vscode.Uri.file(`${ws}/CMakeLists.txt`), { preview: false });
+
+    await copyText(`${rs}/main.cpp`, `${ws}/main.cpp`);
+
+    vscode.window.showInformationMessage(`CMake ftxui project "${nm}" created`);
+}
+
 export async function qtWidgets(context: vscode.ExtensionContext) {
-    if (!await isWorkspaceValid) {
+    if (!await isWorkspaceValid()) {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
         return;
     }
@@ -120,7 +142,7 @@ export async function w32View(context: vscode.ExtensionContext) {
 }
 
 export async function csConsole(context: vscode.ExtensionContext) {
-    if (!await isWorkspaceValid) {
+    if (!await isWorkspaceValid()) {
         vscode.window.showErrorMessage('Workspace folder is undefined or not empty');
         return;
     }

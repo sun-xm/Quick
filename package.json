@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.27",
+	"version": "0.0.28",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -19,6 +19,10 @@
 			{
 				"command": "quick.cmakeConsole",
 				"title": "Quick: Start cmake console application"
+			},
+			{
+				"command": "quick.cmakeFtxui",
+				"title": "Quick: Start cmake ftxui appliction"
 			},
 			{
 				"command": "quick.cmakeQtWidgets",
