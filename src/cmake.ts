@@ -225,3 +225,14 @@ export async function csLib(context: vscode.ExtensionContext) {
 
     vscode.window.showInformationMessage(`CMake C# WPF project "${nm}" created`);
 }
+
+export async function debugTerminal(context: vscode.ExtensionContext) {
+    const terminal = await vscode.window.showQuickPick(['default', 'integratedTerminal', 'internalConsole', 'externalTerminal', 'newExternalWindow']);
+    if (!terminal) {
+        return;
+    }
+
+    const debugConfig = vscode.workspace.getConfiguration('cmake').get<any>('debugConfig');
+    debugConfig.console = 'default' === terminal ? undefined : terminal;
+    vscode.workspace.getConfiguration('cmake').update('debugConfig', debugConfig, vscode.ConfigurationTarget.Workspace);
+}

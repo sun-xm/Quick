@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.28",
+	"version": "0.0.29",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -43,6 +43,10 @@
 			{
 				"command": "quick.cmakeCsLib",
 				"title": "Quick: Start cmake C# library"
+			},
+			{
+				"command": "quick.cmakeDebugTerminal",
+				"title": "Quick: Set cmake-tool debug terminal"
 			},
 			{
 				"command": "quick.cmakeTargets",

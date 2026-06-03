@@ -8,30 +8,42 @@ struct UI
 {
     UI()
     {
+        auto btnopt = ButtonOption();
+        btnopt.transform = [](const EntryState& es)
+        {
+            auto e = hbox({ text("["), text(es.label), text("]") });
+            return es.focused ? e | underlined : e;
+        };
+
+        auto inpopt = InputOption();
+        inpopt.multiline = false;
+
         this->root = Container::Vertical
         ({
-            Renderer([this]{ return text(this->message); }) | center,
+            Renderer([this]{ return text(this->message) | center | color(Color::Blue); }),
 
-            Button("Click", [this]{ this->message = L"Clicked"; }, ButtonOption::Ascii()) | center,
+            Input(&this->input, "<input>", inpopt),
 
-            Renderer([]{ return text(L"Press ESC/CTRL-C to exit"); })
+            Button("Click", [this]{ this->message = this->input; }, btnopt) | bold | center,
 
-        }) | border | size(WIDTH, LESS_THAN, 1000) | size(HEIGHT, LESS_THAN, 1000);
+            Renderer([]{ return text("Press ESC/CTRL-C to exit"); })
+
+        }) | border;
 
         this->root = Container::Horizontal({ this->root, Renderer([]{ return filler(); }) }); // align to left
     }
 
     Component root;
-    wstring message;
+    string message;
+    string input;
 };
 
 int main(int argc, char* argv[])
 {
-    auto screen = ScreenInteractive::Fullscreen();
-
     UI ui;
-    ui.message = L"Hello FTXUI";
+    ui.message = "Hello FTXUI";
 
+    auto screen = ScreenInteractive::Fullscreen();
     screen.Loop(CatchEvent(ui.root, [&screen](Event e)
     {
         if (Event::Escape == e)

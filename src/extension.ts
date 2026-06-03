@@ -30,6 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeCsLib', ()=>cmake.csLib(context)));
 
+	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeDebugTerminal', ()=>cmake.debugTerminal(context)));
+
 	context.subscriptions.push(vscode.commands.registerCommand('quick.cmakeTargets', async()=>{
 		await vscode.commands.executeCommand('cmake.setDefaultTarget');
 		vscode.commands.executeCommand('cmake.selectLaunchTarget');
