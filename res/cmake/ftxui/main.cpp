@@ -4,47 +4,52 @@
 using namespace ftxui;
 using namespace std;
 
-struct UI
+struct Style
 {
-    UI()
+    static ButtonOption Button()
     {
-        auto btnopt = ButtonOption();
-        btnopt.transform = [](const EntryState& es)
+        ButtonOption option;
+        option.transform = [](const EntryState& state)
         {
-            auto e = hbox({ text("["), text(es.label), text("]") });
-            return es.focused ? e | underlined : e;
+            auto label = text(state.label);
+            if (state.focused)
+            {
+                label |= underlined;
+            }
+            return hbox({ text("["), label, text("]") });
         };
+        return option;
+    }
+};
 
-        auto inpopt = InputOption();
-        inpopt.multiline = false;
+struct UI : Component
+{
+    UI(Closure exit) : confirm(false), title("Hello FTXUI")
+    {
+        (Component&)*this =
 
-        this->root = Container::Vertical
+        Container::Vertical
         ({
-            Renderer([this]{ return text(this->message) | center | color(Color::Blue); }),
+            Renderer([this]{ return text(this->title); }) | center,
+            Button("Exit", [this]{ this->confirm = true; }, Style::Button()) | center
+        }) | border |
 
-            Input(&this->input, "<input>", inpopt),
-
-            Button("Click", [this]{ this->message = this->input; }, btnopt) | bold | center,
-
-            Renderer([]{ return text("Press ESC/CTRL-C to exit"); })
-
-        }) | border;
-
-        this->root = Container::Horizontal({ this->root, Renderer([]{ return filler(); }) }); // align to left
+        Modal(Container::Horizontal
+        ({
+            Button("Confirm", exit, Style::Button()),
+            Renderer([]{ return text("  "); }),
+            Button("Cancel", [this]{ this->confirm = false; }, Style::Button())
+        }) | border, &this->confirm);
     }
 
-    Component root;
-    string message;
-    string input;
+    bool   confirm;
+    string title;
 };
 
 int main(int argc, char* argv[])
 {
-    UI ui;
-    ui.message = "Hello FTXUI";
-
-    auto screen = ScreenInteractive::Fullscreen();
-    screen.Loop(CatchEvent(ui.root, [&screen](Event e)
+    auto screen = ScreenInteractive::FitComponent();
+    screen.Loop(CatchEvent(UI(screen.ExitLoopClosure()), [&screen](Event e)
     {
         if (Event::Escape == e)
         {
