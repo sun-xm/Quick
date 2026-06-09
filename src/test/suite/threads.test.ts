@@ -43,7 +43,7 @@ if (threads.isMain()) {
                 });
             });
 
-            assert(await result);
+            assert.ok(await result);
         });
 
         test('exception', async()=>{
@@ -57,7 +57,7 @@ if (threads.isMain()) {
                 thread.notify({ error: true });
             });
 
-            assert(await result);
+            assert.ok(await result);
         });
 
         test('SharedArrayBuffer', async()=>{
@@ -75,12 +75,12 @@ if (threads.isMain()) {
                 thread.notify({ data: arr });
             });
 
-            assert(await result);
+            assert.ok(await result);
         });
 
         test('One-off execution', async ()=>{
-            assert('Hello' == await threads.exec(()=>'Hello'));
-            assert(9 == await threads.exec((n)=>n * n, 3));
+            assert.ok('Hello' == await threads.exec(()=>'Hello'));
+            assert.ok(9 == await threads.exec((n)=>n * n, 3));
         });
     });
 }

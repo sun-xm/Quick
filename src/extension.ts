@@ -8,6 +8,7 @@ import * as mywebview 	from './mywebview';
 import * as nodejs 		from './nodejs';
 import * as submodule 	from './submodule';
 import * as unchange 	from './unchange';
+import * as upload      from './upload';
 
 export function activate(context: vscode.ExtensionContext) {
 	setStorage(context.storageUri);
@@ -61,7 +62,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>submodule.remove(uri)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', async()=>mywebview.start()));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.uploadUserContent', ()=>upload.start()));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', ()=>mywebview.start()));
 }
 
 export async function deactivate() {

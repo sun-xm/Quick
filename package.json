@@ -101,6 +101,10 @@
 				"title": "Quick: Remove Git Submodule"
 			},
 			{
+				"command": "quick.uploadUserContent",
+				"title": "Quick: Upload User Content"
+			},
+			{
 				"command": "quick.webview",
 				"title": "Quick: Test webview"
 			}
