@@ -1,53 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
-        <meta charset="UTF-8">
-        <title>Upload Github User Content</title>
+        <meta charset="UTF-8" />
+        <title>Upload GitHub User Content</title>
+
+        <style>
+            :root {
+                --bg: #0d1117;
+                --panel: #161b22;
+                --border: #30363d;
+                --text: #c9d1d9;
+                --accent: #238636;
+                --hover: #2ea043;
+                --input-bg: #0d1117;
+            }
+
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+                margin: 0;
+                padding: 24px;
+            }
+
+            h1 {
+                font-weight: 600;
+                margin-bottom: 16px;
+            }
+
+            table {
+                background: var(--panel);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                border-spacing: 0;
+                width: 100%;
+                max-width: 720px;
+            }
+
+            td {
+                padding: 10px 12px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+
+            td:first-child {
+                width: 110px;
+                color: #8b949e;
+                white-space: nowrap;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                box-sizing: border-box;
+                padding: 8px 10px;
+                background: var(--input-bg);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                color: var(--text);
+                font-size: 14px;
+            }
+
+            input:focus {
+                outline: none;
+                border-color: #58a6ff;
+            }
+
+            button {
+                background: var(--accent);
+                color: #fff;
+                border: none;
+                padding: 8px 14px;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background: var(--hover);
+            }
+
+            progress {
+                width: 260px;
+                height: 10px;
+                accent-color: var(--accent);
+                vertical-align: middle;
+            }
+
+            #result {
+                margin-top: 8px;
+                width: 100%;
+                height: 300px;
+                overflow-y: auto;
+                background: #161b22;
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                padding: 10px;
+                font-family: Consolas, monospace;
+                font-size: 13px;
+                color: #c9d1d9;
+                white-space: pre-wrap;
+            }
+        </style>
     </head>
 
     <body>
-        <h1>Upload GitHub User Content</h1>
+        <h1>🚀 Upload GitHub User Content</h1>
 
-        <table id="table">
-            <tr>
-                <td>Orgnization</td>
-                <td><input type="text" id="orgnization" placeholder="<repo owner>"/></td>
-            </tr>
-            <tr>
-                <td>Repository</td>
-                <td><input type="text" id="repository" placeholder="<repository>"/></td>
-            </tr>
-            <tr>
-                <td>Branch</td>
-                <td><input type="text" id="branch" placeholder="<remote branch>"/></td>
-            </tr>
-            <tr>
-                <td>Path</td>
-                <td><input type="text" id="path" placeholder="<remote path>"/></td>
-            </tr>
-            <tr>
-                <td>Token</td>
-                <td><input type="text" id="token" placeholder="<user token>"/></td>
-            </tr>
-            <tr>
-                <td>Message</td>
-                <td><input type="text" id="message" placeholder="<commit message>"></td>
-            </tr>
+        <table>
+            <tr><td>Organization</td><td><input id="orgnization" placeholder="&lt;repo owner&gt;"></td></tr>
+            <tr><td>Repository</td><td><input id="repository" placeholder="&lt;repository&gt;"></td></tr>
+            <tr><td>Branch</td><td><input id="branch" placeholder="&lt;remote branch&gt;"></td></tr>
+            <tr><td>Path</td><td><input id="path" placeholder="&lt;remote path&gt;"></td></tr>
+            <tr><td>Token</td><td><input id="token" placeholder="&lt;user token&gt;"></td></tr>
+            <tr><td>Message</td><td><input id="message" placeholder="&lt;commit message&gt;"></td></tr>
             <tr>
                 <td>Local File</td>
-                <td><input type="text" id="file" placeholder="<local path>"/></td>
-                <td><button onclick="browse()">...</button></td>
+                <td><input id="file" placeholder="&lt;local path&gt;">&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="browse()">…</button></td>
             </tr>
         </table>
 
-        <br/>
+        <br>
         <button onclick="upload()">Upload</button>
 
-        <div style="margin-top:8px;">Progress: <progress id="progress" value="0" max="100"/></div>
+        <div style="margin-top:12px;">
+            Progress:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<progress id="progress" value="0" max="100"></progress>
+        </div>
 
-        <div style="margin-top:8px;">Result:</div>
-        <div id="result" style="width:100%;height:300px;overflow-y:auto;background:#1e1e1e;color:#dcdcdc;
-        font-family:Consolas,monospace;font-size:13px;padding:8px;white-space:pre-wrap;border:1pxsolid#333;"></div>
+        <div style="margin-top:12px;font-weight:500;">Result:</div>
+        <div id="result"></div>
 
         <script>
             ${script}
