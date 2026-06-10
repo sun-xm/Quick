@@ -9,6 +9,11 @@ export async function start(uri: vscode.Uri) {
     if (uri) {
         panel.webview.postMessage({ command: 'onBrowse', params: uri.fsPath });
     }
+
+    const session = await vscode.authentication.getSession('github', ['repo'], { createIfNone: true });
+    if (session) {
+        panel.webview.postMessage({ command: 'onToken', params: session.accessToken });
+    }
 }
 
 async function getHtml() {

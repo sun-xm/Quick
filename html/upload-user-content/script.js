@@ -16,6 +16,11 @@ window.addEventListener('message', event=>{
             onResult(event.data.params);
             break;
         }
+
+        case 'onToken': {
+            document.getElementById('token').value = event.data.params;
+            break;
+        }
     }
 });
 
