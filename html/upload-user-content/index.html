@@ -36,16 +36,14 @@
             <tr>
                 <td>Local File</td>
                 <td><input type="text" id="file" placeholder="<local path>"/></td>
-                <td><button onclick="onBrowse()">...</button></td>
+                <td><button onclick="browse()">...</button></td>
             </tr>
         </table>
 
         <br/>
         <button onclick="upload()">Upload</button>
 
-        <div style="margin-top:8px;">Progress:</div>
-        <div id="progress" style="width:100%;height:50px;overflow-y:auto;background:#1e1e1e;color:#dcdcdc;
-        font-family:Consolas,monospace;font-size:13px;padding:8px;white-space:pre-wrap;border:1pxsolid#333;"></div>
+        <div style="margin-top:8px;">Progress: <progress id="progress" value="0" max="100"/></div>
 
         <div style="margin-top:8px;">Result:</div>
         <div id="result" style="width:100%;height:300px;overflow-y:auto;background:#1e1e1e;color:#dcdcdc;

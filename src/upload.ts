@@ -142,6 +142,7 @@ async function onUpload(panel: vscode.WebviewPanel, params: any) {
             '-H', 'Content-Type: application/json',
             '--data-binary', `@${params.file}.b64`,
             '--connect-timeout', '10',
+            '--progress-bar',
             `https://api.github.com/repos/${params.orgnization}/${params.repository}/contents/${params.path}`
         ];
 

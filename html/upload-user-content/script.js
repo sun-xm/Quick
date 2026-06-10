@@ -8,12 +8,12 @@ window.addEventListener('message', event=>{
         }
 
         case 'onUpload': {
-            onUpload(event.data.params);
+            document.getElementById('progress').value = Number(event.data.params.match(/(\d+(?:\.\d+)?)%/)?.[1]);
             break;
         }
 
         case 'onResult': {
-            onResult(event.data.params);
+            document.getElementById('result').textContent = event.data.params;
             break;
         }
 
@@ -28,17 +28,9 @@ function trimSlash(str) {
     return str.replace(/^\/+|\/+$/g, '');
 }
 
-function onBrowse() {
+function browse() {
     const file = document.getElementById('file').value.trim();
     vscode.postMessage({ command: 'onBrowse', params: file });
-}
-
-function onUpload(params) {
-    document.getElementById('progress').textContent = params;
-}
-
-function onResult(params) {
-    document.getElementById('result').textContent = params;
 }
 
 function upload() {
@@ -90,7 +82,7 @@ function upload() {
     }
 
     result.textContent = '';
-    progress.textContent = '';
+    progress.value = 0;
 
     vscode.postMessage({ command: 'onUpload', params: { file: file, path: path, token: token, branch: branch, message: message, repository: repository, orgnization: orgnization }});
 }
