@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>submodule.remove(uri)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('quick.uploadUserContent', ()=>upload.start()));
+	context.subscriptions.push(vscode.commands.registerCommand('quick.uploadGithub', (uri: vscode.Uri)=>upload.start(uri)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.webview', ()=>mywebview.start()));
 }

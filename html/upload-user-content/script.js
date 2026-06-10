@@ -3,8 +3,7 @@ const vscode = acquireVsCodeApi();
 window.addEventListener('message', event=>{
     switch (event.data.command) {
         case 'onBrowse': {
-            const file = event.data.params;
-            document.getElementById('file').value = file;
+            document.getElementById('file').value = event.data.params;
             break;
         }
 
@@ -30,7 +29,7 @@ function onBrowse() {
 }
 
 function onUpload(params) {
-    document.getElementById('log').textContent = params;
+    document.getElementById('progress').textContent = params;
 }
 
 function onResult(params) {
@@ -38,7 +37,7 @@ function onResult(params) {
 }
 
 function upload() {
-    const log = document.getElementById('log');
+    const rst = document.getElementById('result');
     const file = trimSlash(document.getElementById('file').value.trim());
     const path = trimSlash(document.getElementById('path').value.trim());
     const token = trimSlash(document.getElementById('token').value.trim());
@@ -47,50 +46,46 @@ function upload() {
     const repository = trimSlash(document.getElementById('repository').value.trim());
     const orgnization = trimSlash(document.getElementById('orgnization').value.trim());
 
+    const result = document.getElementById('result');
+    const progress = document.getElementById('progress');
+
     if ('' === file) {
-        log.textContent = 'error empty file path';
+        result.textContent = 'error empty file path';
         return;
     }
 
     if ('' === path) {
-        log.textContent = 'error empty remote path';
+        result.textContent = 'error empty remote path';
         return;
     }
 
     if ('' === token) {
-        log.textContent = 'error empty user token';
+        result.textContent = 'error empty user token';
         return;
     }
 
     if ('' === branch) {
-        log.textContent = 'error empty branch name';
+        result.textContent = 'error empty branch name';
         return;
     }
 
     if ('' === message) {
-        log.textContent = 'error empty commit message';
+        result.textContent = 'error empty commit message';
         return;
     }
 
     if ('' === repository) {
-        log.textContent = 'error empty code repository';
+        result.textContent = 'error empty code repository';
         return;
     }
 
     if ('' === orgnization) {
-        log.textContent = 'error empty repository owner';
+        result.textContent = 'error empty repository owner';
         return;
     }
 
-    log.textContent = '';
-    document.getElementById('result').textContent = '';
+    result.textContent = '';
+    progress.textContent = '';
 
     vscode.postMessage({ command: 'onUpload', params: { file: file, path: path, token: token, branch: branch, message: message, repository: repository, orgnization: orgnization }});
-}
-
-function updateUrl() {
-    const orgniz = trimSlash(document.getElementById('orgnization').value.trim());
-    const repo   = trimSlash(document.getElementById('repository').value.trim());
-    const path   = trimSlash(document.getElementById('path').value.trim());
-    document.getElementById('url').value = `https://api.github.com/repos/${orgniz}/${repo}/contents/${path}`;
 }

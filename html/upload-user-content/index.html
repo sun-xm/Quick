@@ -11,15 +11,15 @@
         <table id="table">
             <tr>
                 <td>Orgnization</td>
-                <td><input type="text" id="orgnization" value="Topsens"/></td>
+                <td><input type="text" id="orgnization" placeholder="<repo owner>"/></td>
             </tr>
             <tr>
                 <td>Repository</td>
-                <td><input type="text" id="repository" value="deps"/></td>
+                <td><input type="text" id="repository" placeholder="<repository>"/></td>
             </tr>
             <tr>
                 <td>Branch</td>
-                <td><input type="text" id="branch" value="master"/></td>
+                <td><input type="text" id="branch" placeholder="<remote branch>"/></td>
             </tr>
             <tr>
                 <td>Path</td>
@@ -35,7 +35,7 @@
             </tr>
             <tr>
                 <td>Local File</td>
-                <td><input type="text" id="file" placeholder="<select file>"/></td>
+                <td><input type="text" id="file" placeholder="<local path>"/></td>
                 <td><button onclick="onBrowse()">...</button></td>
             </tr>
         </table>
@@ -44,7 +44,7 @@
         <button onclick="upload()">Upload</button>
 
         <div style="margin-top:8px;">Progress:</div>
-        <div id="log" style="width:100%;height:50px;overflow-y:auto;background:#1e1e1e;color:#dcdcdc;
+        <div id="progress" style="width:100%;height:50px;overflow-y:auto;background:#1e1e1e;color:#dcdcdc;
         font-family:Consolas,monospace;font-size:13px;padding:8px;white-space:pre-wrap;border:1pxsolid#333;"></div>
 
         <div style="margin-top:8px;">Result:</div>

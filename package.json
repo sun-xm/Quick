@@ -2,7 +2,7 @@
 	"name": "quick-action",
 	"displayName": "Quick Action",
 	"description": "Just for personal use",
-	"version": "0.0.29",
+	"version": "0.0.30",
 	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
@@ -101,8 +101,8 @@
 				"title": "Quick: Remove Git Submodule"
 			},
 			{
-				"command": "quick.uploadUserContent",
-				"title": "Quick: Upload User Content"
+				"command": "quick.uploadGithub",
+				"title": "Quick: Upload to Github"
 			},
 			{
 				"command": "quick.webview",
@@ -191,6 +191,11 @@
 					"command": "quick.removeSubmodule",
 					"group": "submodule",
 					"when": "explorerResourceIsFolder && resourcePath in quick.submodules"
+				},
+				{
+					"command": "quick.uploadGithub",
+					"group": "github",
+					"when": "!explorerResourceIsFolder"
 				}
 			]
 		}

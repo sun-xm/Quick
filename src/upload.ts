@@ -2,10 +2,13 @@ import * as chp from 'child_process';
 import * as threads from './threads';
 import * as vscode from 'vscode';
 
-export async function start() {
+export async function start(uri: vscode.Uri) {
     const panel = vscode.window.createWebviewPanel('upload-user-content', 'Upload User Content', vscode.ViewColumn.One, { enableScripts: true });
     panel.webview.html = await getHtml();
     panel.webview.onDidReceiveMessage(msg=>onCommand(panel, msg));
+    if (uri) {
+        panel.webview.postMessage({ command: 'onBrowse', params: uri.fsPath });
+    }
 }
 
 async function getHtml() {
@@ -136,8 +139,6 @@ async function onUpload(panel: vscode.WebviewPanel, params: any) {
             '--connect-timeout', '10',
             `https://api.github.com/repos/${params.orgnization}/${params.repository}/contents/${params.path}`
         ];
-
-        panel.webview.postMessage({ command: 'onResult', params: 'Hello' });
 
         await new Promise<void>((res, rej)=>{
             const curl = chp.spawn('curl', args, { windowsHide: true });
