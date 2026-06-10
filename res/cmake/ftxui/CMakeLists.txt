@@ -12,8 +12,8 @@ FetchContent_Declare(
     GIT_SHALLOW ON
     GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI.git
     GIT_TAG v6.1.9
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/cache/ftxui"
 )
-set(FETCHCONTENT_SOURCE_DIR_FTXUI "${CMAKE_CURRENT_LIST_DIR}/cache/ftxui")
 FetchContent_MakeAvailable(ftxui)
 
 add_executable(${PROJECT_NAME} main.cpp)
