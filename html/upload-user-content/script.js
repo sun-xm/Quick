@@ -13,6 +13,7 @@ window.addEventListener('message', event=>{
         }
 
         case 'onResult': {
+            document.getElementById('upload').disabled = false;
             document.getElementById('result').textContent = event.data.params;
             break;
         }
@@ -48,7 +49,6 @@ function upload() {
     const orgnization = trimSlash(document.getElementById('orgnization').value.trim());
 
     const result = document.getElementById('result');
-    const progress = document.getElementById('progress');
 
     if ('' === file) {
         result.textContent = 'error empty file path';
@@ -85,8 +85,9 @@ function upload() {
         return;
     }
 
-    result.textContent = '';
-    progress.value = 0;
+    result.textContent = 'Uploading ...';
+    document.getElementById('upload').disabled = true;
+    document.getElementById('progress').value = 0;
 
     vscode.postMessage({ command: 'onUpload', params: { file: file, path: path, token: token, branch: branch, message: message, repository: repository, orgnization: orgnization }});
 }

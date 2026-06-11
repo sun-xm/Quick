@@ -107,15 +107,15 @@
     </head>
 
     <body>
-        <h1>🚀 Upload GitHub User Content</h1>
+        <h1>🚀 Upload to GitHub</h1>
 
         <table>
             <tr><td>Organization</td><td><input id="orgnization" placeholder="&lt;repo owner&gt;"></td></tr>
             <tr><td>Repository</td><td><input id="repository" placeholder="&lt;repository&gt;"></td></tr>
             <tr><td>Branch</td><td><input id="branch" placeholder="&lt;remote branch&gt;"></td></tr>
             <tr><td>Path</td><td><input id="path" placeholder="&lt;remote path&gt;" oninput="updateMsg()"></td></tr>
-            <tr><td>Token</td><td><input id="token" placeholder="&lt;user token&gt;" type="password"></td></tr>
             <tr><td>Message</td><td><input id="message" placeholder="&lt;commit message&gt;"></td></tr>
+            <tr><td>Token</td><td><input id="token" placeholder="&lt;user token&gt;" type="password"></td></tr>
             <tr>
                 <td>Local File</td>
                 <td><input id="file" placeholder="&lt;local path&gt;">&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="browse()">…</button></td>
@@ -123,7 +123,7 @@
         </table>
 
         <br>
-        <button onclick="upload()">Upload</button>
+        <button id="upload" onclick="upload()">Upload</button>
 
         <div style="margin-top:12px;">
             Progress:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<progress id="progress" value="0" max="100"></progress>

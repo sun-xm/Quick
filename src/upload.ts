@@ -119,8 +119,8 @@ async function onUpload(panel: vscode.WebviewPanel, params: any) {
             const fr = fs.openSync(`${params.file}`, 'r');
             const fw = fs.openSync(`${params.file}.b64`, 'w');
 
-            const sha = params.blob ? `"sha": "${params.blob}",` : '';
-            fs.writeSync(fw, Buffer.from(`{"message": "${params.message}", "branch": "${params.branch}", ${sha} "content":"`));
+            const sha = params.blob ? `"sha": ${JSON.stringify(params.blob)},` : '';
+            fs.writeSync(fw, Buffer.from(`{"message":${JSON.stringify(params.message)},"branch":${JSON.stringify(params.branch)},${sha}"content":"`));
 
             const buf = Buffer.alloc(3 * 128 * 1024);
             let bytes = 0;
