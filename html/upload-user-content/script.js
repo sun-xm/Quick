@@ -28,6 +28,10 @@ function trimSlash(str) {
     return str.replace(/^\/+|\/+$/g, '');
 }
 
+function updateMsg() {
+    document.getElementById('message').value = `Upload "${document.getElementById('path').value}"`;
+}
+
 function browse() {
     const file = document.getElementById('file').value.trim();
     vscode.postMessage({ command: 'onBrowse', params: file });
