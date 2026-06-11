@@ -1,10 +1,21 @@
 import * as chp from 'child_process';
+import * as path from 'path';
 import * as threads from './threads';
 import * as vscode from 'vscode';
 
-export async function start(uri: vscode.Uri) {
-    const panel = vscode.window.createWebviewPanel('upload-user-content', 'Upload User Content', vscode.ViewColumn.One, { enableScripts: true });
-    panel.webview.html = await getHtml();
+export async function start(context: vscode.ExtensionContext, uri: vscode.Uri) {
+    const resDir = path.join(context.extensionPath, 'html', 'upload-user-content');
+    const panel = vscode.window.createWebviewPanel
+    (
+        'upload-user-content',
+        'Upload User Content',
+        vscode.ViewColumn.One,
+        {
+            enableScripts: true,
+            localResourceRoots: [vscode.Uri.file(resDir)]
+        }
+    );
+    panel.webview.html = await getHtml(panel.webview.asWebviewUri(vscode.Uri.file(path.join(resDir, 'script.js'))));
     panel.webview.onDidReceiveMessage(msg=>onCommand(panel, msg));
     if (uri) {
         panel.webview.postMessage({ command: 'onBrowse', params: uri.fsPath });
@@ -16,9 +27,8 @@ export async function start(uri: vscode.Uri) {
     }
 }
 
-async function getHtml() {
+async function getHtml(script: vscode.Uri) {
     const html = (await vscode.workspace.fs.readFile(vscode.Uri.file(`${__dirname}/../html/upload-user-content/index.html`))).toString();
-    const script = (await vscode.workspace.fs.readFile(vscode.Uri.file(`${__dirname}/../html/upload-user-content/script.js`))).toString();
     return eval('`' + html + '`');
 }
 
