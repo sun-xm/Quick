@@ -103,10 +103,6 @@
 			{
 				"command": "quick.uploadGithub",
 				"title": "Quick: Upload to Github"
-			},
-			{
-				"command": "quick.webview",
-				"title": "Quick: Test webview"
 			}
 		],
 		"configuration": {
