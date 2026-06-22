@@ -103,6 +103,14 @@
 			{
 				"command": "quick.uploadGithub",
 				"title": "Quick: Upload to Github"
+			},
+			{
+				"command": "quick.selectLaunch",
+				"title": "Quick: Select launch config"
+			},
+			{
+				"command": "quick.startLaunch",
+				"title": "Quick: Start launch config"
 			}
 		],
 		"configuration": {
@@ -139,6 +147,18 @@
 				}
 			}
 		},
+		"keybindings": [
+			{
+				"command": "quick.startLaunch",
+				"key": "f5",
+				"when": "quick:launch:enabled"
+			},
+			{
+				"command": "cmake.debugTarget",
+				"key": "f5",
+				"when": "!quick:launch:enabled && cmake:enableFullFeatureSet && inCMakeProject && !cmake:hideDebugCommand && !inDebugMode"
+			}
+		],
 		"menus": {
 			"editor/context": [
 				{
@@ -215,6 +235,7 @@
 		"@typescript-eslint/parser": "^4.33.0",
 		"eslint": "^7.32.0",
 		"glob": "^7.2.3",
+		"jsonc-parser": "^3.3.1",
 		"mocha": "^9.2.2",
 		"typescript": "^4.9.5",
 		"vscode-test": "^1.6.1"
@@ -222,6 +243,5 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/sun-xm/Quick.git"
-	},
-	"dependencies": {}
+	}
 }

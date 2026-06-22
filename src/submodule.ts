@@ -4,7 +4,6 @@ import * as chp from 'child_process';
 import * as cfg from './config';
 import * as ext from './extension';
 import * as wsp from './workspace';
-import { resolve } from 'dns';
 
 const fs = vscode.workspace.fs;
 const dec = new TextDecoder();

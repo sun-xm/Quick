@@ -4,6 +4,7 @@ import * as config 		from './config';
 import * as designer 	from './designer';
 import * as electron 	from './electron';
 import * as housekeep 	from './housekeep';
+import * as launch      from './launch';
 import * as nodejs 		from './nodejs';
 import * as submodule 	from './submodule';
 import * as unchange 	from './unchange';
@@ -62,6 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.removeSubmodule', (uri: vscode.Uri)=>submodule.remove(uri)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.uploadGithub', (uri: vscode.Uri)=>upload.start(context, uri)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.selectLaunch', ()=>launch.select()));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.startLaunch', ()=>launch.start()));
 }
 
 export async function deactivate() {
