@@ -13,7 +13,7 @@ export async function select() {
     config = await vscode.window.showQuickPick(getConfigs(), { placeHolder: 'Select debug config or press ESC to disable' });
     if (config) {
         vscode.commands.executeCommand('setContext', 'quick:launch:enabled', true);
-        status.text = `$(play) Quick Launch [${config}]`;
+        status.text = `$(bug) Quick Launch [${config}]`;
         status.show();
     } else {
         vscode.commands.executeCommand('setContext', 'quick:launch:enabled', false);
