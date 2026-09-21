@@ -6,6 +6,7 @@ import * as electron 	from './electron';
 import * as housekeep 	from './housekeep';
 import * as launch      from './launch';
 import * as nodejs 		from './nodejs';
+import * as pick        from './pick';
 import * as submodule 	from './submodule';
 import * as unchange 	from './unchange';
 import * as upload      from './upload';
@@ -45,6 +46,12 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.nodejsProject', ()=>nodejs.project(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.openUiFile', (uri: vscode.Uri)=>designer.openUiFile(uri)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.pickFile', (args)=>pick.pickFile(args)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.pickFiles', (args)=>pick.pickFiles(args)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.pickFolder', (args)=>pick.pickFolder(args)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.addSubmodule', ()=>submodule.add()));
 

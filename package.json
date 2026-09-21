@@ -65,6 +65,18 @@
 				"title": "Quick: Open in Qt Designer"
 			},
 			{
+				"command": "quick.pickFile",
+				"title": "Quick: Pick file"
+			},
+			{
+				"command": "quick.pickFiles",
+				"title": "Quick: Pick files"
+			},
+			{
+				"command": "quick.pickFolder",
+				"title": "Quick: Pick folder"
+			},
+			{
 				"command": "quick.nodejsProject",
 				"title": "Quick: Start Node.js Project"
 			},
