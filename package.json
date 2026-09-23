@@ -163,7 +163,7 @@
 			{
 				"command": "quick.startLaunch",
 				"key": "f5",
-				"when": "quick:launch:enabled"
+				"when": "quick:launch:enabled && !inDebugMode"
 			},
 			{
 				"command": "cmake.debugTarget",
