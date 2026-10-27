@@ -1,9 +1,9 @@
 {
-	"name": "quick-action",
-	"displayName": "Quick Action",
-	"description": "Just for personal use",
-	"version": "0.0.33",
-	"publisher": "sun-xm",
+	"name": "quick",
+	"displayName": "Quick",
+	"description": "",
+	"version": "0.1.0",
+	"publisher": "sun-xm@github.com",
 	"engines": {
 		"vscode": "^1.78.1"
 	},
@@ -123,6 +123,10 @@
 			{
 				"command": "quick.startLaunch",
 				"title": "Quick: Start launch config"
+			},
+			{
+				"command": "quick.checkUpdate",
+				"title": "Quick: Check update"
 			}
 		],
 		"configuration": {

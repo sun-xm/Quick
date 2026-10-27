@@ -9,6 +9,7 @@ import * as nodejs 		from './nodejs';
 import * as pick        from './pick';
 import * as submodule 	from './submodule';
 import * as unchange 	from './unchange';
+import * as update      from './update';
 import * as upload      from './upload';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -74,6 +75,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('quick.selectLaunch', ()=>launch.select()));
 
 	context.subscriptions.push(vscode.commands.registerCommand('quick.startLaunch', ()=>launch.start()));
+
+	context.subscriptions.push(vscode.commands.registerCommand('quick.checkUpdate', ()=>update.check()));
 }
 
 export async function deactivate() {
