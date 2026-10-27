@@ -38,7 +38,7 @@ export async function check() {
             }
         }
 
-        if (true/*newer*/) {
+        if (newer) {
             for (const asset of res.assets) {
                 if ('application/vsix' === asset.content_type) {
                     if ('Yes' == await vsc.window.showInformationMessage('Quick: new version found. Update now ?', 'Yes', 'No')) {
