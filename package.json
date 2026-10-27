@@ -3,7 +3,7 @@
 	"displayName": "Quick",
 	"description": "",
 	"version": "0.1.0",
-	"publisher": "sun-xm@github.com",
+	"publisher": "sun-xm",
 	"engines": {
 		"vscode": "^1.78.1"
 	},
